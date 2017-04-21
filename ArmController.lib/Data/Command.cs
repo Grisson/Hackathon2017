@@ -6,6 +6,13 @@ using System.Threading.Tasks;
 
 namespace ArmController.lib.Data
 {
+    public enum CommandType
+    {
+        GCode = 0,
+        Waiting,
+        ScreenShot,
+    }
+
     public class Command
     {
         public Guid CommandHistoryId;
@@ -28,7 +35,8 @@ namespace ArmController.lib.Data
             YDelta = yD;
             ZDelta = zD;
 
-            CurrentPosePosition = position;
+            
+            CurrentPosePosition = position ?? PosePosition.InitializePosition() ;
             CommandText = $"G91 G0 X{XDelta} Y{YDelta} Z{ZDelta}";
         }
 

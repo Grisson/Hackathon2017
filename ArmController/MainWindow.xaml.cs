@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO.Ports;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Data;
 using ArmController.lib;
 using ArmController.lib.Data;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace ArmController
 {
@@ -15,13 +17,13 @@ namespace ArmController
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly int[] _baudList = {9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000};
+        private readonly int[] _baudList = { 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000 };
         private readonly ConsoleContent _dataContext = new ConsoleContent();
 
         private bool _isWaitingResponse;
 
         private readonly TestRunner _testBrain;
-        private Queue<Command> _commands;
+        private readonly ConcurrentQueue<Command> _commands;
         private Command _currentCommand;
         private PosePosition _currentPosePosition;
         private Guid _deviceId;
@@ -53,7 +55,7 @@ namespace ArmController
         {
             InitializeComponent();
 
-            _commands = new Queue<Command>();
+            _commands = new ConcurrentQueue<Command>();
             _testBrain = new TestRunner();
             _testBrain.RegisterTestTarget();
 
@@ -61,44 +63,15 @@ namespace ArmController
             _currentPosePosition = PosePosition.InitializePosition();
 
             DataContext = _dataContext;
-            ComboBoxBaud.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {Source = _baudList});
+            ComboBoxBaud.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = _baudList });
             ComboBoxBaud.SelectedIndex = 5;
         }
 
-        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var sp = (SerialPort) sender;
-                while (sp.BytesToRead > 0)
-                {
-                    var d = sp.ReadLine();
-
-                    if (_currentCommand != null)
-                    {
-                        _currentCommand.Receive(d);
-                        _dataContext.AddOutput(_currentCommand.ToReceiveLog());
-                        if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            var nextP = _currentCommand.NextPosePosition;
-                            if (nextP != null)
-                            {
-                                _currentPosePosition = nextP;
-                                ShowCurrentPosition();
-                                IsWaitingResponse = false;
-                            }
-                            _currentCommand = null;
-                        }
-                    }
-
-                    Scroller.ScrollToBottom();
-                }
-            });
-        }
+        #region UI Events
 
         private void ComboBoxPort_OnDropDownOpened(object sender, EventArgs e)
         {
-            ComboBoxPort.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {Source = SerialPort.GetPortNames()});
+            ComboBoxPort.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = SerialPort.GetPortNames() });
         }
 
         private void ConnectButton_OnClick(object sender, RoutedEventArgs e)
@@ -157,12 +130,11 @@ namespace ArmController
             var xInc = TextToDouble(XCommandTextBox.Text);
             var yInc = TextToDouble(YCommandTextBox.Text);
             var zInc = TextToDouble(ZCommandTextBox.Text);
-            var newCommand = new Command(xInc, yInc, zInc, _currentPosePosition)
-            {
-                SendTimeStamp = DateTime.UtcNow
-            };
+            var newCommand = new Command(xInc, yInc, zInc, _currentPosePosition);
 
             _commands.Enqueue(newCommand);
+
+            new Thread(ExcuteCommand).Start();
         }
 
         private void SendTouchButton_OnClick(object sender, RoutedEventArgs e)
@@ -170,6 +142,97 @@ namespace ArmController
             throw new NotImplementedException();
         }
 
+        #endregion
+
+        private void ExcuteCommand()
+        {
+            if (!_serialPort.IsConnected)
+            {
+                return;
+            }
+
+            var continueToExcute = false;
+            if (!IsWaitingResponse)
+            {
+                lock (this)
+                {
+                    if (!IsWaitingResponse && _commands.Count > 0)
+                    {
+                        IsWaitingResponse = true;
+                        continueToExcute = true;
+                    }
+                }
+            }
+
+            if (!continueToExcute)
+            {
+                return;
+            }
+
+
+            if (_commands.TryDequeue(out _currentCommand))
+            {
+                _currentCommand.SendTimeStamp = DateTime.UtcNow;
+                _serialPort.WriteLine(_currentCommand.CommandText);
+                _dataContext.AddOutput(_currentCommand.ToSendLog());
+            }
+            else
+            {
+                lock (this)
+                {
+                    IsWaitingResponse = false;
+                }
+            }
+        }
+
+        private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var sp = (SerialPort)sender;
+                while (sp.BytesToRead > 0)
+                {
+                    var d = sp.ReadLine();
+
+                    if (_currentCommand != null)
+                    {
+                        _currentCommand.Receive(d);
+                        _dataContext.AddOutput(_currentCommand.ToReceiveLog());
+                        if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            CommandComplete();
+                        }
+                    }
+
+                    Scroller.ScrollToBottom();
+                }
+            });
+        }
+
+        private void CommandComplete()
+        {
+            var nextP = _currentCommand.NextPosePosition;
+            if (nextP != null)
+            {
+                _currentPosePosition = nextP;
+                ShowCurrentPosition();
+            }
+
+            _currentCommand = null;
+
+            lock (this)
+            {
+                IsWaitingResponse = false;
+            }
+
+            new Thread(ExcuteCommand).Start();
+        }
+
+        private void GetCommandsFromServer()
+        {
+            
+        }
+        #region Utilities
         private double TextToDouble(string txt)
         {
             double result = 0;
@@ -190,7 +253,6 @@ namespace ArmController
                 CurrentPositionZ.Text = $"Z: {_currentPosePosition.Z.ToString(CultureInfo.InvariantCulture)}";
             }
         }
-
         private void DisableUI()
         {
             SendCommandButton.IsEnabled = false;
@@ -208,25 +270,6 @@ namespace ArmController
             YCommandTextBox.IsEnabled = true;
             ZCommandTextBox.IsEnabled = true;
         }
-
-        private void ExcuteCommond()
-        {
-            if (!_serialPort.IsConnected)
-            {
-                return;
-            }
-
-            var xInc = TextToDouble(XCommandTextBox.Text);
-            var yInc = TextToDouble(YCommandTextBox.Text);
-            var zInc = TextToDouble(ZCommandTextBox.Text);
-            _currentCommand = new Command(xInc, yInc, zInc, _currentPosePosition)
-            {
-                SendTimeStamp = DateTime.UtcNow
-            };
-            IsWaitingResponse = true;
-
-            _serialPort.WriteLine(_currentCommand.CommandText);
-            _dataContext.AddOutput(_currentCommand.ToSendLog());
-        }
+        #endregion
     }
 }
