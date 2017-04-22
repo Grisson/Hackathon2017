@@ -45,7 +45,7 @@
     <Compile Include="Data\PosePosition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestAgent.cs" />
-    <Compile Include="TestCase.cs" />
+    <Compile Include="Data\TestCase.cs" />
     <Compile Include="TestRunner.cs" />
     <Compile Include="Data\TestStep.cs" />
     <Compile Include="TestTarget.cs" />

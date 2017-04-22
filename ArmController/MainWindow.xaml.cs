@@ -174,7 +174,11 @@ namespace ArmController
             {
                 _currentCommand.SendTimeStamp = DateTime.UtcNow;
                 _serialPort.WriteLine(_currentCommand.CommandText);
-                _dataContext.AddOutput(_currentCommand.ToSendLog());
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    _dataContext.AddOutput(_currentCommand.ToSendLog());
+                });
+               
             }
             else
             {
@@ -255,20 +259,20 @@ namespace ArmController
         }
         private void DisableUI()
         {
-            SendCommandButton.IsEnabled = false;
-            ConnectButton.IsEnabled = false;
-            XCommandTextBox.IsEnabled = false;
-            YCommandTextBox.IsEnabled = false;
-            ZCommandTextBox.IsEnabled = false;
+            //SendCommandButton.IsEnabled = false;
+            //ConnectButton.IsEnabled = false;
+            //XCommandTextBox.IsEnabled = false;
+            //YCommandTextBox.IsEnabled = false;
+            //ZCommandTextBox.IsEnabled = false;
         }
 
         private void EnableUI()
         {
-            SendCommandButton.IsEnabled = true;
-            ConnectButton.IsEnabled = true;
-            XCommandTextBox.IsEnabled = true;
-            YCommandTextBox.IsEnabled = true;
-            ZCommandTextBox.IsEnabled = true;
+            //SendCommandButton.IsEnabled = true;
+            //ConnectButton.IsEnabled = true;
+            //XCommandTextBox.IsEnabled = true;
+            //YCommandTextBox.IsEnabled = true;
+            //ZCommandTextBox.IsEnabled = true;
         }
         #endregion
     }
