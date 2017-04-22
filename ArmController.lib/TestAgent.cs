@@ -10,10 +10,10 @@ namespace ArmController.lib
     internal class TestAgent
     {
         public Guid Id;
-        public PosePosition FirstTouchPosition;
-        public TouchResponse FirstTouchPoint;
+        //public PosePosition FirstTouchPosition;
+        //public TouchResponse FirstTouchPoint;
 
-        public PosePosition CurrentPosition;
+        public PosePosition CurrentPosition { get; set; }
 
         public TestAgent() : this(Guid.NewGuid())
         {
@@ -29,8 +29,6 @@ namespace ArmController.lib
             Id = id;
             CurrentPosition = PosePosition.InitializePosition();
         }
-
-        
 
         public string[] ToCommond(List<TestStep> steps)
         {

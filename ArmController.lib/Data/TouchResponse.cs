@@ -13,10 +13,10 @@ namespace ArmController.lib.Data
             TouchTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
-        public TouchResponse(double X, double Y):this()
+        public TouchResponse(double x, double y):this()
         {
-            TouchPointX = X;
-            TouchPointY = Y;
+            TouchPointX = x;
+            TouchPointY = y;
         }
     }
 }

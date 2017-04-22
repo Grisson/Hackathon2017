@@ -12,6 +12,17 @@ namespace ArmController.lib
         internal TestTarget Target { get; set; }
         internal List<TestCase> TestCases { get; set; }
 
+
+        internal SortedList<long, PosePosition> PosePositions { get; set; }
+        internal SortedList<long, TouchResponse> TouchPoints { get; set; }
+
+
+        public TestRunner()
+        {
+            PosePositions = new SortedList<long, PosePosition>();
+            TouchPoints = new SortedList<long, TouchResponse>();
+        }
+
         public void RegisterTestAgent(string agentId)
         {
             Agent = string.IsNullOrEmpty(agentId) ? new TestAgent() : new TestAgent(agentId);
@@ -46,20 +57,34 @@ namespace ArmController.lib
             return new string[] {};
         }
 
-        public bool ReportAgentStatus()
+        public bool ReportAgentPosePosition(long timeStamp, double x, double y, double z)
         {
+            if (Agent == null)
+            {
+                return false;
+            }
+
+            Agent.CurrentPosition = new PosePosition(timeStamp, x, y, z);
+            PosePositions[timeStamp] = Agent.CurrentPosition;
+
             return true;
         }
 
 
-        public bool ReportTouchBegin(int x, int y)
+        public bool ReportTouchBegin(long timeStamp, double x, double y)
         {
+            TouchPoints[timeStamp] = new TouchResponse(x, y);
             return true;
         }
 
         public bool ReportTouchEnd()
         {
             return true;
+        }
+
+        public void Calibrate()
+        {
+            // Pose Position and TouchResponse here
         }
     }
 }

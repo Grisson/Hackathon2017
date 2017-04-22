@@ -9,9 +9,23 @@ namespace ArmController.lib.Data
         public double Z;
         public long TimeStamp;
 
-        public PosePosition()
+        public PosePosition() : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), 0, 0, 0)
         {
-            TimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+        }
+
+        public PosePosition(double x, double y, double z)
+            : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y, z)
+        {
+
+        }
+
+        public PosePosition(long timeStamp, double x, double y, double z)
+        {
+            TimeStamp = timeStamp;
+            X = x;
+            Y = y;
+            Z = z;
         }
 
         public PosePosition Clone()
@@ -36,12 +50,7 @@ namespace ArmController.lib.Data
 
         public static PosePosition InitializePosition()
         {
-            return new PosePosition()
-            {
-                X = 0,
-                Y = 0,
-                Z = 0,
-            };
+            return new PosePosition(0, 0, 0);
         }
     }
 }
