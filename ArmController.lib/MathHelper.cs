@@ -42,15 +42,41 @@ namespace ArmController.lib
             var B2 = line2.Item2;
             var C2 = line2.Item3;
 
-            var delta = A1*B2 - A2*B1;
-            var x = (B2*C1 - B1*C2)/delta;
-            var y = (A1*C2 - A2*C1)/delta;
+            var delta = A1 * B2 - A2 * B1;
+            var x = (B2 * C1 - B1 * C2) / delta;
+            var y = (A1 * C2 - A2 * C1) / delta;
 
             return new Point()
             {
                 X = x,
                 Y = y,
             };
-        } 
+        }
+
+        public Point MeanPoint(List<Point> points)
+        {
+            var count = points.Count;
+
+            if (count <= 0)
+            {
+                return null;
+            }
+
+            var allX = 0.0;
+            var allY = 0.0;
+
+            foreach (var p in points)
+            {
+                allX += p.X;
+                allY += p.Y;
+            }
+
+
+            return new Point()
+            {
+                X = allX / (count * 1.0),
+                Y = allY / (count * 1.0),
+            };
+        }
     }
 }

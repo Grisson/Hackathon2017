@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using ArmController.lib.Data;
 
 namespace ArmController.lib
 {
     public class TestRunner
     {
+        private const double Tolerance = 0.00001;
+
         internal TestTarget Target { get; set; }
         internal TestAgent Agent { get; set; }
 
@@ -16,6 +19,7 @@ namespace ArmController.lib
         internal SortedList<long, PosePosition> PosePositions { get; set; }
         internal SortedList<long, TouchResponse> TouchPoints { get; set; }
         internal List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping { get; set; }
+        internal Point AgentLocation { get; set; } 
 
         public TestRunner()
         {
@@ -84,6 +88,11 @@ namespace ArmController.lib
         public void Calibrate()
         {
             MapPoseAndTouch();
+
+            // find test agent location
+            var lines = CalculatorBisectorLines();
+            var points = CalculatorCenterPoints(lines);
+            AgentLocation = MathHelper.MeanPoint(points);
         }
 
         public void MapPoseAndTouch()
@@ -120,9 +129,49 @@ namespace ArmController.lib
         }
 
 
-        public void CalculatorCenterPoint()
+        public List<Tuple<double, double, double>> CalculatorBisectorLines()
         {
-            
+            var lines = new List<Tuple<double, double, double>>();
+
+            for (var i = 0; i < PoseTouchMapping.Count - 1; i++)
+            {
+                for (var j = i + 1; j < PoseTouchMapping.Count; j++)
+                {
+                    var agentAPosition = PoseTouchMapping[i].Item1;
+                    var agentBPosition = PoseTouchMapping[j].Item1;
+
+                    if ((Math.Abs(agentAPosition.X - agentBPosition.X) < Tolerance) && 
+                        (Math.Abs(agentAPosition.Y - agentBPosition.Y) < Tolerance) &&
+                        (Math.Abs(agentAPosition.Z - agentBPosition.Z) > Tolerance))
+                    {
+                        // touch point should on same cycle
+
+                        var touchPointA = PoseTouchMapping[i].Item2;
+                        var touchPointB = PoseTouchMapping[j].Item2;
+
+                        var line = MathHelper.CalculatorPerpendicularBisector(touchPointA, touchPointB);
+                        lines.Add((line));
+                    }
+                }
+            }
+
+            return lines;
+        }
+
+        public List<Point> CalculatorCenterPoints(List<Tuple<double, double, double>> lines)
+        {
+            var points = new List<Point>();
+
+            for (var i = 0; i < lines.Count - 1; i++)
+            {
+                for (var j = i+1; j < lines.Count; j++)
+                {
+                    var p = MathHelper.Intersect(lines[i], lines[j]);
+                    points.Add(p);
+                }
+            }
+
+            return points;
         }
     }
 }
