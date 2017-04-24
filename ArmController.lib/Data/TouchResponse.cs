@@ -4,9 +4,8 @@ namespace ArmController.lib.Data
 {
     public class TouchResponse
     {
-        public double TouchPointX;
-        public double TouchPointY;
-        public long TouchTimeStamp;
+        public Point TouchPoint { get; set; }
+        public long TouchTimeStamp { get; set; }
 
         public TouchResponse()
         {
@@ -15,8 +14,11 @@ namespace ArmController.lib.Data
 
         public TouchResponse(double x, double y):this()
         {
-            TouchPointX = x;
-            TouchPointY = y;
+            TouchPoint = new Point()
+            {
+                X = x,
+                Y = y,
+            };
         }
     }
 }

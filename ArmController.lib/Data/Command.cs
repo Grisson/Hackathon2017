@@ -35,8 +35,8 @@ namespace ArmController.lib.Data
             YDelta = yD;
             ZDelta = zD;
 
-            
-            CurrentPosePosition = position ?? PosePosition.InitializePosition() ;
+
+            CurrentPosePosition = position ?? PosePosition.InitializePosition();
             CommandText = $"G91 G0 X{XDelta} Y{YDelta} Z{ZDelta}";
         }
 

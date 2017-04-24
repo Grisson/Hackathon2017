@@ -42,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\Command.cs" />
+    <Compile Include="Data\Point.cs" />
     <Compile Include="Data\PosePosition.cs" />
+    <Compile Include="MathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestAgent.cs" />
     <Compile Include="Data\TestCase.cs" />
