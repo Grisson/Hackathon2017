@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ED590F82-3019-4A36-9481-B47CDBC6D136}</ProjectGuid>
+    <ProjectGuid>{C114E800-83FF-406B-A9E4-9C8519622F08}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArmController.lib.tests</RootNamespace>
-    <AssemblyName>ArmController.lib.tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>ArmController.libTests</RootNamespace>
+    <AssemblyName>ArmController.libTests</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArmController.lib\ArmController.lib.csproj">
-      <Project>{9ef62e34-9efa-4fb9-944e-2023127614a9}</Project>
+      <Project>{9EF62E34-9EFA-4FB9-944E-2023127614A9}</Project>
       <Name>ArmController.lib</Name>
     </ProjectReference>
   </ItemGroup>

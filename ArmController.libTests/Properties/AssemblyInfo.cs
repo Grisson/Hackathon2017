@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("ArmController.lib.tests")]
+[assembly: AssemblyTitle("ArmController.libTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("ArmController.lib.tests")]
+[assembly: AssemblyProduct("ArmController.libTests")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("ed590f82-3019-4a36-9481-b47cdbc6d136")]
+[assembly: Guid("c114e800-83ff-406b-a9e4-9c8519622f08")]
 
 // Version information for an assembly consists of the following four values:
 //
