@@ -93,6 +93,8 @@ namespace ArmController.lib
             var lines = CalculatorBisectorLines();
             var points = CalculatorCenterPoints(lines);
             AgentLocation = MathHelper.MeanPoint(points);
+
+
         }
 
         public void MapPoseAndTouch()

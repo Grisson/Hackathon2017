@@ -53,7 +53,7 @@ namespace ArmController.lib
             };
         }
 
-        public Point MeanPoint(List<Point> points)
+        public static Point MeanPoint(List<Point> points)
         {
             var count = points.Count;
 
