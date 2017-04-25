@@ -89,12 +89,13 @@ namespace ArmController.lib
         {
             MapPoseAndTouch();
 
-            // find test agent location
+            // test agent location
             var lines = CalculatorBisectorLines();
             var points = CalculatorCenterPoints(lines);
             AgentLocation = MathHelper.MeanPoint(points);
 
-            // regression arm
+            // arm position function
+            // ??????
         }
 
         public void MapPoseAndTouch()
@@ -129,7 +130,6 @@ namespace ArmController.lib
                 }
             }
         }
-
 
         public List<Tuple<double, double, double>> CalculatorBisectorLines()
         {

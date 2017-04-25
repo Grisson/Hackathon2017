@@ -143,11 +143,9 @@ namespace ArmController
 
         private void SendTouchButton_OnClick(object sender, RoutedEventArgs e)
         {
-            //_testBrain.
-            //    (_currentCommand.SendTimeStamp,
-            //    _currentPosePosition.X,
-            //    _currentPosePosition.Y,
-            //    _currentPosePosition.Z);
+            var x = TextToDouble(TouchXTextBox.Text);
+            var y = TextToDouble(TouchYTextBox.Text);
+            _testBrain.ReportTouchBegin(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y);
         }
 
         #endregion
@@ -291,5 +289,7 @@ namespace ArmController
             //ZCommandTextBox.IsEnabled = true;
         }
         #endregion
+
+        
     }
 }
