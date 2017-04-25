@@ -17,17 +17,25 @@ namespace ArmController.lib.Data
     {
         public Guid CommandHistoryId;
 
-        public PosePosition CurrentPosePosition;
-        public DateTime ReceiveTimeStamp;
-        public string Response;
-
-
-        public DateTime SendTimeStamp;
-
         public double XDelta;
         public double YDelta;
         public double ZDelta;
+        public PosePosition CurrentPosePosition;
 
+        public long SendTimeStamp;
+
+        public long ReceiveTimeStamp;
+        public string Response;
+
+        public string CommandText { get; }
+
+        public PosePosition NextPosePosition
+            => CurrentPosePosition?.Incremental(XDelta, YDelta, ZDelta);
+
+        public Command()
+        {
+            CommandHistoryId = Guid.NewGuid();
+        }
 
         public Command(double xD, double yD, double zD, PosePosition position) : this()
         {
@@ -35,40 +43,29 @@ namespace ArmController.lib.Data
             YDelta = yD;
             ZDelta = zD;
 
-
             CurrentPosePosition = position ?? PosePosition.InitializePosition();
             CommandText = $"G91 G0 X{XDelta} Y{YDelta} Z{ZDelta}";
         }
 
-        public Command(string c)
+        public Command(string c) : this()
         {
             CommandText = c;
         }
 
-        public Command()
-        {
-            CommandHistoryId = Guid.NewGuid();
-        }
-
-        public string CommandText { get; }
-
-        public PosePosition NextPosePosition
-            => CurrentPosePosition?.Incremental(XDelta, YDelta, ZDelta);
-
         public void Receive(string responseText)
         {
             Response = responseText;
-            ReceiveTimeStamp = DateTime.Now;
+            ReceiveTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
         public string ToSendLog()
         {
-            return $"[{SendTimeStamp.ToLongTimeString()}]:{CommandText}";
+            return $"[{SendTimeStamp}]:{CommandText}";
         }
 
         public string ToReceiveLog()
         {
-            var seconds = (ReceiveTimeStamp - SendTimeStamp).Milliseconds;
+            var seconds = (ReceiveTimeStamp - SendTimeStamp);
             return $"[{seconds}ms]:{Response}";
         }
     }

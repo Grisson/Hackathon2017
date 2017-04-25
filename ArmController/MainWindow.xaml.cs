@@ -22,14 +22,18 @@ namespace ArmController
 
         private bool _isWaitingResponse;
 
-        private readonly TestRunner _testBrain;
-        private readonly ConcurrentQueue<Command> _commands;
-        private Command _currentCommand;
-        private PosePosition _currentPosePosition;
+        private readonly TestRunner _testBrain; // assume this is the cloud
+        private readonly ConcurrentQueue<Command> _commands; // from cloud or human inputs
+        
+        // represent current test device
         private Guid _deviceId;
         private SerialCommunicator _serialPort;
+        private PosePosition _currentPosePosition;
 
-        public PosePosition CurrentPosePosition => _currentPosePosition;
+
+        private Command _currentCommand;
+
+        //public PosePosition CurrentPosePosition => _currentPosePosition;
 
         public bool IsWaitingResponse
         {
@@ -139,7 +143,11 @@ namespace ArmController
 
         private void SendTouchButton_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            //_testBrain.
+            //    (_currentCommand.SendTimeStamp,
+            //    _currentPosePosition.X,
+            //    _currentPosePosition.Y,
+            //    _currentPosePosition.Z);
         }
 
         #endregion
@@ -169,10 +177,9 @@ namespace ArmController
                 return;
             }
 
-
             if (_commands.TryDequeue(out _currentCommand))
             {
-                _currentCommand.SendTimeStamp = DateTime.UtcNow;
+                _currentCommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 _serialPort.WriteLine(_currentCommand.CommandText);
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -215,6 +222,7 @@ namespace ArmController
 
         private void CommandComplete()
         {
+            // update current test agent pose position
             var nextP = _currentCommand.NextPosePosition;
             if (nextP != null)
             {
@@ -222,6 +230,12 @@ namespace ArmController
                 ShowCurrentPosition();
             }
 
+            // report pose position
+            _testBrain.ReportAgentPosePosition(_currentCommand.SendTimeStamp, 
+                _currentPosePosition.X,
+                _currentPosePosition.Y, 
+                _currentPosePosition.Z);
+            
             _currentCommand = null;
 
             lock (this)
@@ -236,6 +250,8 @@ namespace ArmController
         {
             
         }
+
+        
         #region Utilities
         private double TextToDouble(string txt)
         {

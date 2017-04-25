@@ -94,7 +94,7 @@ namespace ArmController.lib
             var points = CalculatorCenterPoints(lines);
             AgentLocation = MathHelper.MeanPoint(points);
 
-
+            // regression arm
         }
 
         public void MapPoseAndTouch()
