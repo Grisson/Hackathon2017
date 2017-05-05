@@ -9,6 +9,8 @@ using ArmController.lib;
 using ArmController.lib.Data;
 using System.Collections.Generic;
 using System.Threading;
+using Emgu.CV.UI;
+
 
 namespace ArmController
 {
@@ -29,7 +31,6 @@ namespace ArmController
         private Guid _deviceId;
         private SerialCommunicator _serialPort;
         private PosePosition _currentPosePosition;
-
 
         private Command _currentCommand;
 
@@ -69,6 +70,9 @@ namespace ArmController
             DataContext = _dataContext;
             ComboBoxBaud.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = _baudList });
             ComboBoxBaud.SelectedIndex = 5;
+
+            this.InitCamera(0);
+            _camera.Start();
         }
 
         #region UI Events
