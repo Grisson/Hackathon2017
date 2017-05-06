@@ -71,88 +71,10 @@ namespace ArmController
             ComboBoxBaud.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = _baudList });
             ComboBoxBaud.SelectedIndex = 5;
 
-            this.InitCamera(0);
-            _camera.Start();
+            
         }
 
-        #region UI Events
 
-        private void ComboBoxPort_OnDropDownOpened(object sender, EventArgs e)
-        {
-            ComboBoxPort.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = SerialPort.GetPortNames() });
-        }
-
-        private void ConnectButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if ((_serialPort != null) && _serialPort.IsConnected)
-            {
-                _serialPort.Dispose();
-                _serialPort = null;
-
-                _dataContext.AddOutput($"Disconnected");
-                Scroller.ScrollToBottom();
-                ConnectButton.Content = "Conntect";
-
-                _testBrain.UnRegisterTestAgent();
-
-                Title = Title.Substring(0, Title.Length - Title.LastIndexOf("-", StringComparison.Ordinal));
-            }
-            else
-            {
-                var portName = ComboBoxPort.SelectedValue.ToString();
-                var baud = int.Parse(ComboBoxBaud.SelectedValue.ToString());
-                _serialPort = new SerialCommunicator(portName, baud);
-                _serialPort.Connect();
-                _serialPort.StartRead(DataReceivedHandler);
-
-                if (_serialPort.IsConnected)
-                {
-                    _dataContext.AddOutput($"Connected to {portName}");
-                    Scroller.ScrollToBottom();
-                    ConnectButton.Content = "Disconntect";
-                    Title = Title + " - Connected";
-
-                    _testBrain.RegisterTestAgent(_deviceId.ToString());
-                }
-            }
-        }
-
-        private void TestButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (_serialPort.IsConnected && (_currentCommand == null))
-            {
-                var command = "$";
-                _currentCommand = new Command(command);
-                _serialPort.Port.WriteLine(command);
-                _dataContext.AddOutput(_currentCommand.ToSendLog());
-            }
-        }
-
-        private void SendCommandButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            if (!_serialPort.IsConnected)
-            {
-                return;
-            }
-
-            var xInc = TextToDouble(XCommandTextBox.Text);
-            var yInc = TextToDouble(YCommandTextBox.Text);
-            var zInc = TextToDouble(ZCommandTextBox.Text);
-            var newCommand = new Command(xInc, yInc, zInc, _currentPosePosition);
-
-            _commands.Enqueue(newCommand);
-
-            new Thread(ExcuteCommand).Start();
-        }
-
-        private void SendTouchButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var x = TextToDouble(TouchXTextBox.Text);
-            var y = TextToDouble(TouchYTextBox.Text);
-            _testBrain.ReportTouchBegin(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y);
-        }
-
-        #endregion
 
         private void ExcuteCommand()
         {
@@ -292,8 +214,12 @@ namespace ArmController
             //YCommandTextBox.IsEnabled = true;
             //ZCommandTextBox.IsEnabled = true;
         }
+
+
+
+
         #endregion
 
-        
+       
     }
 }

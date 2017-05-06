@@ -22,8 +22,21 @@
         <Border Grid.Row="0" Grid.Column ="1" Background="#1f3d7a"/>
         <Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Background="#152951"/>
         <!-- Top Left Arm Status Panel -->
-            <Image Grid.Column="0" Grid.Row="0" DockPanel.Dock="Top" Name="LiveVideoBox" HorizontalAlignment="Left" ></Image>
-        
+        <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" >
+            <!--<StackPanel Orientation="Horizontal">-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="switchCameraBtn" Click="switchCameraBtn_Click" >Switch</Button>
+                    <Button Grid.Column="1" Name="startCaptureBtn" Click="startCaptureBtn_Click" >Start</Button>
+                    <Button Grid.Column="2" Name="flipCaptureBtn" Click="flipCaptureBtn_Click" >Flip</Button>
+                </Grid>
+            <!--</StackPanel>-->
+            <Image Name="LiveVideoBox" HorizontalAlignment="Left" ></Image>
+        </StackPanel>
         <!-- Top Right Control Panel -->
         <Grid Grid.Row="0" Grid.Column="1">
             <Grid.RowDefinitions>

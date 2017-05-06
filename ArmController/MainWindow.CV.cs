@@ -12,27 +12,31 @@ namespace ArmController
     {
         private Capture _camera;
 
-        private int maxCameraId = 0;
-        private int currentCameraId = 0;
+        private int maxCameraId = -1;
+        private int currentCameraId = -1;
         private bool shouldDetectCamera = true;
         private Mat _frame;
 
-        protected bool InitCamera(int cameraId)
+        protected void InitCamera(int cameraId)
         {
             try
             {
                 _camera = new Capture(cameraId);
+
+                Mat tmp;
+                tmp = _camera.QuerySmallFrame();
+                _camera.Retrieve(tmp, 0);
+
                 _camera.ImageGrabbed += ProcessFrame;
                 _frame = new Mat();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _camera?.Dispose();
                 shouldDetectCamera = false;
-                return false;
-            }
 
-            return true;
+                throw;
+            }
         }
 
 

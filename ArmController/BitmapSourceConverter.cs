@@ -28,6 +28,11 @@ namespace ArmController
         {
             using (System.Drawing.Bitmap source = image.Bitmap)
             {
+                if(source == null)
+                {
+                    return null;
+                }
+
                 IntPtr ptr = source.GetHbitmap(); //obtain the Hbitmap
 
                 BitmapSource bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(

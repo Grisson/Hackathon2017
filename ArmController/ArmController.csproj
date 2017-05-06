@@ -88,6 +88,7 @@
     <Compile Include="BitmapSourceConverter.cs" />
     <Compile Include="ConsoleContent.cs" />
     <Compile Include="MainWindow.CV.cs" />
+    <Compile Include="MainWindow.UI.cs" />
     <Compile Include="SerialCommunicator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
