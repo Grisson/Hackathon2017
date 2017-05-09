@@ -90,6 +90,7 @@
     <Compile Include="MainWindow.CV.cs" />
     <Compile Include="MainWindow.UI.cs" />
     <Compile Include="SerialCommunicator.cs" />
+    <Compile Include="StepperMotorHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
