@@ -89,6 +89,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BitmapSourceConverter.cs" />
+    <Compile Include="CommandExecutor.cs" />
     <Compile Include="ConsoleContent.cs" />
     <Compile Include="MainWindow.CV.cs" />
     <Compile Include="MainWindow.UI.cs" />
