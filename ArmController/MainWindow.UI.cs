@@ -12,6 +12,11 @@ namespace ArmController
     {
         #region UI Events
 
+        private void CalibButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.GetCommandsFromServer();
+        }
+
         private void ComboBoxPort_OnDropDownOpened(object sender, EventArgs e)
         {
             ComboBoxPort.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = SerialPort.GetPortNames() });
@@ -57,9 +62,9 @@ namespace ArmController
             if (_serialPort.IsConnected && (_currentCommand == null))
             {
                 var command = "$";
-                _currentCommand = new Command(command);
+                _currentCommand = new GCommand(command);
                 _serialPort.Port.WriteLine(command);
-                _dataContext.AddOutput(_currentCommand.ToSendLog());
+                _dataContext.AddOutput(((GCommand)_currentCommand).ToSendLog());
             }
         }
 
@@ -73,7 +78,7 @@ namespace ArmController
             var xInc = TextToDouble(XCommandTextBox.Text);
             var yInc = TextToDouble(YCommandTextBox.Text);
             var zInc = TextToDouble(ZCommandTextBox.Text);
-            var newCommand = new Command(xInc, yInc, zInc, _currentPosePosition);
+            var newCommand = new GCommand(xInc, yInc, zInc, _currentPosePosition);
 
             _commands.Enqueue(newCommand);
 

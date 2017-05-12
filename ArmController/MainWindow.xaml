@@ -90,6 +90,7 @@
                 <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionY"/>
                 <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionZ"/>
                 <Button x:Name="TestButton" Content="Test" HorizontalAlignment="Center" Click="TestButton_OnClick"/>
+                <Button x:Name="CalibButton" Content="Calib" HorizontalAlignment="Center" Click="CalibButton_Click"/>
             </StackPanel>
         </Grid>
         <!-- Output area -->

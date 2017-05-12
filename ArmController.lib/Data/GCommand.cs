@@ -6,48 +6,43 @@ using System.Threading.Tasks;
 
 namespace ArmController.lib.Data
 {
-    public enum CommandType
+    public class GCommand : BaseCommand
     {
-        GCode = 0,
-        Waiting,
-        ScreenShot,
-    }
+        public double XDelta { get; set; }
+        public double YDelta { get; set; }
+        public double ZDelta { get; set; }
+        public PosePosition CurrentPosePosition { get; set; }
 
-    public class Command
-    {
-        public Guid CommandHistoryId;
+        public long SendTimeStamp { get; set; }
 
-        public double XDelta;
-        public double YDelta;
-        public double ZDelta;
-        public PosePosition CurrentPosePosition;
+        public long ReceiveTimeStamp { get; set; }
+        public string Response { get; set; }
 
-        public long SendTimeStamp;
-
-        public long ReceiveTimeStamp;
-        public string Response;
-
-        public string CommandText { get; }
+        public string CommandText { get; set; }
 
         public PosePosition NextPosePosition
             => CurrentPosePosition?.Incremental(XDelta, YDelta, ZDelta);
 
-        public Command()
+        public GCommand() : base()
         {
-            CommandHistoryId = Guid.NewGuid();
+            
         }
 
-        public Command(double xD, double yD, double zD, PosePosition position) : this()
+        public GCommand(double xD, double yD, double zD) : this()
         {
             XDelta = xD;
             YDelta = yD;
             ZDelta = zD;
 
-            CurrentPosePosition = position ?? PosePosition.InitializePosition();
             CommandText = $"G91 G0 X{XDelta} Y{YDelta} Z{ZDelta}";
         }
 
-        public Command(string c) : this()
+        public GCommand(double xD, double yD, double zD, PosePosition position) : this(xD, yD, zD)
+        {
+            CurrentPosePosition = position ?? PosePosition.InitializePosition();
+        }
+
+        public GCommand(string c) : this()
         {
             CommandText = c;
         }

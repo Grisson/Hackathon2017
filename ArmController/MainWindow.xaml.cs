@@ -10,7 +10,7 @@ using ArmController.lib.Data;
 using System.Collections.Generic;
 using System.Threading;
 using Emgu.CV.UI;
-
+using Newtonsoft.Json;
 
 namespace ArmController
 {
@@ -25,14 +25,14 @@ namespace ArmController
         private bool _isWaitingResponse;
 
         private readonly TestRunner _testBrain; // assume this is the cloud
-        private readonly ConcurrentQueue<Command> _commands; // from cloud or human inputs
-        
+        private readonly ConcurrentQueue<BaseCommand> _commands; // from cloud or human inputs
+
         // represent current test device
         private Guid _deviceId;
         private SerialCommunicator _serialPort;
         private PosePosition _currentPosePosition;
 
-        private Command _currentCommand;
+        private BaseCommand _currentCommand;
 
         //public PosePosition CurrentPosePosition => _currentPosePosition;
 
@@ -60,7 +60,7 @@ namespace ArmController
         {
             InitializeComponent();
 
-            _commands = new ConcurrentQueue<Command>();
+            _commands = new ConcurrentQueue<BaseCommand>();
             _testBrain = new TestRunner();
             _testBrain.RegisterTestTarget();
 
@@ -70,15 +70,13 @@ namespace ArmController
             DataContext = _dataContext;
             ComboBoxBaud.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = _baudList });
             ComboBoxBaud.SelectedIndex = 5;
-
-            
         }
 
 
 
         private void ExcuteCommand()
         {
-            if (!_serialPort.IsConnected)
+            if ((_serialPort == null) || !_serialPort.IsConnected)
             {
                 return;
             }
@@ -103,13 +101,14 @@ namespace ArmController
 
             if (_commands.TryDequeue(out _currentCommand))
             {
-                _currentCommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                _serialPort.WriteLine(_currentCommand.CommandText);
+                var tmpCommand = (GCommand)_currentCommand;
+                tmpCommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                _serialPort.WriteLine(tmpCommand.CommandText);
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    _dataContext.AddOutput(_currentCommand.ToSendLog());
+                    _dataContext.AddOutput(tmpCommand.ToSendLog());
                 });
-               
+
             }
             else
             {
@@ -131,8 +130,9 @@ namespace ArmController
 
                     if (_currentCommand != null)
                     {
-                        _currentCommand.Receive(d);
-                        _dataContext.AddOutput(_currentCommand.ToReceiveLog());
+                        var tmpCommand = (GCommand)_currentCommand;
+                        tmpCommand.Receive(d);
+                        _dataContext.AddOutput(tmpCommand.ToReceiveLog());
                         if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
                         {
                             CommandComplete();
@@ -147,7 +147,8 @@ namespace ArmController
         private void CommandComplete()
         {
             // update current test agent pose position
-            var nextP = _currentCommand.NextPosePosition;
+            var tmpCommand = (GCommand)_currentCommand;
+            var nextP = tmpCommand.NextPosePosition;
             if (nextP != null)
             {
                 _currentPosePosition = nextP;
@@ -155,11 +156,11 @@ namespace ArmController
             }
 
             // report pose position
-            _testBrain.ReportAgentPosePosition(_currentCommand.SendTimeStamp, 
+            _testBrain.ReportAgentPosePosition(tmpCommand.SendTimeStamp,
                 _currentPosePosition.X,
-                _currentPosePosition.Y, 
+                _currentPosePosition.Y,
                 _currentPosePosition.Z);
-            
+
             _currentCommand = null;
 
             lock (this)
@@ -172,10 +173,20 @@ namespace ArmController
 
         private void GetCommandsFromServer()
         {
-            
+            var commandsText = _testBrain.GetCalibrationCommonds();
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
+
+            foreach(var c in deserializedList)
+            {
+                _commands.Enqueue(c);
+            }
+
+            new Thread(ExcuteCommand).Start();
         }
 
-        
+
         #region Utilities
         private double TextToDouble(string txt)
         {
@@ -218,8 +229,9 @@ namespace ArmController
 
 
 
+
         #endregion
 
-       
+
     }
 }
