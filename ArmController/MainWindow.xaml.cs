@@ -25,7 +25,7 @@ namespace ArmController
         private bool _isWaitingResponse;
 
         private readonly TestRunner _testBrain; // assume this is the cloud
-        private readonly ConcurrentQueue<BaseCommand> _commands; // from cloud or human inputs
+        private readonly CommandStore _commands; // from cloud or human inputs
 
         // represent current test device
         private Guid _deviceId;
@@ -34,33 +34,14 @@ namespace ArmController
 
         private BaseCommand _currentCommand;
 
-        //public PosePosition CurrentPosePosition => _currentPosePosition;
+        public bool IsWaitingResponse => CommandExecutor.SharedInstance.IsWaitingResponse;
 
-        public bool IsWaitingResponse
-        {
-            get { return _isWaitingResponse; }
-            set
-            {
-                if (value)
-                {
-                    // disable UI control
-                    DisableUI();
-                }
-                else
-                {
-                    // re-enable UI
-                    EnableUI();
-                }
-                _isWaitingResponse = value;
-
-            }
-        }
 
         public MainWindow()
         {
             InitializeComponent();
 
-            _commands = new ConcurrentQueue<BaseCommand>();
+            _commands = CommandStore.SharedInstance;
             _testBrain = new TestRunner();
             _testBrain.RegisterTestTarget();
 

@@ -9,7 +9,9 @@ namespace ArmController
 {
     public class CommandExecutor
     {
-        public CommandExecutor SharedInstance = new CommandExecutor();
+        public static readonly CommandExecutor SharedInstance = new CommandExecutor();
+
+        public bool IsWaitingResponse { get;set; }
 
         private CommandExecutor()
         {
