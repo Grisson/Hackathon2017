@@ -10,9 +10,12 @@ namespace ArmController
 {
     public class CommandStore
     {
+        public static readonly CommandStore SharedInstance = new CommandStore();
+
+
         private readonly ConcurrentQueue<BaseCommand> _commands = new ConcurrentQueue<BaseCommand>(); // from cloud or human inputs
 
-        public static readonly CommandStore SharedInstance = new CommandStore();
+        public BaseCommand CurrentCommand { get; set; }
 
         public int Count
         {
@@ -32,7 +35,16 @@ namespace ArmController
 
         public bool TryDequeue(out BaseCommand command)
         {
-            return _commands.TryDequeue(out command);
+            if(CurrentCommand != null)
+            {
+                command = null;
+                return false;
+            }
+
+            var result = _commands.TryDequeue(out command);
+            CurrentCommand = command;
+
+            return result;
         }
 
         public void Enqueue(BaseCommand command)

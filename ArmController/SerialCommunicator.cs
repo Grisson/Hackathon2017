@@ -3,7 +3,7 @@ using System.IO.Ports;
 
 namespace ArmController
 {
-    internal class SerialCommunicator
+    public class SerialCommunicator
     {
         private int _baudRate;
         private bool _disposed;

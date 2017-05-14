@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Emgu.CV.UI;
 using Newtonsoft.Json;
+using ArmController.Executor;
 
 namespace ArmController
 {
@@ -29,12 +30,34 @@ namespace ArmController
 
         // represent current test device
         private Guid _deviceId;
-        private SerialCommunicator _serialPort;
+        
         private PosePosition _currentPosePosition;
 
         private BaseCommand _currentCommand;
 
-        public bool IsWaitingResponse => CommandExecutor.SharedInstance.IsWaitingResponse;
+        private SerialCommunicator _serialPort
+        {
+            get
+            {
+                return GCommandExecutor.SharedInstance.SerialPort;
+            }
+            set
+            {
+                GCommandExecutor.SharedInstance.SerialPort = value;
+            }
+        }
+
+        private bool IsWaitingResponse
+        {
+            get
+            {
+                return CommandExecutor.SharedInstance.IsWaitingResponse;
+            }
+            set
+            {
+                 CommandExecutor.SharedInstance.IsWaitingResponse = value;
+            }
+        }
 
 
         public MainWindow()
