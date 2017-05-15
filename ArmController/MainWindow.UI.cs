@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using ArmController.lib.Data;
 using System.Threading;
+using ArmController.Executor;
 
 namespace ArmController
 {
@@ -62,9 +63,11 @@ namespace ArmController
             if (_serialPort.IsConnected && (_currentCommand == null))
             {
                 var command = "$";
-                _currentCommand = new GCommand(command);
-                _serialPort.Port.WriteLine(command);
-                _dataContext.AddOutput(((GCommand)_currentCommand).ToSendLog());
+                CommandStore.SharedInstance.Enqueue(new GCommand(command));
+                //_currentCommand = new GCommand(command);
+                //_serialPort.Port.WriteLine(command);
+                //_dataContext.AddOutput(((GCommand)_currentCommand).ToSendLog());
+                new Thread(CommandExecutor.SharedInstance.Execute).Start();
             }
         }
 
@@ -82,7 +85,7 @@ namespace ArmController
 
             _commands.Enqueue(newCommand);
 
-            new Thread(ExcuteCommand).Start();
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
 
         private void SendTouchButton_OnClick(object sender, RoutedEventArgs e)

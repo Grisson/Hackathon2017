@@ -23,18 +23,14 @@ namespace ArmController
         private readonly int[] _baudList = { 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000 };
         private readonly ConsoleContent _dataContext = new ConsoleContent();
 
-        private bool _isWaitingResponse;
 
-        private readonly TestRunner _testBrain; // assume this is the cloud
-        private readonly CommandStore _commands; // from cloud or human inputs
 
-        // represent current test device
         private Guid _deviceId;
-        
         private PosePosition _currentPosePosition;
 
-        private BaseCommand _currentCommand;
-
+        private readonly TestRunner _testBrain; // assume this is the cloud
+        private CommandStore _commands => CommandStore.SharedInstance; // from cloud or human inputs
+        private BaseCommand _currentCommand => CommandStore.SharedInstance.CurrentCommand;
         private SerialCommunicator _serialPort
         {
             get
@@ -59,12 +55,10 @@ namespace ArmController
             }
         }
 
-
         public MainWindow()
         {
             InitializeComponent();
 
-            _commands = CommandStore.SharedInstance;
             _testBrain = new TestRunner();
             _testBrain.RegisterTestTarget();
 
@@ -78,50 +72,50 @@ namespace ArmController
 
 
 
-        private void ExcuteCommand()
-        {
-            if ((_serialPort == null) || !_serialPort.IsConnected)
-            {
-                return;
-            }
+        //private void ExcuteCommand()
+        //{
+        //    if ((_serialPort == null) || !_serialPort.IsConnected)
+        //    {
+        //        return;
+        //    }
 
-            var continueToExcute = false;
-            if (!IsWaitingResponse)
-            {
-                lock (this)
-                {
-                    if (!IsWaitingResponse && _commands.Count > 0)
-                    {
-                        IsWaitingResponse = true;
-                        continueToExcute = true;
-                    }
-                }
-            }
+        //    var continueToExcute = false;
+        //    if (!IsWaitingResponse)
+        //    {
+        //        lock (this)
+        //        {
+        //            if (!IsWaitingResponse && _commands.Count > 0)
+        //            {
+        //                IsWaitingResponse = true;
+        //                continueToExcute = true;
+        //            }
+        //        }
+        //    }
 
-            if (!continueToExcute)
-            {
-                return;
-            }
+        //    if (!continueToExcute)
+        //    {
+        //        return;
+        //    }
 
-            if (_commands.TryDequeue(out _currentCommand))
-            {
-                var tmpCommand = (GCommand)_currentCommand;
-                tmpCommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                _serialPort.WriteLine(tmpCommand.CommandText);
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    _dataContext.AddOutput(tmpCommand.ToSendLog());
-                });
+        //    if (_commands.TryDequeue(out _currentCommand))
+        //    {
+        //        var tmpCommand = (GCommand)_currentCommand;
+        //        tmpCommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        //        _serialPort.WriteLine(tmpCommand.CommandText);
+        //        Application.Current.Dispatcher.Invoke(() =>
+        //        {
+        //            _dataContext.AddOutput(tmpCommand.ToSendLog());
+        //        });
 
-            }
-            else
-            {
-                lock (this)
-                {
-                    IsWaitingResponse = false;
-                }
-            }
-        }
+        //    }
+        //    else
+        //    {
+        //        lock (this)
+        //        {
+        //            IsWaitingResponse = false;
+        //        }
+        //    }
+        //}
 
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
@@ -134,25 +128,24 @@ namespace ArmController
 
                     if (_currentCommand != null)
                     {
-                        var tmpCommand = (GCommand)_currentCommand;
+                        var tmpCommand = _currentCommand as GCommand;
                         tmpCommand.Receive(d);
                         _dataContext.AddOutput(tmpCommand.ToReceiveLog());
                         if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
                         {
-                            CommandComplete();
+                            CommandComplete(tmpCommand);
                         }
                     }
-
-                    Scroller.ScrollToBottom();
                 }
+                Scroller.ScrollToBottom();
+
             });
         }
 
-        private void CommandComplete()
+        private void CommandComplete(GCommand currentCommand)
         {
             // update current test agent pose position
-            var tmpCommand = (GCommand)_currentCommand;
-            var nextP = tmpCommand.NextPosePosition;
+            var nextP = currentCommand.NextPosePosition;
             if (nextP != null)
             {
                 _currentPosePosition = nextP;
@@ -160,19 +153,19 @@ namespace ArmController
             }
 
             // report pose position
-            _testBrain.ReportAgentPosePosition(tmpCommand.SendTimeStamp,
+            _testBrain.ReportAgentPosePosition(currentCommand.SendTimeStamp,
                 _currentPosePosition.X,
                 _currentPosePosition.Y,
                 _currentPosePosition.Z);
 
-            _currentCommand = null;
+            CommandStore.SharedInstance.CurrentCommand = null;
 
-            lock (this)
+            lock (CommandExecutor.SharedInstance)
             {
                 IsWaitingResponse = false;
             }
 
-            new Thread(ExcuteCommand).Start();
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
 
         private void GetCommandsFromServer()
@@ -187,11 +180,11 @@ namespace ArmController
                 _commands.Enqueue(c);
             }
 
-            new Thread(ExcuteCommand).Start();
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
 
-
         #region Utilities
+
         private double TextToDouble(string txt)
         {
             double result = 0;
@@ -230,12 +223,6 @@ namespace ArmController
             //ZCommandTextBox.IsEnabled = true;
         }
 
-
-
-
-
         #endregion
-
-
     }
 }

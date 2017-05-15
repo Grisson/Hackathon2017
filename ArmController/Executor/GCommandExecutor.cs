@@ -1,13 +1,14 @@
 ﻿using ArmController.lib.Data;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ArmController.Executor
 {
-    public class GCommandExecutor
+    public class GCommandExecutor : IExecutor
     {
         public static readonly GCommandExecutor SharedInstance = new GCommandExecutor();
 
@@ -43,45 +44,8 @@ namespace ArmController.Executor
             {
                 return;
             }
-
-            //var continueToExcute = false;
-            //if (!IsWaitingResponse)
-            //{
-            //    lock (this)
-            //    {
-            //        if (!IsWaitingResponse && _commands.Count > 0)
-            //        {
-            //            IsWaitingResponse = true;
-            //            continueToExcute = true;
-            //        }
-            //    }
-            //}
-
-            //if (!continueToExcute)
-            //{
-            //    return;
-            //}
-
-            //BaseCommand _currentCommand = null;
-            //if (_commands.TryDequeue(out _currentCommand))
-            //{
-            //    var tmpCommand = (GCommand)_currentCommand;
             command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             SerialPort.WriteLine(command.CommandText);
-            //Application.Current.Dispatcher.Invoke(() =>
-            //    {
-            //        _dataContext.AddOutput(tmpCommand.ToSendLog());
-            //    });
-
-            //}
-            //else
-            //{
-            //    lock (this)
-            //    {
-            //        IsWaitingResponse = false;
-            //    }
-            //}
         }
-
     }
 }
