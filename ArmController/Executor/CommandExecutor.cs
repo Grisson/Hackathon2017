@@ -15,6 +15,8 @@ namespace ArmController.Executor
 
         public bool IsWaitingResponse { get; set; }
 
+        public bool IsStopped { get; set; }
+
         public static readonly CommandExecutor SharedInstance = new CommandExecutor();
 
         private CommandExecutor()
@@ -26,6 +28,13 @@ namespace ArmController.Executor
         /// </summary>
         public void Execute()
         {
+            if(IsStopped)
+            {
+                CommandStore.SharedInstance.DeleteAll();
+                IsStopped = false;
+                return;
+            }
+
             var continueToExcute = false;
             if (!IsWaitingResponse)
             {

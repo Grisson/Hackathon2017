@@ -26,7 +26,18 @@ namespace ArmController
 
 
         private Guid _deviceId;
-        private PosePosition _currentPosePosition;
+        private PosePosition _currentPosePosition
+        {
+            get
+            {
+                return CommandStore.SharedInstance.CurrentPosePosition;
+            }
+
+            set
+            {
+                CommandStore.SharedInstance.CurrentPosePosition = value;
+            }
+        }
 
         private readonly TestRunner _testBrain; // assume this is the cloud
         private CommandStore _commands => CommandStore.SharedInstance; // from cloud or human inputs
@@ -224,5 +235,10 @@ namespace ArmController
         }
 
         #endregion
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommandExecutor.SharedInstance.IsStopped = true;
+        }
     }
 }

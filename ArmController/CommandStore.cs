@@ -12,8 +12,10 @@ namespace ArmController
     {
         public static readonly CommandStore SharedInstance = new CommandStore();
 
+        public PosePosition CurrentPosePosition { get; set; }
 
-        private readonly ConcurrentQueue<BaseCommand> _commands = new ConcurrentQueue<BaseCommand>(); // from cloud or human inputs
+
+        private ConcurrentQueue<BaseCommand> _commands = new ConcurrentQueue<BaseCommand>(); // from cloud or human inputs
 
         public BaseCommand CurrentCommand { get; set; }
 
@@ -52,5 +54,9 @@ namespace ArmController
             _commands.Enqueue(command);
         }
 
+        public void DeleteAll()
+        {
+            _commands = new ConcurrentQueue<BaseCommand>();
+        }
     }
 }

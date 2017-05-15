@@ -103,28 +103,64 @@ namespace ArmController.lib
         {
             var commonds = new List<BaseCommand>();
 
+
+            // disable this
+            commonds.Add(new GCommand(17.4, 13, 0));
+
+            // Z
             // lift up
             commonds.Add(new GCommand(-5, 0, 0));
             // rotate 
-            commonds.Add(new GCommand(0, 0, 5));
+            //commonds.Add(new GCommand(0, 0, 5));
             // Touch Down
             commonds.Add(new GCommand(5, 0, 0));
 
-            // lift up
             commonds.Add(new GCommand(-5, 0, 0));
-            // Adjust length
-            commonds.Add(new GCommand(2, 2, 0));
             // rotate 
-            commonds.Add(new GCommand(0, 0, -2));
-            // Touch Down
-            commonds.Add(new GCommand(5, 0, 0));
-            // lift up
-            commonds.Add(new GCommand(-5, 0, 0));
-                // rotate 
-            commonds.Add(new GCommand(0, 0, 5));
+            //commonds.Add(new GCommand(0, 0, 5));
             // Touch Down
             commonds.Add(new GCommand(5, 0, 0));
 
+            commonds.Add(new GCommand(-5, 0, 0));
+            // rotate 
+            //commonds.Add(new GCommand(0, 0, 5));
+            // Touch Down
+            commonds.Add(new GCommand(5, 0, 0));
+            //// x, y
+            //// lift up
+            //commonds.Add(new GCommand(-5, 0, 0));
+            //// Adjust length
+            //commonds.Add(new GCommand(2, -2, 0));
+            //// Touch Down
+            //commonds.Add(new GCommand(5, 0, 0));
+
+            //// z
+            //commonds.Add(new GCommand(-5, 0, 0));
+            //// rotate 
+            //commonds.Add(new GCommand(0, 0, -2));
+            //commonds.Add(new GCommand(5, 0, 0));
+
+            //// lift up
+            //commonds.Add(new GCommand(-5, 0, 0));
+            //// rotate 
+            //commonds.Add(new GCommand(0, 0, -3));
+            //// Touch Down
+            //commonds.Add(new GCommand(5, 0, 0));
+
+            //// lift up
+            //commonds.Add(new GCommand(-5, 0, 0));
+
+            //commonds.Add(new GCommand(1, -1, 0));
+
+            //// Touch Down
+            //commonds.Add(new GCommand(5, -0, 0));
+
+            //// lift up
+            //commonds.Add(new GCommand(-5, 0, 0));
+
+            //// Touch Down
+            ////commonds.Add(new GCommand(-3, 0, 0));
+            //commonds.Add(new GCommand(-13, -10, 0));
 
 
             if (commonds.Count <= 0)
