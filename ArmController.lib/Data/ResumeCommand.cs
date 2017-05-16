@@ -8,5 +8,12 @@ namespace ArmController.lib.Data
 {
     public class ResumeCommand : BaseCommand
     {
+        public override string ToSendLog
+        {
+            get
+            {
+                return $"Pause Command";
+            }
+        }
     }
 }

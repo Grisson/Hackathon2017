@@ -55,9 +55,12 @@ namespace ArmController.lib.Data
             ReceiveTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }
 
-        public string ToSendLog()
+        public override string ToSendLog
         {
-            return $"[{SendTimeStamp}]:{CommandText}";
+            get
+            {
+                return $"[{SendTimeStamp}]:{CommandText}";
+            }
         }
 
         public void RefreshCommandText()

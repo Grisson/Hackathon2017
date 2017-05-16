@@ -79,6 +79,8 @@ namespace ArmController
             DataContext = _dataContext;
             ComboBoxBaud.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = _baudList });
             ComboBoxBaud.SelectedIndex = 5;
+
+            CommandExecutor.SharedInstance.LogHandler = ShowLog;
         }
 
 
@@ -127,6 +129,14 @@ namespace ArmController
         //        }
         //    }
         //}
+
+        public void ShowLog(string log)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+                {
+                    _dataContext.AddOutput(log);
+                });
+        }
 
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
@@ -236,18 +246,6 @@ namespace ArmController
 
         #endregion
 
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            CommandExecutor.SharedInstance.IsStopped = true;
-        }
-
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            GCommand resetCommand = new GCommand(0, 0, 0);
-            resetCommand.ResetPosition = true;
-            _commands.Enqueue(resetCommand);
-
-            new Thread(CommandExecutor.SharedInstance.Execute).Start();
-        }
+        
     }
 }

@@ -9,6 +9,15 @@ namespace ArmController.lib.Data
     public class PauseCommand : BaseCommand
     {
         public long TimeOut { get; set; }
-        public long RefreshInterval { get; set; }
+        public int RefreshInterval { get; set; }
+
+
+        public override string ToSendLog
+        {
+            get
+            {
+                return $"Pause Command";
+            }
+        }
     }
 }

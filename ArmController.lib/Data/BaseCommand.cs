@@ -24,5 +24,7 @@ namespace ArmController.lib.Data
         {
             CommandHistoryId = Guid.NewGuid();
         }
+
+        public virtual string ToSendLog { get; }
     }
 }

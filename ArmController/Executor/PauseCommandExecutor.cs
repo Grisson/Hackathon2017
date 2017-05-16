@@ -30,13 +30,19 @@ namespace ArmController.Executor
 
             try
             {
-                if(command.RefreshInterval > 0)
+                while(DateTime.Now < endTime)
                 {
-                    // do something
-                }
-                else
-                {
-                    Thread.Sleep(timeOutTimeSpan);
+                    if (command.RefreshInterval > 0)
+                    {
+                        // do something
+                        //var retrunCommand = 
+
+                        Thread.Sleep(command.RefreshInterval);
+                    }
+                    else
+                    {
+                        Thread.Sleep(timeOutTimeSpan);
+                    }
                 }
             }
             finally

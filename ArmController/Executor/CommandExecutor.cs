@@ -13,6 +13,8 @@ namespace ArmController.Executor
     {
         private CommandStore _commands => CommandStore.SharedInstance;
 
+        public Action<string> LogHandler;
+
         public bool IsWaitingResponse { get; set; }
 
         public bool IsStopped { get; set; }
@@ -68,6 +70,7 @@ namespace ArmController.Executor
                     }
                 }
 
+                LogHandler?.Invoke(_currentCommand.ToSendLog);
                 //Application.Current.Dispatcher.Invoke(() =>
                 //{
                 //    _dataContext.AddOutput(tmpCommand.ToSendLog());
