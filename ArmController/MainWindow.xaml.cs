@@ -62,7 +62,7 @@ namespace ArmController
             }
             set
             {
-                 CommandExecutor.SharedInstance.IsWaitingResponse = value;
+                CommandExecutor.SharedInstance.IsWaitingResponse = value;
             }
         }
 
@@ -186,7 +186,7 @@ namespace ArmController
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
 
-            foreach(var c in deserializedList)
+            foreach (var c in deserializedList)
             {
                 _commands.Enqueue(c);
             }
@@ -239,6 +239,15 @@ namespace ArmController
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             CommandExecutor.SharedInstance.IsStopped = true;
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            GCommand resetCommand = new GCommand(0, 0, 0);
+            resetCommand.ResetPosition = true;
+            _commands.Enqueue(resetCommand);
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
     }
 }

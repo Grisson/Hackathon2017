@@ -33,7 +33,8 @@ namespace ArmController
                 _dataContext.AddOutput($"Disconnected");
                 Scroller.ScrollToBottom();
                 ConnectButton.Content = "Conntect";
-
+                _currentPosePosition = PosePosition.InitializePosition();
+                ShowCurrentPosition();
                 _testBrain.UnRegisterTestAgent();
 
                 Title = Title.Substring(0, Title.Length - Title.LastIndexOf("-", StringComparison.Ordinal));
@@ -177,6 +178,21 @@ namespace ArmController
             }
 
         }
+
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommandExecutor.SharedInstance.IsStopped = true;
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            GCommand resetCommand = new GCommand(0, 0, 0);
+            resetCommand.ResetPosition = true;
+            _commands.Enqueue(resetCommand);
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+        }
+
         #endregion
     }
 }

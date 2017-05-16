@@ -91,6 +91,7 @@
                 <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionZ"/>
                 <Button x:Name="TestButton" Content="Test" HorizontalAlignment="Center" Click="TestButton_OnClick"/>
                 <Button x:Name="CalibButton" Content="Calib" HorizontalAlignment="Center" Click="CalibButton_Click"/>
+                <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Center" Click="ResetButton_Click"/>
                 <Button x:Name="StopButton" Content="Stop" HorizontalAlignment="Center" Click="StopButton_Click"/>
 
             </StackPanel>

@@ -8,7 +8,7 @@ namespace ArmController.lib
 {
     public class TestRunner
     {
-        
+        private double _liftUpDistance = 5;
 
         internal TestTarget Target { get; set; }
         internal TestAgent Agent { get; set; }
@@ -173,6 +173,16 @@ namespace ArmController.lib
 
             return serialized;
             //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
+        }
+
+        public GCommand CreateLiftUpCommand(double dist)
+        {
+            return new GCommand(dist, 0, 0);
+        }
+
+        public GCommand CreateTouchDownCommand(double dist)
+        {
+            return new GCommand((-1) * dist, 0, 0);
         }
         
     }

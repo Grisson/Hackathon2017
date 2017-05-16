@@ -8,6 +8,8 @@ namespace ArmController.lib.Data
 {
     public class GCommand : BaseCommand
     {
+        public bool ResetPosition { get; set; }
+
         public double XDelta { get; set; }
         public double YDelta { get; set; }
         public double ZDelta { get; set; }
@@ -56,6 +58,11 @@ namespace ArmController.lib.Data
         public string ToSendLog()
         {
             return $"[{SendTimeStamp}]:{CommandText}";
+        }
+
+        public void RefreshCommandText()
+        {
+            CommandText = $"G91 G0 X{XDelta} Y{YDelta} Z{ZDelta}";
         }
 
         public string ToReceiveLog()
