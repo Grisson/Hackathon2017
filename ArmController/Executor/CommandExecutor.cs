@@ -1,9 +1,11 @@
-﻿using ArmController.lib.Data;
+﻿using ArmController.lib;
+using ArmController.lib.Data;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -11,6 +13,8 @@ namespace ArmController.Executor
 {
     public class CommandExecutor
     {
+        public readonly TestRunner TestBrain = new TestRunner();
+
         private CommandStore _commands => CommandStore.SharedInstance;
 
         public Action<string> LogHandler;
@@ -97,7 +101,7 @@ namespace ArmController.Executor
                     GCommandExecutor.SharedInstance.Execute(command);
                     break;
                 case CommandType.Pause:
-                    this.Execute(command as PauseCommand);
+                    PauseCommandExecutor.SharedInstance.Execute(command);
                     break;
                 case CommandType.Resume:
                     this.Execute(command as ResumeCommand);

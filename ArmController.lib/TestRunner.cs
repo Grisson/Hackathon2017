@@ -9,6 +9,7 @@ namespace ArmController.lib
     public class TestRunner
     {
         private double _liftUpDistance = 5;
+        private bool isTouchReported = false;
 
         internal TestTarget Target { get; set; }
         internal TestAgent Agent { get; set; }
@@ -31,6 +32,24 @@ namespace ArmController.lib
         public void RegisterTestAgent(string agentId)
         {
             Agent = string.IsNullOrEmpty(agentId) ? new TestAgent() : new TestAgent(agentId);
+        }
+
+        public string CanResume()
+        {
+            if(isTouchReported)
+            {
+                var tmp = new ResumeCommand();
+                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                string serialized = JsonConvert.SerializeObject(tmp, settings);
+
+                isTouchReported = !isTouchReported;
+
+                return serialized;
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public void UnRegisterTestAgent()
@@ -78,11 +97,7 @@ namespace ArmController.lib
         public bool ReportTouchBegin(long timeStamp, double x, double y)
         {
             TouchPoints[timeStamp] = new TouchResponse(x, y);
-            return true;
-        }
-
-        public bool ReportTouchEnd()
-        {
+            isTouchReported = true;
             return true;
         }
 
@@ -105,7 +120,7 @@ namespace ArmController.lib
 
 
             // disable this
-            commonds.Add(new GCommand(17.4, 13, 0));
+            commonds.Add(new GCommand(15, 12.3, 0));
 
             // Z
             // lift up
@@ -115,17 +130,26 @@ namespace ArmController.lib
             // Touch Down
             commonds.Add(new GCommand(5, 0, 0));
 
+            commonds.Add(new PauseCommand(30, 5000));
+
+            // lift up
             commonds.Add(new GCommand(-5, 0, 0));
             // rotate 
             //commonds.Add(new GCommand(0, 0, 5));
             // Touch Down
             commonds.Add(new GCommand(5, 0, 0));
 
+            commonds.Add(new PauseCommand(30, 5000));
+
+
             commonds.Add(new GCommand(-5, 0, 0));
             // rotate 
             //commonds.Add(new GCommand(0, 0, 5));
             // Touch Down
             commonds.Add(new GCommand(5, 0, 0));
+
+            commonds.Add(new PauseCommand(30, 5000));
+
             //// x, y
             //// lift up
             //commonds.Add(new GCommand(-5, 0, 0));

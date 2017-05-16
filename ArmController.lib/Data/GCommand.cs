@@ -27,7 +27,7 @@ namespace ArmController.lib.Data
 
         public GCommand() : base()
         {
-            
+            this.Type = CommandType.GCode;
         }
 
         public GCommand(double xD, double yD, double zD) : this()

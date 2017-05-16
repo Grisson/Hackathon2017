@@ -15,6 +15,11 @@ namespace ArmController.lib.Data
         public double Height { get; set; }
 
 
+        public ScreenShotCommand()
+        {
+            this.Type = CommandType.ScreenShot;
+        }
+
         public override string ToSendLog
         {
             get

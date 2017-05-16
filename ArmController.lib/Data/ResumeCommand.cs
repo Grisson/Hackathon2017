@@ -8,6 +8,11 @@ namespace ArmController.lib.Data
 {
     public class ResumeCommand : BaseCommand
     {
+        public ResumeCommand()
+        {
+            this.Type = CommandType.Resume;
+        }
+
         public override string ToSendLog
         {
             get

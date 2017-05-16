@@ -1,4 +1,5 @@
 ﻿using ArmController.lib.Data;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +36,18 @@ namespace ArmController.Executor
                     if (command.RefreshInterval > 0)
                     {
                         // do something
-                        //var retrunCommand = 
+                        var retrunCommand = CommandExecutor.SharedInstance.TestBrain.CanResume();
 
-                        Thread.Sleep(command.RefreshInterval);
+                        if(!string.IsNullOrEmpty(retrunCommand))
+                        {
+                            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                            var resumeCommand = JsonConvert.DeserializeObject<ResumeCommand>(retrunCommand, settings);
+                            break;
+                        }
+                        else
+                        {
+                            Thread.Sleep(command.RefreshInterval);
+                        }
                     }
                     else
                     {
@@ -50,8 +60,16 @@ namespace ArmController.Executor
                 // unlock
                 lock (CommandExecutor.SharedInstance)
                 {
+                    CommandStore.SharedInstance.CurrentCommand = null;
                     CommandExecutor.SharedInstance.IsWaitingResponse = false;
                 }
+
+                new Thread(() => {
+                    Thread.Sleep(2000);
+                    CommandExecutor.SharedInstance.Execute();
+                }).Start();
+
+
             }
         }
     }

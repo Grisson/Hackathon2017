@@ -39,7 +39,7 @@ namespace ArmController
             }
         }
 
-        private readonly TestRunner _testBrain; // assume this is the cloud
+        private TestRunner _testBrain => CommandExecutor.SharedInstance.TestBrain; // assume this is the cloud
         private CommandStore _commands => CommandStore.SharedInstance; // from cloud or human inputs
         private BaseCommand _currentCommand => CommandStore.SharedInstance.CurrentCommand;
         private SerialCommunicator _serialPort
@@ -70,7 +70,7 @@ namespace ArmController
         {
             InitializeComponent();
 
-            _testBrain = new TestRunner();
+            //_testBrain = new TestRunner();
             _testBrain.RegisterTestTarget();
 
             _deviceId = Guid.NewGuid();
@@ -82,53 +82,6 @@ namespace ArmController
 
             CommandExecutor.SharedInstance.LogHandler = ShowLog;
         }
-
-
-
-        //private void ExcuteCommand()
-        //{
-        //    if ((_serialPort == null) || !_serialPort.IsConnected)
-        //    {
-        //        return;
-        //    }
-
-        //    var continueToExcute = false;
-        //    if (!IsWaitingResponse)
-        //    {
-        //        lock (this)
-        //        {
-        //            if (!IsWaitingResponse && _commands.Count > 0)
-        //            {
-        //                IsWaitingResponse = true;
-        //                continueToExcute = true;
-        //            }
-        //        }
-        //    }
-
-        //    if (!continueToExcute)
-        //    {
-        //        return;
-        //    }
-
-        //    if (_commands.TryDequeue(out _currentCommand))
-        //    {
-        //        var tmpCommand = (GCommand)_currentCommand;
-        //        tmpCommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        //        _serialPort.WriteLine(tmpCommand.CommandText);
-        //        Application.Current.Dispatcher.Invoke(() =>
-        //        {
-        //            _dataContext.AddOutput(tmpCommand.ToSendLog());
-        //        });
-
-        //    }
-        //    else
-        //    {
-        //        lock (this)
-        //        {
-        //            IsWaitingResponse = false;
-        //        }
-        //    }
-        //}
 
         public void ShowLog(string log)
         {
