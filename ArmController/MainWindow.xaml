@@ -78,6 +78,18 @@
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="TestButton" Content="Test" HorizontalAlignment="Stretch" Click="TestButton_OnClick"/>
+                    <Button Grid.Column="1" x:Name="CalibButton" Content="Calib" HorizontalAlignment="Stretch" Click="CalibButton_Click"/>
+                    <Button Grid.Column="2" x:Name="ResetButton" Content="Reset" HorizontalAlignment="Stretch" Click="ResetButton_Click"/>
+                    <Button Grid.Column="3" x:Name="StopButton" Content="Stop" HorizontalAlignment="Stretch" Click="StopButton_Click"/>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="4*"/>
                         <ColumnDefinition Width="4*"/>
                         <ColumnDefinition Width="*"/>
@@ -89,11 +101,6 @@
                 <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionX"/>
                 <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionY"/>
                 <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionZ"/>
-                <Button x:Name="TestButton" Content="Test" HorizontalAlignment="Center" Click="TestButton_OnClick"/>
-                <Button x:Name="CalibButton" Content="Calib" HorizontalAlignment="Center" Click="CalibButton_Click"/>
-                <Button x:Name="ResetButton" Content="Reset" HorizontalAlignment="Center" Click="ResetButton_Click"/>
-                <Button x:Name="StopButton" Content="Stop" HorizontalAlignment="Center" Click="StopButton_Click"/>
-
             </StackPanel>
         </Grid>
         <!-- Output area -->
