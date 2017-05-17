@@ -13,6 +13,8 @@ namespace ArmController.Executor
     {
         public static readonly PauseCommandExecutor SharedInstance = new PauseCommandExecutor();
 
+        public Action<string> LogHandler => CommandExecutor.SharedInstance.LogHandler;
+
         private PauseCommandExecutor()
         {
 
@@ -28,7 +30,7 @@ namespace ArmController.Executor
             var now = DateTime.Now;
             var endTime = now.AddSeconds(command.TimeOut);
             var timeOutTimeSpan = endTime - now;
-
+            LogHandler?.Invoke("Start to Execute Pause Command");
             try
             {
                 while(DateTime.Now < endTime)
@@ -40,17 +42,20 @@ namespace ArmController.Executor
 
                         if(!string.IsNullOrEmpty(retrunCommand))
                         {
+                            LogHandler?.Invoke("Will resume!");
                             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
                             var resumeCommand = JsonConvert.DeserializeObject<ResumeCommand>(retrunCommand, settings);
                             break;
                         }
                         else
                         {
+                            LogHandler?.Invoke($"Will sleep {command.RefreshInterval}ms");
                             Thread.Sleep(command.RefreshInterval);
                         }
                     }
                     else
                     {
+                        LogHandler?.Invoke($"Will sleep {timeOutTimeSpan.Seconds}s");
                         Thread.Sleep(timeOutTimeSpan);
                     }
                 }
@@ -65,7 +70,8 @@ namespace ArmController.Executor
                 }
 
                 new Thread(() => {
-                    Thread.Sleep(2000);
+                    LogHandler?.Invoke($"Will sleep 500ms");
+                    Thread.Sleep(500);
                     CommandExecutor.SharedInstance.Execute();
                 }).Start();
 
