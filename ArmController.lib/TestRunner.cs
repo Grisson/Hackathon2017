@@ -8,6 +8,8 @@ namespace ArmController.lib
 {
     public class TestRunner
     {
+        public const string TaskNameCalibration = "Calib";
+
         private double _liftUpDistance = 5;
         private bool isTouchReported = false;
 
@@ -114,78 +116,157 @@ namespace ArmController.lib
             // ??????
         }
 
+        public void Done(string data)
+        {
+            switch(data)
+            {
+                case TaskNameCalibration:
+                    Calibrate();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
         public string GetCalibrationCommonds()
         {
             var commonds = new List<BaseCommand>();
 
-
             // disable this
-            commonds.Add(new GCommand(15, 12.3, 0));
+            //commonds.Add(new GCommand(15, 12.3, 0));
 
-            // Z
+            commonds.Add(new GCommand(-5, 0, 0));
+            
+            #region First row
+            // same length, X
+            commonds.Add(new GCommand(0, 0, 5));
+
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
+            // same length, X X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -0.5));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
+            // same length, X X  X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -1));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
+            // same length, X X  X    X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -2));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
             // lift up
             commonds.Add(new GCommand(-5, 0, 0));
-            // rotate 
-            //commonds.Add(new GCommand(0, 0, 5));
-            // Touch Down
-            commonds.Add(new GCommand(5, 0, 0));
 
-            commonds.Add(new PauseCommand(30, 5000));
+            #endregion
+
+            #region Second row
+
+            // Different Length, rotate back
+            commonds.Add(new GCommand(0.5, -0.5, 3));
+
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
+            // same length, X X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -0.5));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
+            // same length, X X  X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -1));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
+            // same length, X X  X    X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -2));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
             // lift up
             commonds.Add(new GCommand(-5, 0, 0));
-            // rotate 
-            //commonds.Add(new GCommand(0, 0, 5));
-            // Touch Down
+
+            #endregion
+
+            #region Third row
+
+            // Different Length, rotate back
+            commonds.Add(new GCommand(1, -1, 3));
+
             commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
-            commonds.Add(new PauseCommand(30, 5000));
-
-
+            // same length, X X
             commonds.Add(new GCommand(-5, 0, 0));
-            // rotate 
-            //commonds.Add(new GCommand(0, 0, 5));
-            // Touch Down
+            commonds.Add(new GCommand(0, 0, -0.5));
             commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
-            commonds.Add(new PauseCommand(30, 5000));
+            // same length, X X  X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -1));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// x, y
-            //// lift up
-            //commonds.Add(new GCommand(-5, 0, 0));
-            //// Adjust length
-            //commonds.Add(new GCommand(2, -2, 0));
-            //// Touch Down
-            //commonds.Add(new GCommand(5, 0, 0));
+            // same length, X X  X    X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -2));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// z
-            //commonds.Add(new GCommand(-5, 0, 0));
-            //// rotate 
-            //commonds.Add(new GCommand(0, 0, -2));
-            //commonds.Add(new GCommand(5, 0, 0));
+            // lift up
+            commonds.Add(new GCommand(-5, 0, 0));
 
-            //// lift up
-            //commonds.Add(new GCommand(-5, 0, 0));
-            //// rotate 
-            //commonds.Add(new GCommand(0, 0, -3));
-            //// Touch Down
-            //commonds.Add(new GCommand(5, 0, 0));
+            #endregion
 
-            //// lift up
-            //commonds.Add(new GCommand(-5, 0, 0));
+            #region Forth row
 
-            //commonds.Add(new GCommand(1, -1, 0));
+            // Different Length, rotate back
+            commonds.Add(new GCommand(2, -2, 3));
 
-            //// Touch Down
-            //commonds.Add(new GCommand(5, -0, 0));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// lift up
-            //commonds.Add(new GCommand(-5, 0, 0));
+            // same length, X X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -0.5));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// Touch Down
-            ////commonds.Add(new GCommand(-3, 0, 0));
-            //commonds.Add(new GCommand(-13, -10, 0));
+            // same length, X X  X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -1));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
 
+            // same length, X X  X    X
+            commonds.Add(new GCommand(-5, 0, 0));
+            commonds.Add(new GCommand(0, 0, -2));
+            commonds.Add(new GCommand(5, 0, 0));
+            commonds.Add(new PauseCommand(30, 500));
+
+            // lift up
+            commonds.Add(new GCommand(-5, 0, 0));
+
+            #endregion
+
+            commonds.Add(new GCommand()
+            {
+                ResetPosition = true
+            });
+
+            commonds.Add(new DoneCommand(TaskNameCalibration));
 
             if (commonds.Count <= 0)
             {

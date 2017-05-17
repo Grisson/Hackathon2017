@@ -112,6 +112,7 @@
     <Compile Include="CommandStore.cs" />
     <Compile Include="Executor\CommandExecutor.cs" />
     <Compile Include="ConsoleContent.cs" />
+    <Compile Include="Executor\DoneCommandExecutor.cs" />
     <Compile Include="Executor\GCommandExecutor.cs" />
     <Compile Include="Executor\IExecutor.cs" />
     <Compile Include="Executor\PauseCommandExecutor.cs" />

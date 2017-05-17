@@ -70,7 +70,7 @@ namespace ArmController.Executor
                 }
 
                 new Thread(() => {
-                    LogHandler?.Invoke($"Will sleep 500ms");
+                    LogHandler?.Invoke($"Will sleep 500ms for safty");
                     Thread.Sleep(500);
                     CommandExecutor.SharedInstance.Execute();
                 }).Start();

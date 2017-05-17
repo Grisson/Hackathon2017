@@ -13,6 +13,7 @@ namespace ArmController.lib.Data
         Resume,
         WaitingForTouch,
         ScreenShot,
+        Done,
     }
 
     public class BaseCommand

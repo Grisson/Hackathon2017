@@ -91,16 +91,41 @@ namespace ArmController
 
         private void SendTouchButton_OnClick(object sender, RoutedEventArgs e)
         {
+            _dataContext.AddOutput("Touch Button is clicked!");
+
             var x = TextToDouble(TouchXTextBox.Text);
             var y = TextToDouble(TouchYTextBox.Text);
             _testBrain.ReportTouchBegin(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y);
+
+            _dataContext.AddOutput("Touch is reported!");
+            Scroller.ScrollToBottom();
         }
 
+        private void StopButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommandExecutor.SharedInstance.IsStopped = true;
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            _dataContext.AddOutput("Reset Button is clicked!");
+            GCommand resetCommand = new GCommand(0, 0, 0);
+            resetCommand.ResetPosition = true;
+            _commands.Enqueue(resetCommand);
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+
+            Scroller.ScrollToBottom();
+        }
+
+        #endregion
+
+        #region Camera
         private void switchCameraBtn_Click(object sender, RoutedEventArgs e)
         {
             if (shouldDetectCamera)
             {
-                if((currentCameraId == maxCameraId) && (currentCameraId >= 2 ))
+                if ((currentCameraId == maxCameraId) && (currentCameraId >= 2))
                 {
                     currentCameraId = 0;
                     shouldDetectCamera = false;
@@ -136,7 +161,7 @@ namespace ArmController
                 InitCamera(currentCameraId);
             }
 
-            if ((_camera != null) && ( 0 <= currentCameraId))
+            if ((_camera != null) && (0 <= currentCameraId))
             {
                 switchCameraBtn.Content = $"Switch(current:{currentCameraId})";
             }
@@ -177,20 +202,6 @@ namespace ArmController
                 _camera.FlipHorizontal = !_camera.FlipHorizontal;
             }
 
-        }
-
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            CommandExecutor.SharedInstance.IsStopped = true;
-        }
-
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
-        {
-            GCommand resetCommand = new GCommand(0, 0, 0);
-            resetCommand.ResetPosition = true;
-            _commands.Enqueue(resetCommand);
-
-            new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
 
         #endregion

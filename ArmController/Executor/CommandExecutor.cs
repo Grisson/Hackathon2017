@@ -64,6 +64,8 @@ namespace ArmController.Executor
             {
                 if(_currentCommand != null)
                 {
+                    LogHandler?.Invoke(_currentCommand.ToSendLog);
+
                     this.Execute(_currentCommand);
                 }
                 else
@@ -73,12 +75,6 @@ namespace ArmController.Executor
                         IsWaitingResponse = false;
                     }
                 }
-
-                LogHandler?.Invoke(_currentCommand.ToSendLog);
-                //Application.Current.Dispatcher.Invoke(() =>
-                //{
-                //    _dataContext.AddOutput(tmpCommand.ToSendLog());
-                //});
             }
             else
             {
@@ -104,29 +100,17 @@ namespace ArmController.Executor
                     PauseCommandExecutor.SharedInstance.Execute(command);
                     break;
                 case CommandType.Resume:
-                    this.Execute(command as ResumeCommand);
+                    //this.Execute(command as ResumeCommand);
                     break;
                 case CommandType.ScreenShot:
-                    this.Execute(command as ScreenShotCommand);
+                    //this.Execute(command as ScreenShotCommand);
+                    break;
+                case CommandType.Done:
+                    DoneCommandExecutor.SharedInstance.Execute(command);
                     break;
                 default:
                     break;
             }
-        }
-
-        public void Execute(PauseCommand command)
-        {
-
-        }
-
-        public void Execute(ResumeCommand command)
-        {
-
-        }
-
-        public void Execute(ScreenShotCommand command)
-        {
-
         }
     }
 }

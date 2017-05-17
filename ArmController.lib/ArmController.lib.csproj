@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Calibrator.cs" />
     <Compile Include="Data\BaseCommand.cs" />
+    <Compile Include="Data\DoneCommand.cs" />
     <Compile Include="Data\GCommand.cs" />
     <Compile Include="Data\Point.cs" />
     <Compile Include="Data\PosePosition.cs" />
