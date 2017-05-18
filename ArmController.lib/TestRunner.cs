@@ -107,10 +107,13 @@ namespace ArmController.lib
         {
             PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
 
-            // test agent location
+            // test agent corrdinate
             var lines = Calibrator.CalculatorBisectorLines(PoseTouchMapping);
             var points = Calibrator.CalculatorCenterPoints(lines);
             AgentLocation = MathHelper.MeanPoint(points);
+
+            // rotate calibration
+
 
             // arm position function
             // ??????

@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace ArmController.lib
 {
+    public class PointsOnSameLine
+    {
+        public List<Tuple<PosePosition, TouchResponse>> Points = new List<Tuple<PosePosition, TouchResponse>>();
+    }
+
     public static class Calibrator
     {
         private const double Tolerance = 0.00001;
@@ -90,6 +95,67 @@ namespace ArmController.lib
             }
 
             return points;
+        }
+
+
+        public static List<List<Tuple<PosePosition, TouchResponse>>> MapPointsOnSameLine(List<Tuple<PosePosition, TouchResponse>> rawPoints)
+        {
+            Dictionary<double, List<Tuple<PosePosition, TouchResponse>>> dict = new Dictionary<double, List<Tuple<PosePosition, TouchResponse>>>();
+
+            foreach(var p in rawPoints)
+            {
+                var pos = p.Item1;
+                if(!dict.ContainsKey(pos.Z))
+                {
+                    dict[pos.Z] = new List<Tuple<PosePosition, TouchResponse>>();
+                }
+                dict[pos.Z].Add(p);
+            }
+
+            List<List<Tuple<PosePosition, TouchResponse>>> result = null;
+            foreach(var k in dict.Keys)
+            {
+                if(dict[k].Count > 1)
+                {
+                    if(result == null)
+                    {
+                        result = new List<List<Tuple<PosePosition, TouchResponse>>>();
+                    }
+                    result.Add(dict[k]);
+                }
+            }
+
+            return result;
+        }
+
+
+        public static Tuple<int, int> CalculatorZ(List<List<Tuple<PosePosition, TouchResponse>>> pointsOnLine)
+        {
+            Tuple<int, int> result = null;
+            if ((pointsOnLine == null) || (pointsOnLine.Count<0))
+            {
+                return result;
+            }
+
+            foreach(var l in pointsOnLine)
+            {
+                if(l.Count <= 1)
+                {
+                    continue;
+                }
+
+                var topLeftP = l[0];
+                var bottomRightP = l[1];
+
+                if(bottomRightP.Item2.TouchPoint.X < topLeftP.Item2.TouchPoint.X)
+                {
+                    topLeftP = l[1];
+                    bottomRightP = l[0];
+                }
+
+            }
+
+            return result;
         }
     }
 }

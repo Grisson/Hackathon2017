@@ -67,6 +67,11 @@ namespace ArmController.lib
 
             foreach (var p in points)
             {
+                if(double.IsNaN(p.X) || double.IsNaN(p.Y))
+                {
+                    count--;
+                    continue;
+                }
                 allX += p.X;
                 allY += p.Y;
             }
