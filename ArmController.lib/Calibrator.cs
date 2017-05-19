@@ -14,7 +14,7 @@ namespace ArmController.lib
 
     public static class Calibrator
     {
-        private const double Tolerance = 0.00001;
+        private const double Tolerance = 0.001;
 
         public static List<Tuple<PosePosition, TouchResponse>> MapPoseAndTouch(SortedList<long, PosePosition> PosePositions, SortedList<long, TouchResponse> TouchPoints)
         {
@@ -101,27 +101,22 @@ namespace ArmController.lib
         public static List<List<Tuple<PosePosition, TouchResponse>>> MapPointsOnSameLine(List<Tuple<PosePosition, TouchResponse>> rawPoints)
         {
             Dictionary<double, List<Tuple<PosePosition, TouchResponse>>> dict = new Dictionary<double, List<Tuple<PosePosition, TouchResponse>>>();
-
-            foreach(var p in rawPoints)
+            List<List<Tuple<PosePosition, TouchResponse>>> result = new List<List<Tuple<PosePosition, TouchResponse>>>(); ;
+            for (var i = 0; i < (rawPoints.Count - 1); i++)
             {
-                var pos = p.Item1;
-                if(!dict.ContainsKey(pos.Z))
+                for (var j = i + 1; j < rawPoints.Count; j++)
                 {
-                    dict[pos.Z] = new List<Tuple<PosePosition, TouchResponse>>();
-                }
-                dict[pos.Z].Add(p);
-            }
+                    var z1 = rawPoints[i].Item1.Z;
+                    var z2 = rawPoints[j].Item1.Z;
+                    var difference = Math.Abs(z1 * Tolerance);
 
-            List<List<Tuple<PosePosition, TouchResponse>>> result = null;
-            foreach(var k in dict.Keys)
-            {
-                if(dict[k].Count > 1)
-                {
-                    if(result == null)
+                    // Compare the values
+                    // The output to the console indicates that the two values are equal
+                    if (Math.Abs(z1 - z2) <= difference)
                     {
-                        result = new List<List<Tuple<PosePosition, TouchResponse>>>();
+                        result.Add(new List<Tuple<PosePosition, TouchResponse>> { rawPoints[i], rawPoints[j] });
+                        break;
                     }
-                    result.Add(dict[k]);
                 }
             }
 
@@ -129,14 +124,15 @@ namespace ArmController.lib
         }
 
 
-        public static Tuple<int, int> CalculatorZ(List<List<Tuple<PosePosition, TouchResponse>>> pointsOnLine)
+        public static Tuple<double, double> CalculatorZ(List<List<Tuple<PosePosition, TouchResponse>>> pointsOnLine)
         {
-            Tuple<int, int> result = null;
+            Tuple<double, double> result = null;
             if ((pointsOnLine == null) || (pointsOnLine.Count<0))
             {
                 return result;
             }
 
+            var zAngleMappings = new List<Tuple<double, double>>();
             foreach(var l in pointsOnLine)
             {
                 if(l.Count <= 1)
@@ -153,7 +149,56 @@ namespace ArmController.lib
                     bottomRightP = l[0];
                 }
 
+                var deltaX = bottomRightP.Item2.TouchPoint.X - topLeftP.Item2.TouchPoint.X;
+                var deltaY = topLeftP.Item2.TouchPoint.Y - bottomRightP.Item2.TouchPoint.Y;
+
+                var angle = Math.Atan(deltaX / deltaY);
+                
+                if(double.IsNaN(angle))
+                {
+                    continue;
+                }
+
+                zAngleMappings.Add(new Tuple<double, double>(topLeftP.Item1.Z, angle));
             }
+
+            var listOfA = new List<double>();
+            if(zAngleMappings.Count > 1)
+            {
+                for(var i = 0; i < (zAngleMappings.Count-1); i++)
+                {
+                    for(var j = i + 1; j < zAngleMappings.Count; j++)
+                    {
+                        var deltaAngel = Math.Abs(zAngleMappings[i].Item2 - zAngleMappings[j].Item2);
+                        var deltaZ = Math.Abs(zAngleMappings[i].Item1 - zAngleMappings[j].Item1);
+                        var a = deltaAngel / deltaZ;
+                        if(!double.IsNaN(a))
+                        {
+                            listOfA.Add(a);
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return result;
+            }
+
+            var averageA = listOfA.Average();
+
+            var listOfB = new List<double>();
+            foreach(var pair in zAngleMappings)
+            {
+                var b = pair.Item2 - (pair.Item1 * averageA);
+                if(!double.IsNaN(b))
+                {
+                    listOfB.Add(b);
+                }
+            }
+            var averageB = listOfB.Average();
+
+            result = new Tuple<double, double>(averageA, averageB);
 
             return result;
         }

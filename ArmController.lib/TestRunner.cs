@@ -24,6 +24,7 @@ namespace ArmController.lib
         internal SortedList<long, TouchResponse> TouchPoints { get; set; }
         internal List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping { get; set; }
         internal Point AgentLocation { get; set; } 
+        internal Tuple<double, double> Fz { get; set; }
 
         public TestRunner()
         {
@@ -113,6 +114,8 @@ namespace ArmController.lib
             AgentLocation = MathHelper.MeanPoint(points);
 
             // rotate calibration
+            var pointsOnSameLine = Calibrator.MapPointsOnSameLine(PoseTouchMapping);
+            Fz = Calibrator.CalculatorZ(pointsOnSameLine);
 
 
             // arm position function
@@ -137,37 +140,37 @@ namespace ArmController.lib
             var commonds = new List<BaseCommand>();
 
             // disable this
-            commonds.Add(new GCommand(12.5, 14.8, 0));
+            commonds.Add(new GCommand(13.2, 15, 0));
 
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             
             #region First row
             // same length, X
             commonds.Add(new GCommand(0, 0, 2.5));
 
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.2));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.4));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X    X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.8));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // lift up
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
             #endregion
 
@@ -176,29 +179,29 @@ namespace ArmController.lib
             // Different Length, rotate back
             commonds.Add(new GCommand(0.2, -0.2, 1.2));
 
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.2));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.4));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X    X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.8));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // lift up
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
             #endregion
 
@@ -207,29 +210,29 @@ namespace ArmController.lib
             // Different Length, rotate back
             commonds.Add(new GCommand(0.4, -0.4, 1.2));
 
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.2));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.4));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X    X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.8));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // lift up
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
             #endregion
 
@@ -238,29 +241,29 @@ namespace ArmController.lib
             // Different Length, rotate back
             commonds.Add(new GCommand(0.8, -0.8, 1.2));
 
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.2));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.4));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // same length, X X  X    X
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
             commonds.Add(new GCommand(0, 0, -0.8));
-            commonds.Add(new GCommand(1, 0, 0));
+            commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new PauseCommand(30, 500));
 
             // lift up
-            commonds.Add(new GCommand(-1, 0, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
             #endregion
 
