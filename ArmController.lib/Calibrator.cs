@@ -14,7 +14,7 @@ namespace ArmController.lib
 
     public static class Calibrator
     {
-        private const double Tolerance = 0.001;
+        private const double Tolerance = 0.01;
 
         public static List<Tuple<PosePosition, TouchResponse>> MapPoseAndTouch(SortedList<long, PosePosition> PosePositions, SortedList<long, TouchResponse> TouchPoints)
         {
@@ -108,11 +108,10 @@ namespace ArmController.lib
                 {
                     var z1 = rawPoints[i].Item1.Z;
                     var z2 = rawPoints[j].Item1.Z;
-                    var difference = Math.Abs(z1 * Tolerance);
 
                     // Compare the values
                     // The output to the console indicates that the two values are equal
-                    if (Math.Abs(z1 - z2) <= difference)
+                    if (z1.IsEqualWithInTolerance(z2, Tolerance))
                     {
                         result.Add(new List<Tuple<PosePosition, TouchResponse>> { rawPoints[i], rawPoints[j] });
                         break;
@@ -127,55 +126,56 @@ namespace ArmController.lib
         public static Tuple<double, double> CalculatorZ(List<List<Tuple<PosePosition, TouchResponse>>> pointsOnLine)
         {
             Tuple<double, double> result = null;
-            if ((pointsOnLine == null) || (pointsOnLine.Count<0))
+            if ((pointsOnLine == null) || (pointsOnLine.Count < 0))
             {
                 return result;
             }
 
             var zAngleMappings = new List<Tuple<double, double>>();
-            foreach(var l in pointsOnLine)
+            foreach (var l in pointsOnLine)
             {
-                if(l.Count <= 1)
+                if (l.Count <= 1)
                 {
                     continue;
                 }
 
-                var topLeftP = l[0];
-                var bottomRightP = l[1];
+                var p1 = l[0];
+                var p2 = l[1];
 
-                if(bottomRightP.Item2.TouchPoint.X < topLeftP.Item2.TouchPoint.X)
-                {
-                    topLeftP = l[1];
-                    bottomRightP = l[0];
-                }
-
-                var deltaX = bottomRightP.Item2.TouchPoint.X - topLeftP.Item2.TouchPoint.X;
-                var deltaY = topLeftP.Item2.TouchPoint.Y - bottomRightP.Item2.TouchPoint.Y;
+                var deltaX = Math.Abs(p1.Item2.TouchPoint.X - p2.Item2.TouchPoint.X);
+                var deltaY = Math.Abs(p1.Item2.TouchPoint.Y - p2.Item2.TouchPoint.Y);
 
                 var angle = Math.Atan(deltaX / deltaY);
-                
-                if(double.IsNaN(angle))
+
+                if (double.IsNaN(angle))
                 {
                     continue;
                 }
 
-                zAngleMappings.Add(new Tuple<double, double>(topLeftP.Item1.Z, angle));
+                var factor = 1;
+
+                if (((p1.Item2.TouchPoint.X < p2.Item2.TouchPoint.X) && (p1.Item2.TouchPoint.Y < p2.Item2.TouchPoint.Y)) 
+                    || ((p1.Item2.TouchPoint.X > p2.Item2.TouchPoint.X) && (p1.Item2.TouchPoint.Y > p2.Item2.TouchPoint.Y)))
+                {
+                    factor = -1;
+                }
+
+                zAngleMappings.Add(new Tuple<double, double>(p1.Item1.Z, angle*factor));
             }
 
             var listOfA = new List<double>();
-            if(zAngleMappings.Count > 1)
+            if (zAngleMappings.Count > 1)
             {
-                for(var i = 0; i < (zAngleMappings.Count-1); i++)
+                for (var i = 0; i < (zAngleMappings.Count - 1); i++)
                 {
-                    for(var j = i + 1; j < zAngleMappings.Count; j++)
+                    for (var j = i + 1; j < zAngleMappings.Count; j++)
                     {
-                        var deltaAngel = Math.Abs(zAngleMappings[i].Item2 - zAngleMappings[j].Item2);
-                        var deltaZ = Math.Abs(zAngleMappings[i].Item1 - zAngleMappings[j].Item1);
+                        var deltaAngel = zAngleMappings[i].Item2 - zAngleMappings[j].Item2;
+                        var deltaZ = zAngleMappings[i].Item1 - zAngleMappings[j].Item1;
                         var a = deltaAngel / deltaZ;
-                        if(!double.IsNaN(a))
+                        if (!double.IsNaN(a))
                         {
                             listOfA.Add(a);
-
                         }
                     }
                 }
@@ -188,10 +188,10 @@ namespace ArmController.lib
             var averageA = listOfA.Average();
 
             var listOfB = new List<double>();
-            foreach(var pair in zAngleMappings)
+            foreach (var pair in zAngleMappings)
             {
                 var b = pair.Item2 - (pair.Item1 * averageA);
-                if(!double.IsNaN(b))
+                if (!double.IsNaN(b))
                 {
                     listOfB.Add(b);
                 }

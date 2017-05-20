@@ -10,7 +10,6 @@ namespace ArmController.lib
     {
         public const string TaskNameCalibration = "Calib";
 
-        private double _liftUpDistance = 1;
         private bool isTouchReported = false;
 
         internal TestTarget Target { get; set; }
@@ -140,12 +139,76 @@ namespace ArmController.lib
             var commonds = new List<BaseCommand>();
 
             // disable this
-            commonds.Add(new GCommand(12.9, 14.7, 0));
+            //commonds.Add(new GCommand(12.9, 14.7, 0));
+            commonds.Add(new GCommand(3500, 3500, 0));
 
-            commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(-2*250, -2*250, 0));
 
-            #region First row
-            // same length, X
+            //#region First row
+
+            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 625, -50, -100, -200 }));
+
+            //#endregion
+
+            //#region Second row
+
+            //commonds.Add(CommandHelper.ChangeLength(50));
+
+            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 300, -50, -100, -200 }));
+
+            //#endregion
+
+            //#region Third row
+
+            //commonds.Add(CommandHelper.ChangeLength(100));
+
+            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 300, -50, -100, -200 }));
+
+            //#endregion
+
+            //#region Forth row
+
+            //commonds.Add(CommandHelper.ChangeLength(200));
+
+            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 300, -50, -100, -200 }));
+
+            //#endregion
+
+            commonds.Add(new GCommand()
+            {
+                ResetPosition = true
+            });
+
+            //commonds.Add(new DoneCommand(TaskNameCalibration));
+
+            if (commonds.Count <= 0)
+            {
+                return string.Empty;
+            }
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            string serialized = JsonConvert.SerializeObject(commonds, settings);
+
+            return serialized;
+            //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
+        }
+
+        public GCommand CreateLiftUpCommand(double dist)
+        {
+            return new GCommand(dist, 0, 0);
+        }
+
+        public GCommand CreateTouchDownCommand(double dist)
+        {
+            return new GCommand((-1) * dist, 0, 0);
+        }
+        
+    }
+}
+
+/*
+ 
+
             commonds.Add(new GCommand(0, 0, 2.5));
 
             commonds.Add(new GCommand(2, 2, 0));
@@ -175,15 +238,9 @@ namespace ArmController.lib
             commonds.Add(new GCommand(2, 2, 0));
             commonds.Add(new GCommand(-2, -2, 0));
 
-            commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));     
 
-            // lift up
-
-            #endregion
-
-            #region Second row
-
-            // Different Length, rotate back
+    // Different Length, rotate back
             commonds.Add(new GCommand(0.2, -0.2, 1.2));
 
             commonds.Add(new GCommand(2, 2, 0));
@@ -215,13 +272,7 @@ namespace ArmController.lib
 
             commonds.Add(new PauseCommand(30, 500));
 
-            // lift up
-
-            #endregion
-
-            #region Third row
-
-            // Different Length, rotate back
+    // Different Length, rotate back
             commonds.Add(new GCommand(0.4, -0.4, 1.2));
 
             commonds.Add(new GCommand(2, 2, 0));
@@ -253,13 +304,7 @@ namespace ArmController.lib
 
             commonds.Add(new PauseCommand(30, 500));
 
-            // lift up
-
-            #endregion
-
-            #region Forth row
-
-            // Different Length, rotate back
+    // Different Length, rotate back
             commonds.Add(new GCommand(0.8, -0.8, 1.2));
 
             commonds.Add(new GCommand(2, 2, 0));
@@ -290,39 +335,4 @@ namespace ArmController.lib
             commonds.Add(new GCommand(-2, -2, 0));
 
             commonds.Add(new PauseCommand(30, 500));
-
-            // lift up
-
-            #endregion
-
-            commonds.Add(new GCommand()
-            {
-                ResetPosition = true
-            });
-
-            commonds.Add(new DoneCommand(TaskNameCalibration));
-
-            if (commonds.Count <= 0)
-            {
-                return string.Empty;
-            }
-
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            string serialized = JsonConvert.SerializeObject(commonds, settings);
-
-            return serialized;
-            //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
-        }
-
-        public GCommand CreateLiftUpCommand(double dist)
-        {
-            return new GCommand(dist, 0, 0);
-        }
-
-        public GCommand CreateTouchDownCommand(double dist)
-        {
-            return new GCommand((-1) * dist, 0, 0);
-        }
-        
-    }
-}
+*/

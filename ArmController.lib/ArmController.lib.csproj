@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calibrator.cs" />
+    <Compile Include="CommandHelper.cs" />
     <Compile Include="Data\BaseCommand.cs" />
     <Compile Include="Data\DoneCommand.cs" />
     <Compile Include="Data\GCommand.cs" />
