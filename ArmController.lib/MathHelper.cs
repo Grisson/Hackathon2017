@@ -8,6 +8,20 @@ using ArmController.lib.Data;
 
 namespace ArmController.lib
 {
+    public static class ExtensionMethod
+    {
+        public static bool IsEqualWithInTolerance(this double a, double b, double tolerance)
+        {
+            if (Math.Abs(a - b) < tolerance)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
     public static class MathHelper
     {
         public static Tuple<double, double, double> CalculatorPerpendicularBisector(TouchResponse pointA, TouchResponse pointB)
