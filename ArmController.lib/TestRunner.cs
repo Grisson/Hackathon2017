@@ -140,167 +140,167 @@ namespace ArmController.lib
             var commonds = new List<BaseCommand>();
 
             // disable this
-            commonds.Add(new GCommand(12.7, 14.5, 0));
+            commonds.Add(new GCommand(12.9, 14.7, 0));
 
             commonds.Add(new GCommand(-2, -2, 0));
 
-            //#region First row
-            //// same length, X
-            //commonds.Add(new GCommand(0, 0, 2.5));
+            #region First row
+            // same length, X
+            commonds.Add(new GCommand(0, 0, 2.5));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X
-            //commonds.Add(new GCommand(0, 0, -0.2));
+            // same length, X X
+            commonds.Add(new GCommand(0, 0, -0.2));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X
-            //commonds.Add(new GCommand(0, 0, -0.4));
+            // same length, X X  X
+            commonds.Add(new GCommand(0, 0, -0.4));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X    X
-            //commonds.Add(new GCommand(0, 0, -0.8));
+            // same length, X X  X    X
+            commonds.Add(new GCommand(0, 0, -0.8));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// lift up
+            // lift up
 
-            //#endregion
+            #endregion
 
-            //#region Second row
+            #region Second row
 
-            //// Different Length, rotate back
-            //commonds.Add(new GCommand(0.2, -0.2, 1.2));
+            // Different Length, rotate back
+            commonds.Add(new GCommand(0.2, -0.2, 1.2));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X
-            //commonds.Add(new GCommand(0, 0, -0.2));
+            // same length, X X
+            commonds.Add(new GCommand(0, 0, -0.2));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X
-            //commonds.Add(new GCommand(0, 0, -0.4));
+            // same length, X X  X
+            commonds.Add(new GCommand(0, 0, -0.4));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X    X
-            //commonds.Add(new GCommand(0, 0, -0.8));
+            // same length, X X  X    X
+            commonds.Add(new GCommand(0, 0, -0.8));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// lift up
+            // lift up
 
-            //#endregion
+            #endregion
 
-            //#region Third row
+            #region Third row
 
-            //// Different Length, rotate back
-            //commonds.Add(new GCommand(0.4, -0.4, 1.2));
+            // Different Length, rotate back
+            commonds.Add(new GCommand(0.4, -0.4, 1.2));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X
-            //commonds.Add(new GCommand(0, 0, -0.2));
+            // same length, X X
+            commonds.Add(new GCommand(0, 0, -0.2));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X
-            //commonds.Add(new GCommand(0, 0, -0.4));
+            // same length, X X  X
+            commonds.Add(new GCommand(0, 0, -0.4));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X    X
-            //commonds.Add(new GCommand(0, 0, -0.8));
+            // same length, X X  X    X
+            commonds.Add(new GCommand(0, 0, -0.8));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// lift up
+            // lift up
 
-            //#endregion
+            #endregion
 
-            //#region Forth row
+            #region Forth row
 
-            //// Different Length, rotate back
-            //commonds.Add(new GCommand(0.8, -0.8, 1.2));
+            // Different Length, rotate back
+            commonds.Add(new GCommand(0.8, -0.8, 1.2));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X
-            //commonds.Add(new GCommand(0, 0, -0.2));
+            // same length, X X
+            commonds.Add(new GCommand(0, 0, -0.2));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X
-            //commonds.Add(new GCommand(0, 0, -0.4));
+            // same length, X X  X
+            commonds.Add(new GCommand(0, 0, -0.4));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// same length, X X  X    X
-            //commonds.Add(new GCommand(0, 0, -0.8));
+            // same length, X X  X    X
+            commonds.Add(new GCommand(0, 0, -0.8));
 
-            //commonds.Add(new GCommand(2, 2, 0));
-            //commonds.Add(new GCommand(-2, -2, 0));
+            commonds.Add(new GCommand(2, 2, 0));
+            commonds.Add(new GCommand(-2, -2, 0));
 
-            //commonds.Add(new PauseCommand(30, 500));
+            commonds.Add(new PauseCommand(30, 500));
 
-            //// lift up
+            // lift up
 
-            //#endregion
+            #endregion
 
-            //commonds.Add(new GCommand()
-            //{
-            //    ResetPosition = true
-            //});
+            commonds.Add(new GCommand()
+            {
+                ResetPosition = true
+            });
 
-            //commonds.Add(new DoneCommand(TaskNameCalibration));
+            commonds.Add(new DoneCommand(TaskNameCalibration));
 
             if (commonds.Count <= 0)
             {
