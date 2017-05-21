@@ -6,6 +6,7 @@ using System.Windows.Data;
 using ArmController.lib.Data;
 using System.Threading;
 using ArmController.Executor;
+using ArmController.lib;
 
 namespace ArmController
 {
@@ -16,6 +17,19 @@ namespace ArmController
         private void CalibButton_Click(object sender, RoutedEventArgs e)
         {
             this.GetCommandsFromServer();
+        }
+
+        private void TapButton_Click(object sender, RoutedEventArgs e)
+        {
+            var deserializedList = CommandHelper.Tap();
+
+            foreach (var c in deserializedList)
+            {
+                _commands.Enqueue(c);
+            }
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+
         }
 
         private void ComboBoxPort_OnDropDownOpened(object sender, EventArgs e)
@@ -79,9 +93,9 @@ namespace ArmController
                 return;
             }
 
-            var xInc = TextToDouble(XCommandTextBox.Text);
-            var yInc = TextToDouble(YCommandTextBox.Text);
-            var zInc = TextToDouble(ZCommandTextBox.Text);
+            var xInc = TextToInt(XCommandTextBox.Text);
+            var yInc = TextToInt(YCommandTextBox.Text);
+            var zInc = TextToInt(ZCommandTextBox.Text);
             var newCommand = new GCommand(xInc, yInc, zInc, _currentPosePosition);
 
             _commands.Enqueue(newCommand);
@@ -93,8 +107,8 @@ namespace ArmController
         {
             _dataContext.AddOutput("Touch Button is clicked!");
 
-            var x = TextToDouble(TouchXTextBox.Text);
-            var y = TextToDouble(TouchYTextBox.Text);
+            var x = TextToInt(TouchXTextBox.Text);
+            var y = TextToInt(TouchYTextBox.Text);
             _testBrain.ReportTouchBegin(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y);
 
             _dataContext.AddOutput("Touch is reported!");

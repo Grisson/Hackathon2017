@@ -111,7 +111,7 @@ namespace ArmController.lib
 
                     // Compare the values
                     // The output to the console indicates that the two values are equal
-                    if (z1.IsEqualWithInTolerance(z2, Tolerance))
+                    if (z1 == z2)
                     {
                         result.Add(new List<Tuple<PosePosition, TouchResponse>> { rawPoints[i], rawPoints[j] });
                         break;

@@ -83,7 +83,7 @@ namespace ArmController.lib
             return new string[] { };
         }
 
-        public bool ReportAgentPosePosition(long timeStamp, double x, double y, double z)
+        public bool ReportAgentPosePosition(long timeStamp, int x, int y, int z)
         {
             if (Agent == null)
             {
@@ -140,9 +140,40 @@ namespace ArmController.lib
 
             // disable this
             //commonds.Add(new GCommand(12.9, 14.7, 0));
-            commonds.Add(new GCommand(3500, 3500, 0));
 
+            // 
+            //              *
+            //
+            commonds.Add(new GCommand(3059, 2879, 0));
             commonds.Add(new GCommand(-2*250, -2*250, 0));
+            commonds.WaitForTouch();
+
+            // 
+            //                  *
+            //              *
+            //
+            commonds.ChangeLength(100);
+            commonds.Tap();
+            commonds.WaitForTouch();
+
+            // 
+            //                  *
+            //          *    *
+            //
+            commonds.Rotate(100);
+            commonds.ChangeLength(-100);
+            commonds.Tap();
+            commonds.WaitForTouch();
+
+            // 
+            //              *     *
+            //          *    *
+            //
+            commonds.ChangeLength(100);
+            commonds.Tap();
+            commonds.WaitForTouch();
+
+            commonds.Reset();
 
             //#region First row
 
@@ -192,17 +223,6 @@ namespace ArmController.lib
             return serialized;
             //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
         }
-
-        public GCommand CreateLiftUpCommand(double dist)
-        {
-            return new GCommand(dist, 0, 0);
-        }
-
-        public GCommand CreateTouchDownCommand(double dist)
-        {
-            return new GCommand((-1) * dist, 0, 0);
-        }
-        
     }
 }
 

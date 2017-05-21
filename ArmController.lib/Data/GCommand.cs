@@ -10,9 +10,9 @@ namespace ArmController.lib.Data
     {
         public bool ResetPosition { get; set; }
 
-        public double XDelta { get; set; }
-        public double YDelta { get; set; }
-        public double ZDelta { get; set; }
+        public int XDelta { get; set; }
+        public int YDelta { get; set; }
+        public int ZDelta { get; set; }
         public PosePosition CurrentPosePosition { get; set; }
 
         public long SendTimeStamp { get; set; }
@@ -30,7 +30,7 @@ namespace ArmController.lib.Data
             this.Type = CommandType.GCode;
         }
 
-        public GCommand(double xD, double yD, double zD) : this()
+        public GCommand(int xD, int yD, int zD) : this()
         {
             XDelta = xD;
             YDelta = yD;
@@ -39,7 +39,7 @@ namespace ArmController.lib.Data
             CommandText = $"G91 G0 X{XDelta} Y{YDelta} Z{ZDelta}";
         }
 
-        public GCommand(double xD, double yD, double zD, PosePosition position) : this(xD, yD, zD)
+        public GCommand(int xD, int yD, int zD, PosePosition position) : this(xD, yD, zD)
         {
             CurrentPosePosition = position ?? PosePosition.InitializePosition();
         }

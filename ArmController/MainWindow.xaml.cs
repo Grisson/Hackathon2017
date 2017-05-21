@@ -159,12 +159,12 @@ namespace ArmController
 
         #region Utilities
 
-        private double TextToDouble(string txt)
+        private int TextToInt(string txt)
         {
-            double result = 0;
+            int result = 0;
             if (!string.IsNullOrEmpty(txt))
             {
-                double.TryParse(txt, out result);
+                int.TryParse(txt, out result);
             }
 
             return result;
@@ -196,6 +196,7 @@ namespace ArmController
             //YCommandTextBox.IsEnabled = true;
             //ZCommandTextBox.IsEnabled = true;
         }
+
 
         #endregion
 

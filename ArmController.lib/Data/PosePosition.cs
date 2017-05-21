@@ -4,9 +4,9 @@ namespace ArmController.lib.Data
 {
     public class PosePosition
     {
-        public double X;
-        public double Y;
-        public double Z;
+        public int X;
+        public int Y;
+        public int Z;
         public long TimeStamp;
 
         public PosePosition() : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), 0, 0, 0)
@@ -14,13 +14,13 @@ namespace ArmController.lib.Data
 
         }
 
-        public PosePosition(double x, double y, double z)
+        public PosePosition(int x, int y, int z)
             : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y, z)
         {
 
         }
 
-        public PosePosition(long timeStamp, double x, double y, double z)
+        public PosePosition(long timeStamp, int x, int y, int z)
         {
             TimeStamp = timeStamp;
             X = x;
@@ -38,7 +38,7 @@ namespace ArmController.lib.Data
             };
         }
 
-        public PosePosition Incremental(double x, double y, double z)
+        public PosePosition Incremental(int x, int y, int z)
         {
             return new PosePosition()
             {

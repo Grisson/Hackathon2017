@@ -82,11 +82,13 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Button x:Name="TestButton" Content="Test" HorizontalAlignment="Stretch" Click="TestButton_OnClick"/>
                     <Button Grid.Column="1" x:Name="CalibButton" Content="Calib" HorizontalAlignment="Stretch" Click="CalibButton_Click"/>
-                    <Button Grid.Column="2" x:Name="ResetButton" Content="Reset" HorizontalAlignment="Stretch" Click="ResetButton_Click"/>
-                    <Button Grid.Column="3" x:Name="StopButton" Content="Stop" HorizontalAlignment="Stretch" Click="StopButton_Click"/>
+                    <Button Grid.Column="2" x:Name="TapButton" Content="Tap" HorizontalAlignment="Stretch" Click="TapButton_Click"/>
+                    <Button Grid.Column="3" x:Name="ResetButton" Content="Reset" HorizontalAlignment="Stretch" Click="ResetButton_Click"/>
+                    <Button Grid.Column="4" x:Name="StopButton" Content="Stop" HorizontalAlignment="Stretch" Click="StopButton_Click"/>
                 </Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
