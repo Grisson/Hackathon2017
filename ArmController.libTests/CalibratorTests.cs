@@ -44,6 +44,14 @@ namespace ArmController.lib.Tests
         [TestMethod()]
         public void MapPoseAndTouchTest()
         {
+            var angle = Math.Atan2(1, 1);
+            Assert.IsTrue(angle == (Math.PI / 4));
+            var angle2 = Math.Asin(0.5);
+
+            var ThirdDegree = Math.PI / 6;
+            Assert.IsTrue(angle2 == ThirdDegree);
+
+
             Assert.Fail();
         }
 

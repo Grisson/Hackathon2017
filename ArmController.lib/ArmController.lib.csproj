@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArmPositionCalculator.cs" />
     <Compile Include="Calibrator.cs" />
     <Compile Include="CommandHelper.cs" />
     <Compile Include="Data\BaseCommand.cs" />
