@@ -122,6 +122,30 @@ namespace ArmController.lib
             return result;
         }
 
+        public static List<List<Tuple<PosePosition, TouchResponse>>> MapPointsOnSameAngle(List<Tuple<PosePosition, TouchResponse>> rawPoints)
+        {
+            Dictionary<double, List<Tuple<PosePosition, TouchResponse>>> dict = new Dictionary<double, List<Tuple<PosePosition, TouchResponse>>>();
+            List<List<Tuple<PosePosition, TouchResponse>>> result = new List<List<Tuple<PosePosition, TouchResponse>>>(); ;
+            for (var i = 0; i < (rawPoints.Count - 1); i++)
+            {
+                for (var j = i + 1; j < rawPoints.Count; j++)
+                {
+                    var z1 = rawPoints[i].Item1.Z;
+                    var z2 = rawPoints[j].Item1.Z;
+
+                    // Compare the values
+                    // The output to the console indicates that the two values are equal
+                    if (z1 == z2)
+                    {
+                        result.Add(new List<Tuple<PosePosition, TouchResponse>> { rawPoints[i], rawPoints[j] });
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         public static Tuple<double, double> CalculatorZ(List<List<Tuple<PosePosition, TouchResponse>>> pointsOnLine)
         {
@@ -145,7 +169,7 @@ namespace ArmController.lib
                 var deltaX = Math.Abs(p1.Item2.TouchPoint.X - p2.Item2.TouchPoint.X);
                 var deltaY = Math.Abs(p1.Item2.TouchPoint.Y - p2.Item2.TouchPoint.Y);
 
-                var angle = Math.Atan(deltaX / deltaY);
+                var angle = Math.Atan2(deltaX, deltaY);
 
                 if (double.IsNaN(angle))
                 {
@@ -154,8 +178,8 @@ namespace ArmController.lib
 
                 var factor = 1;
 
-                if (((p1.Item2.TouchPoint.X < p2.Item2.TouchPoint.X) && (p1.Item2.TouchPoint.Y < p2.Item2.TouchPoint.Y)) 
-                    || ((p1.Item2.TouchPoint.X > p2.Item2.TouchPoint.X) && (p1.Item2.TouchPoint.Y > p2.Item2.TouchPoint.Y)))
+                var tmp = (p1.Item2.TouchPoint.X - p2.Item2.TouchPoint.X) * (p1.Item2.TouchPoint.Y - p2.Item2.TouchPoint.Y);
+                if (tmp < 0)
                 {
                     factor = -1;
                 }
@@ -172,6 +196,11 @@ namespace ArmController.lib
                     {
                         var deltaAngel = zAngleMappings[i].Item2 - zAngleMappings[j].Item2;
                         var deltaZ = zAngleMappings[i].Item1 - zAngleMappings[j].Item1;
+                        if(deltaZ == 0)
+                        {
+                            continue;
+                        }
+
                         var a = deltaAngel / deltaZ;
                         if (!double.IsNaN(a))
                         {

@@ -159,6 +159,17 @@ namespace ArmController
 
         #region Utilities
 
+        private double TextToDouble(string txt)
+        {
+            double result = 0;
+            if (!string.IsNullOrEmpty(txt))
+            {
+                double.TryParse(txt, out result);
+            }
+
+            return result;
+        }
+
         private int TextToInt(string txt)
         {
             int result = 0;

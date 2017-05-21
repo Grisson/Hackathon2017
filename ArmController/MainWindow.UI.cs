@@ -107,8 +107,14 @@ namespace ArmController
         {
             _dataContext.AddOutput("Touch Button is clicked!");
 
-            var x = TextToInt(TouchXTextBox.Text);
-            var y = TextToInt(TouchYTextBox.Text);
+            var x = TextToDouble(TouchXTextBox.Text);
+            var y = TextToDouble(TouchYTextBox.Text);
+
+            if(y > 0)
+            {
+                y = -1 * y;
+            }
+
             _testBrain.ReportTouchBegin(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y);
 
             _dataContext.AddOutput("Touch is reported!");

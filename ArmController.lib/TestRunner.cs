@@ -9,6 +9,7 @@ namespace ArmController.lib
     public class TestRunner
     {
         public const string TaskNameCalibration = "Calib";
+        public const string TaskNameCalibrationZ = "CalibZ";
 
         private bool isTouchReported = false;
 
@@ -121,12 +122,24 @@ namespace ArmController.lib
             // ??????
         }
 
+        public void CalibrateZ()
+        {
+            PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
+
+            // rotate calibration
+            var pointsOnSameLine = Calibrator.MapPointsOnSameLine(PoseTouchMapping);
+            Fz = Calibrator.CalculatorZ(pointsOnSameLine);
+        }
+
         public void Done(string data)
         {
             switch(data)
             {
                 case TaskNameCalibration:
                     Calibrate();
+                    break;
+                case TaskNameCalibrationZ:
+                    CalibrateZ();
                     break;
                 default:
                     break;
@@ -140,40 +153,17 @@ namespace ArmController.lib
 
             // disable this
             //commonds.Add(new GCommand(12.9, 14.7, 0));
+            commonds.Add(new GCommand(3171, 2371, 0));
 
-            // 
-            //              *
-            //
-            commonds.Add(new GCommand(3059, 2879, 0));
-            commonds.Add(new GCommand(-2*250, -2*250, 0));
-            commonds.WaitForTouch();
+            commonds.TouchInStairs(new List<int> { 0, -100, -100, -100, -100 }, new List<int> { 0, 100, 100, 100, 100 });
 
-            // 
-            //                  *
-            //              *
-            //
-            commonds.ChangeLength(100);
-            commonds.Tap();
-            commonds.WaitForTouch();
-
-            // 
-            //                  *
-            //          *    *
-            //
-            commonds.Rotate(100);
-            commonds.ChangeLength(-100);
-            commonds.Tap();
-            commonds.WaitForTouch();
-
-            // 
-            //              *     *
-            //          *    *
-            //
-            commonds.ChangeLength(100);
-            commonds.Tap();
-            commonds.WaitForTouch();
+            commonds.TouchInStairs(new List<int> { -100, -100, -100, -100 },  new List<int> { -100, -100, -100, -100 });
 
             commonds.Reset();
+
+            commonds.Add(new DoneCommand(TaskNameCalibrationZ));
+
+            commonds.Add(new PauseCommand(30, -1));
 
             //#region First row
 

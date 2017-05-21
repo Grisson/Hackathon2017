@@ -39,14 +39,24 @@ namespace ArmController.lib
             commands.Add(CommandHelper.ChangeLength(dist));
         }
 
-        public static void TouchPointsInSameRadius(this List<BaseCommand> commands, List<int> zInternals)
+        public static void TouchInSameRadius(this List<BaseCommand> commands, List<int> zInternals)
         {
-            commands.AddRange(CommandHelper.TouchPointsInSameRadius(zInternals));
+            commands.AddRange(CommandHelper.TouchInSameRadius(zInternals));
         }
 
         public static void TouchPointsInSameRadius(this List<BaseCommand> commands, List<int> zInternals, int repeatTimes)
         {
-            commands.AddRange(CommandHelper.TouchPointsInSameRadius(zInternals, repeatTimes));
+            commands.AddRange(CommandHelper.TouchInSameRadius(zInternals, repeatTimes));
+        }
+
+        public static void TouchInStairs(this List<BaseCommand> commands, List<int> lengths, List<int> zInternals)
+        {
+            commands.AddRange(CommandHelper.TouchInStairs(lengths, zInternals));
+        }
+
+        public static void TouchInStairs(this List<BaseCommand> commands, List<int> lengths, List<int> zInternals, int repeatTimes)
+        {
+            commands.AddRange(CommandHelper.TouchInStairs(lengths, zInternals, repeatTimes));
         }
 
         public static void Rotate(this List<BaseCommand> commands, int steps)
@@ -94,18 +104,51 @@ namespace ArmController.lib
             return new GCommand(dist, -1 * dist, 0);
         }
 
-        public static List<BaseCommand> TouchPointsInSameRadius(List<int> zInternals)
+        public static List<BaseCommand> TouchInSameRadius(List<int> zInternals)
         {
-            return TouchPointsInSameRadius(zInternals, 0);
+            return TouchInSameRadius(zInternals, 0);
         }
 
-        public static List<BaseCommand> TouchPointsInSameRadius(List<int> zInternals, int repeatTimes)
+        public static List<BaseCommand> TouchInSameRadius(List<int> zInternals, int repeatTimes)
         {
             var result = new List<BaseCommand>();
 
             foreach (var z in zInternals)
             {
                 result.Add(new GCommand(0, 0, z));
+
+                result.AddRange(Tap());
+                result.Add(new PauseCommand(WaitingTimeOutSeconds, RefreshIntervalMillSeconds));
+
+                for (var i = 1; i <= repeatTimes; i++)
+                {
+                    result.AddRange(Tap());
+                    result.Add(new PauseCommand(WaitingTimeOutSeconds, RefreshIntervalMillSeconds));
+                }
+            }
+
+            return result;
+        }
+
+        public static List<BaseCommand> TouchInStairs(List<int> lengths, List<int> zInternals)
+        {
+            return TouchInStairs(lengths, zInternals, 0);
+
+        }
+
+        public static List<BaseCommand> TouchInStairs(List<int> lengths, List<int> zInternals, int repeatTimes)
+        {
+            if(lengths.Count != zInternals.Count)
+            {
+                throw new ArgumentException();
+            }
+
+            var result = new List<BaseCommand>();
+
+            for(var j = 0; j < lengths.Count; j++)
+            {
+                result.Add(CommandHelper.Rotate(zInternals[j]));
+                result.Add(CommandHelper.ChangeLength(lengths[j]));
 
                 result.AddRange(Tap());
                 result.Add(new PauseCommand(WaitingTimeOutSeconds, RefreshIntervalMillSeconds));
