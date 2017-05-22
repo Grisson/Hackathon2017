@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ArmController.lib
 {
-    internal class ArmPositionCalculator
+    public class ArmPositionCalculator
     {
         public static ArmPositionCalculator SharedInstacne = new ArmPositionCalculator();
 
@@ -39,20 +39,22 @@ namespace ArmController.lib
             var lowRadian = AngleToRadian(lowAngle);
             var highRadian = AngleToRadian(highAngle);
 
-            var alpha = TriangleCorner(highRadian);
+            var alphaAngle = (180 - highAngle) / 2.0;
+            var alpha = AngleToRadian(alphaAngle);
 
             var bottomL = BottomOfIsoscelesTriangle(l, alpha);
 
-            var beta = (Math.PI - alpha - lowRadian).RandWithFiveDigites();
+            var beta = (Math.PI - alpha - lowRadian);//.RandWithFiveDigites();
 
-            var zCoord = (Math.Sin(beta) * bottomL).RandWithFiveDigites();
+            var zCoord = (Math.Sin(beta) * bottomL);//.RandWithFiveDigites();
 
-            var length = (Math.Cos(beta) * bottomL).RandWithFiveDigites();
+            var length = (Math.Cos(beta) * bottomL);//.RandWithFiveDigites();
 
             var rototeAngle = MmToAngle(pos.Z);
+            var rototeRadian = AngleToRadian(rototeAngle);
 
-            var xCoord = (Math.Cos(rototeAngle) * length).RandWithFiveDigites();
-            var yCoord = (Math.Sin(rototeAngle) * length).RandWithFiveDigites();
+            var xCoord = (Math.Cos(rototeRadian) * length);//.RandWithFiveDigites();
+            var yCoord = (Math.Sin(rototeRadian) * length);//.RandWithFiveDigites();
 
             return new Tuple<double, double, double>(xCoord, yCoord, zCoord);
         }
@@ -63,13 +65,13 @@ namespace ArmController.lib
             var y = coor.Item2;
             var z = coor.Item3;
 
-            var rotateZRadian = Math.Atan2(y, x).RandWithFiveDigites();
-            var rotateZAngle = RadianToAngle(rotateZRadian).RandWithFiveDigites();
+            var rotateZRadian = Math.Atan2(y, x);//.RandWithFiveDigites();
+            var rotateZAngle = RadianToAngle(rotateZRadian);//.RandWithFiveDigites();
             var rotateZMM = (int)AngleToMM(rotateZAngle);
 
-            var length = Math.Sqrt(x * x + y * y).RandWithFiveDigites();
+            var length = Math.Sqrt(x * x + y * y);//.RandWithFiveDigites();
 
-            var bottomL = Math.Sqrt(length * length + z * z).RandWithFiveDigites();
+            var bottomL = Math.Sqrt(length * length + z * z);//.RandWithFiveDigites();
 
             var alphaRadian = Math.Acos(bottomL / (2 * l));
             var highRadian = Math.PI - (2 * alphaRadian);
@@ -84,7 +86,7 @@ namespace ArmController.lib
             var lowAngle = RadianToAngle(lowRadian);
             var lowMm = (int)AngleToMM(lowAngle - B1);
 
-            var highAngle = RadianToAngle(highRadian - lowRadian) - B2;
+            var highAngle = (lowAngle - B1) + B2 - RadianToAngle(highRadian);
             var highMm = (int)AngleToMM(highAngle);
 
             return new PosePosition(lowMm, highMm, rotateZMM);
@@ -107,17 +109,17 @@ namespace ArmController.lib
 
         public double RadianToAngle(double radian)
         {
-            return (radian * 180 / Math.PI).RandWithFiveDigites();
+            return (radian * 180 / Math.PI);//.RandWithFiveDigites();
         }
 
         public double TriangleCorner(double radian)
         {
-            return ((Math.PI - radian) / 2).RandWithFiveDigites();
+            return ((Math.PI - radian) / 2);//.RandWithFiveDigites();
         }
 
         public double BottomOfIsoscelesTriangle(double l, double radian)
         {
-            return (2 * l * Math.Cos(radian)).RandWithFiveDigites();
+            return (2 * l * Math.Cos(radian));//.RandWithFiveDigites();
         }
 
         public double HighAngle(int x, int y)
