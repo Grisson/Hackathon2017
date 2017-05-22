@@ -21,9 +21,9 @@ namespace ArmController
                 return;
             }
 
-            var coorX = TextToInt(CoordinateXTextBox.Text);
-            var coorY = TextToInt(CoordinateYTextBox.Text);
-            var coorZ = TextToInt(CoordinateZTextBox.Text);
+            var coorX = TextToDouble(CoordinateXTextBox.Text);
+            var coorY = TextToDouble(CoordinateYTextBox.Text);
+            var coorZ = TextToDouble(CoordinateZTextBox.Text);
             var targetPose = _testBrain.ConvertCoordinatToPosition(new Tuple<double, double, double>(coorX, coorY, coorZ));
             var newCommand = new GCommand(targetPose.X - _currentPosePosition.X, 
                 targetPose.Y - _currentPosePosition.Y, 
