@@ -14,6 +14,27 @@ namespace ArmController
     {
         #region UI Events
 
+        private void goToCoordinateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_serialPort.IsConnected)
+            {
+                return;
+            }
+
+            var coorX = TextToInt(CoordinateXTextBox.Text);
+            var coorY = TextToInt(CoordinateYTextBox.Text);
+            var coorZ = TextToInt(CoordinateZTextBox.Text);
+            var targetPose = _testBrain.ConvertCoordinatToPosition(new Tuple<double, double, double>(coorX, coorY, coorZ));
+            var newCommand = new GCommand(targetPose.X - _currentPosePosition.X, 
+                targetPose.Y - _currentPosePosition.Y, 
+                targetPose.Z - _currentPosePosition.Z, 
+                _currentPosePosition);
+
+            _commands.Enqueue(newCommand);
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+        }
+
         private void CalibButton_Click(object sender, RoutedEventArgs e)
         {
             this.GetCommandsFromServer();

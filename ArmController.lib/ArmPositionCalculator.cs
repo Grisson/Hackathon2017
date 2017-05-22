@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ArmController.lib
 {
-    public class ArmPositionCalculator
+    internal class ArmPositionCalculator
     {
         public static ArmPositionCalculator SharedInstacne = new ArmPositionCalculator();
 
@@ -21,7 +21,10 @@ namespace ArmController.lib
 
         public double AngelPerStep => 360.0 / StepsPerRev;
 
-        public double B1 = 43;
+        public double B1 = 43; // degree
+        public double B2 = 69; // degree
+
+        public int l = 120; // 120mm arm
 
         private ArmPositionCalculator()
         {
@@ -30,12 +33,61 @@ namespace ArmController.lib
 
         public Tuple<double, double, double> ToCoordinate(PosePosition pos)
         {
-            return null;
+            var lowAngle = LowAngle(pos.X);
+            var highAngle = HighAngle(pos.X, pos.Y);
+
+            var lowRadian = AngleToRadian(lowAngle);
+            var highRadian = AngleToRadian(highAngle);
+
+            var alpha = TriangleCorner(highRadian);
+
+            var bottomL = BottomOfIsoscelesTriangle(l, alpha);
+
+            var beta = (Math.PI - alpha - lowRadian).RandWithFiveDigites();
+
+            var zCoord = (Math.Sin(beta) * bottomL).RandWithFiveDigites();
+
+            var length = (Math.Cos(beta) * bottomL).RandWithFiveDigites();
+
+            var rototeAngle = MmToAngle(pos.Z);
+
+            var xCoord = (Math.Cos(rototeAngle) * length).RandWithFiveDigites();
+            var yCoord = (Math.Sin(rototeAngle) * length).RandWithFiveDigites();
+
+            return new Tuple<double, double, double>(xCoord, yCoord, zCoord);
         }
 
         public PosePosition ToPose(Tuple<double, double, double> coor)
         {
-            return null;
+            var x = coor.Item1;
+            var y = coor.Item2;
+            var z = coor.Item3;
+
+            var rotateZRadian = Math.Atan2(y, x).RandWithFiveDigites();
+            var rotateZAngle = RadianToAngle(rotateZRadian).RandWithFiveDigites();
+            var rotateZMM = (int)AngleToMM(rotateZAngle);
+
+            var length = Math.Sqrt(x * x + y * y).RandWithFiveDigites();
+
+            var bottomL = Math.Sqrt(length * length + z * z).RandWithFiveDigites();
+
+            var alphaRadian = Math.Acos(bottomL / (2 * l));
+            var highRadian = Math.PI - (2 * alphaRadian);
+
+            var betaRadian = Math.Acos(length / bottomL);
+            if (z < 0)
+            {
+                betaRadian = -1 * betaRadian;
+            }
+
+            var lowRadian = Math.PI - alphaRadian - betaRadian;
+            var lowAngle = RadianToAngle(lowRadian);
+            var lowMm = (int)AngleToMM(lowAngle - B1);
+
+            var highAngle = RadianToAngle(highRadian - lowRadian) - B2;
+            var highMm = (int)AngleToMM(highAngle);
+
+            return new PosePosition(lowMm, highMm, rotateZMM);
         }
 
         public int AngleToMM(double a)
@@ -50,34 +102,32 @@ namespace ArmController.lib
 
         public double AngleToRadian(double angle)
         {
-            return Math.Round(angle * Math.PI / 180, 5, MidpointRounding.AwayFromZero);
+            return (angle * Math.PI / 180).RandWithFiveDigites();
         }
 
         public double RadianToAngle(double radian)
         {
-            return Math.Round(radian * 180 / Math.PI, 5, MidpointRounding.AwayFromZero);
+            return (radian * 180 / Math.PI).RandWithFiveDigites();
         }
 
-        //public Tuple<double, double, double> AngleToCoordinate(Tuple<double, double, double> angles)
-        //{
+        public double TriangleCorner(double radian)
+        {
+            return ((Math.PI - radian) / 2).RandWithFiveDigites();
+        }
 
-        //}
-
-        //public Tuple<double, double, double> CoordinateToAngle(Tuple<double, double, double> angles)
-        //{
-
-        //}
+        public double BottomOfIsoscelesTriangle(double l, double radian)
+        {
+            return (2 * l * Math.Cos(radian)).RandWithFiveDigites();
+        }
 
         public double HighAngle(int x, int y)
         {
-            return 69 + MmToAngle(x) - MmToAngle(y);
+            return B2 + MmToAngle(x) - MmToAngle(y);
         }
 
         public double LowAngle(int x)
         {
-            return 43 + MmToAngle(x);
+            return B1 + MmToAngle(x);
         }
-
-        
     }
 }

@@ -213,6 +213,16 @@ namespace ArmController.lib
             return serialized;
             //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
         }
+
+        public PosePosition ConvertCoordinatToPosition(Tuple<double, double, double> coordinate)
+        {
+            return ArmPositionCalculator.SharedInstacne.ToPose(coordinate);
+        }
+
+        public Tuple<double, double, double>  ConvertPositionToCoordinat(PosePosition pose)
+        {
+            return ArmPositionCalculator.SharedInstacne.ToCoordinate(pose);
+        }
     }
 }
 

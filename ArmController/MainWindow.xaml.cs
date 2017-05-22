@@ -188,6 +188,11 @@ namespace ArmController
                 CurrentPositionX.Text = $"X: {_currentPosePosition.X.ToString(CultureInfo.InvariantCulture)}";
                 CurrentPositionY.Text = $"Y: {_currentPosePosition.Y.ToString(CultureInfo.InvariantCulture)}";
                 CurrentPositionZ.Text = $"Z: {_currentPosePosition.Z.ToString(CultureInfo.InvariantCulture)}";
+
+                var coordinate = _testBrain.ConvertPositionToCoordinat(_currentPosePosition);
+                CurrentCoordinateX.Text = $"X: {coordinate.Item1}";
+                CurrentCoordinateY.Text = $"Y: {coordinate.Item2}";
+                CurrentCoordinateZ.Text = $"Z: {coordinate.Item3}";
             }
         }
         private void DisableUI()
@@ -207,6 +212,7 @@ namespace ArmController
             //YCommandTextBox.IsEnabled = true;
             //ZCommandTextBox.IsEnabled = true;
         }
+
 
 
         #endregion

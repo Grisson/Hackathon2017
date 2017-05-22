@@ -62,8 +62,9 @@
                 VerticalAlignment="Center" Width="75" Background="White" Click="ConnectButton_OnClick" />
 
             </StackPanel>
-            <!-- Keyboard Control Panel -->
+            <!-- Control Panel -->
             <StackPanel Grid.Row="1" Margin="0,0,0,0" VerticalAlignment="Top">
+                <!-- GCommand Section-->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
@@ -76,6 +77,7 @@
                     <TextBox Grid.Column="2" x:Name="ZCommandTextBox"></TextBox>
                     <Button Grid.Column="3" x:Name="SendCommandButton" Click="SendCommandButton_OnClick">Send</Button>
                 </Grid>
+                <!-- Quick Button Section-->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -90,6 +92,7 @@
                     <Button Grid.Column="3" x:Name="ResetButton" Content="Reset" HorizontalAlignment="Stretch" Click="ResetButton_Click"/>
                     <Button Grid.Column="4" x:Name="StopButton" Content="Stop" HorizontalAlignment="Stretch" Click="StopButton_Click"/>
                 </Grid>
+                <!-- Touch Section-->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="4*"/>
@@ -100,9 +103,41 @@
                     <TextBox Grid.Column="1" x:Name="TouchYTextBox"></TextBox>
                     <Button Grid.Column="2" x:Name="SendTouchButton" Click="SendTouchButton_OnClick">Touch</Button>
                 </Grid>
-                <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionX"/>
+                <!-- Coordinate Section -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="CoordinateXTextBox"></TextBox>
+                    <TextBox Grid.Column="1" x:Name="CoordinateYTextBox"></TextBox>
+                    <TextBox Grid.Column="2" x:Name="CoordinateZTextBox"></TextBox>
+                    <Button Grid.Column="3" x:Name="goToCoordinateButton" Click="goToCoordinateButton_Click">Go To</Button>
+                </Grid>
+                <!-- Status Section-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Margin="0,0,0,0" VerticalAlignment="Top">
+                        <TextBlock Foreground="White" FontSize="25" Text="Arm Pose:" />
+                        <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionX"/>
+                        <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionY"/>
+                        <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionZ"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Top">
+                        <TextBlock Foreground="White" FontSize="25" Text="Space Coordinate:" />
+                        <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentCoordinateX"/>
+                        <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentCoordinateY"/>
+                        <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentCoordinateZ"/>
+                    </StackPanel>
+                </Grid>
+                <!--<TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionX"/>
                 <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionY"/>
-                <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionZ"/>
+                <TextBlock Foreground="White" FontSize="25" Text="" x:Name="CurrentPositionZ"/>-->
             </StackPanel>
         </Grid>
         <!-- Output area -->

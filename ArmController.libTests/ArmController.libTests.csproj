@@ -69,6 +69,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ArmPositionCalculatorTests.cs" />
     <Compile Include="CalibratorTests.cs" />
     <Compile Include="MathHelperMathHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
