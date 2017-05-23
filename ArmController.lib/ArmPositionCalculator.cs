@@ -21,8 +21,8 @@ namespace ArmController.lib
 
         public double AngelPerStep => 360.0 / StepsPerRev;
 
-        public double B1 = 43; // degree
-        public double B2 = 69; // degree
+        public double B1 = 33; //43; // degree
+        public double B2 = 60; //69; // degree
 
         public int l = 120; // 120mm arm
 
