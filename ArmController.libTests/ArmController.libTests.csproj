@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="ArmPositionCalculatorTests.cs" />
     <Compile Include="CalibratorTests.cs" />
+    <Compile Include="GeometryHelperTests.cs" />
     <Compile Include="MathHelperMathHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
