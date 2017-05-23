@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ArmController.lib
 {
-    public class GeometryHelper
+    public static class GeometryHelper
     {
         public static Tuple<double, double> CalculateGrad(double ax, double ay, double az)
         {
