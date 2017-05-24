@@ -146,6 +146,36 @@ namespace ArmController.lib
             return result;
         }
 
+        public static TouchResponse[][] TouchPointsOnSameRadius(List<Tuple<PosePosition, TouchResponse>> rawPoints)
+        {
+            var result = new List<TouchResponse[]>();
+
+            var dict = new Dictionary<string, List<TouchResponse>>();
+            for (var i = 0; i < (rawPoints.Count - 1); i++)
+            {
+                var x = rawPoints[i].Item1.X;
+                var y = rawPoints[i].Item1.Y;
+
+                var k = $"{x}|{y}";
+
+                if (!dict.ContainsKey(k))
+                {
+                    dict[k] = new List<TouchResponse>();
+                }
+
+                dict[k].Add(rawPoints[i].Item2);
+            }
+
+            foreach (var k in dict.Keys)
+            {
+                if (dict[k].Count >= 3)
+                {
+                    result.Add(dict[k].ToArray());
+                }
+            }
+
+            return result.ToArray();
+        }
 
         public static Tuple<double, double> CalculatorZ(List<List<Tuple<PosePosition, TouchResponse>>> pointsOnLine)
         {

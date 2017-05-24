@@ -136,7 +136,7 @@ namespace ArmController.lib
                 X.Add(new[] { X21, X22 });
             }
 
-            double[] result = Fit.MultiDim(X.ToArray(), Y.ToArray(), true, DirectRegressionMethod.NormalEquations);
+            double[] result = Fit.MultiDim(X.ToArray(), Y.ToArray(), false, DirectRegressionMethod.NormalEquations);
 
             return result;
         }

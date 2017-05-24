@@ -23,7 +23,7 @@ namespace ArmController.lib
         internal SortedList<long, PosePosition> PosePositions { get; set; }
         internal SortedList<long, TouchResponse> TouchPoints { get; set; }
         internal List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping { get; set; }
-        internal Point AgentLocation { get; set; } 
+        internal Point AgentLocation { get; set; }
         internal Tuple<double, double> Fz { get; set; }
 
         public TestRunner()
@@ -39,7 +39,7 @@ namespace ArmController.lib
 
         public string CanResume()
         {
-            if(isTouchReported)
+            if (isTouchReported)
             {
                 var tmp = new ResumeCommand();
                 JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
@@ -106,19 +106,20 @@ namespace ArmController.lib
 
         public void Calibrate()
         {
-             PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
+            PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
 
             // test agent corrdinate
-            var lines = Calibrator.CalculatorBisectorLines(PoseTouchMapping);
-            var points = Calibrator.CalculatorCenterPoints(lines);
-            AgentLocation = MathHelper.MeanPoint(points);
+            var pointsOnSameRadius = Calibrator.TouchPointsOnSameRadius(PoseTouchMapping);
+            var centerCoordinate = MathHelper.CalculatorCentorOfCircle(pointsOnSameRadius);
+            AgentLocation = new Point { X = centerCoordinate[0], Y = centerCoordinate[1] };
 
             // rotate calibration
-            var pointsOnSameLine = Calibrator.MapPointsOnSameLine(PoseTouchMapping);
-            Fz = Calibrator.CalculatorZ(pointsOnSameLine);
 
 
-            // arm position function
+
+            // length calibration
+            var pointsOnSameAngle = Calibrator.MapPointsOnSameAngle(PoseTouchMapping);
+
             // ??????
         }
 
@@ -133,7 +134,7 @@ namespace ArmController.lib
 
         public void Done(string data)
         {
-            switch(data)
+            switch (data)
             {
                 case TaskNameCalibration:
                     Calibrate();
@@ -233,7 +234,7 @@ namespace ArmController.lib
             return ArmPositionCalculator.SharedInstance.ToPose(coordinate);
         }
 
-        public Tuple<double, double, double>  ConvertPositionToCoordinat(PosePosition pose)
+        public Tuple<double, double, double> ConvertPositionToCoordinat(PosePosition pose)
         {
             return ArmPositionCalculator.SharedInstance.ToCoordinate(pose);
         }
