@@ -5,16 +5,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ArmController.lib.Data;
 
 namespace ArmController.lib.Tests
 {
     [TestClass()]
     public class MathHelperMathHelperTests
     {
-        [TestMethod()]
-        public void CalculatorPerpendicularBisectorTest()
+        public static TouchResponse[][] GenerateTouchPoints()
         {
-            Assert.Fail();
+            var result = new List<TouchResponse[]>();
+
+            result.Add(new[] { new TouchResponse(65, -365), new TouchResponse(88, -363.5), new TouchResponse(129, -360.5) });
+            //result.Add(new Tuple<PosePosition, TouchResponse>(pose, new TouchResponse (218, -360)));
+
+            result.Add(new[] { new TouchResponse(83.5, -334), new TouchResponse(104.5, -332.5), new TouchResponse(151.5, -330) });
+            //result.Add(new Tuple<PosePosition, TouchResponse>(new PosePosition(8, 3175, 3650, 225), new TouchResponse(242.5, -332.5)));
+
+            result.Add(new[] { new TouchResponse(99.5, -274.5), new TouchResponse(124, -272.5), new TouchResponse(172, -271) });
+            //result.Add(new Tuple<PosePosition, TouchResponse>( new PosePosition(12, 3275, 3550, 175), new TouchResponse (267, -274.5)));
+
+            result.Add(new[] { new TouchResponse(119, -160.5), new TouchResponse(143, -159.5), new TouchResponse(194.5, -159) });
+            //result.Add(new Tuple<PosePosition, TouchResponse>( new PosePosition(14, 3475, 3350, 125), new TouchResponse (300.5, -163.5)));
+
+            return result.ToArray();
+
+        }
+
+        [TestMethod()]
+        public void CalculatorCentorOfCircleTest()
+        {
+            var points = GenerateTouchPoints();
+            var result = MathHelper.CalculatorCentorOfCircle(points);
+            Assert.IsNotNull(result);
+            Assert.IsTrue(result.Length == 2);
         }
     }
 }

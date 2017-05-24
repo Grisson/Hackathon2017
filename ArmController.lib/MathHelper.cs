@@ -5,6 +5,8 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using ArmController.lib.Data;
+using MathNet.Numerics;
+using MathNet.Numerics.LinearRegression;
 
 namespace ArmController.lib
 {
@@ -101,6 +103,42 @@ namespace ArmController.lib
                 X = allX / (count * 1.0),
                 Y = allY / (count * 1.0),
             };
+        }
+
+        public static double[] CalculatorCentorOfCircle(TouchResponse[][] touchPoints)
+        {
+            List<double[]> X = new List<double[]>();
+            List<double> Y = new List<double>();
+            foreach(var pointsInSameRow in touchPoints)
+            {
+                var point0 = pointsInSameRow[0];
+                var point1 = pointsInSameRow[1];
+                var point2 = pointsInSameRow[2];
+
+                var x0 = point0.TouchPoint.X;
+                var y0 = point0.TouchPoint.Y;
+                var x1 = point1.TouchPoint.X;
+                var y1 = point1.TouchPoint.Y;
+                var x2 = point2.TouchPoint.X;
+                var y2 = point2.TouchPoint.Y;
+
+                var Y0 = x1 * x1 + y1 * y1 - x0 * x0 - y0 * y0;
+                var Y1 = x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1;
+                Y.Add(Y0);
+                Y.Add(Y1);
+
+                var X11 = (x1 - x0) * 2;
+                var X12 = (y1 - y0) * 2;
+                X.Add(new[] { X11, X12 });
+
+                var X21 = (x2 - x1) * 2;
+                var X22 = (y2 - y1) * 2;
+                X.Add(new[] { X21, X22 });
+            }
+
+            double[] result = Fit.MultiDim(X.ToArray(), Y.ToArray(), true, DirectRegressionMethod.NormalEquations);
+
+            return result;
         }
     }
 }
