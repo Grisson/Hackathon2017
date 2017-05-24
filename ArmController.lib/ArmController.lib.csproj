@@ -73,6 +73,7 @@
     <Compile Include="Data\DoneCommand.cs" />
     <Compile Include="Data\GCommand.cs" />
     <Compile Include="Data\Point.cs" />
+    <Compile Include="Data\PoseCommand.cs" />
     <Compile Include="Data\PosePosition.cs" />
     <Compile Include="Data\ResumeCommand.cs" />
     <Compile Include="Data\ScreenShotCommand.cs" />

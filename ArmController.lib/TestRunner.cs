@@ -146,18 +146,19 @@ namespace ArmController.lib
             }
         }
 
-
         public string GetCalibrationCommonds()
         {
             var commonds = new List<BaseCommand>();
 
             // disable this
             //commonds.Add(new GCommand(12.9, 14.7, 0));
+            var pose = ArmPositionCalculator.SharedInstance.ToPose(new Tuple<double, double, double>(60, 0, 0));
+
             commonds.Add(new GCommand(3171, 2371, 0));
 
             commonds.TouchInStairs(new List<int> { 0, -100, -100, -100, -100 }, new List<int> { 0, 100, 100, 100, 100 });
 
-            commonds.TouchInStairs(new List<int> { -100, -100, -100, -100 },  new List<int> { -100, -100, -100, -100 });
+            commonds.TouchInStairs(new List<int> { -100, -100, -100, -100 }, new List<int> { -100, -100, -100, -100 });
 
             commonds.Reset();
 
@@ -165,42 +166,55 @@ namespace ArmController.lib
 
             commonds.Add(new PauseCommand(30, -1));
 
-            //#region First row
-
-            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 625, -50, -100, -200 }));
-
-            //#endregion
-
-            //#region Second row
-
-            //commonds.Add(CommandHelper.ChangeLength(50));
-
-            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 300, -50, -100, -200 }));
-
-            //#endregion
-
-            //#region Third row
-
-            //commonds.Add(CommandHelper.ChangeLength(100));
-
-            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 300, -50, -100, -200 }));
-
-            //#endregion
-
-            //#region Forth row
-
-            //commonds.Add(CommandHelper.ChangeLength(200));
-
-            //commonds.AddRange(CommandHelper.TouchPointsInSameRadius(new List<double> { 300, -50, -100, -200 }));
-
-            //#endregion
-
             commonds.Add(new GCommand()
             {
                 ResetPosition = true
             });
 
-            //commonds.Add(new DoneCommand(TaskNameCalibration));
+            commonds.Add(new DoneCommand(TaskNameCalibration));
+
+            if (commonds.Count <= 0)
+            {
+                return string.Empty;
+            }
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            string serialized = JsonConvert.SerializeObject(commonds, settings);
+
+            return serialized;
+            //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
+        }
+
+        public string GetSecondCalibrationCommonds()
+        {
+            var commonds = new List<BaseCommand>();
+
+            var lengths = new[] { 60, 70, 80, 90, 100, 110, 120 };
+            var rotates = new[] { 10, 15, 20, 25, 30, 35, 40 };
+
+            var tapDistance = CommandHelper.GetTapDistance();
+            for (var i = 0; i < lengths.Length; i++)
+            {
+                var length = lengths[i];
+                var rotate = rotates[i];
+                var pose = ArmPositionCalculator.SharedInstance.ToPose(new Tuple<double, double, double>(length, 0, 0));
+                var x = pose.X - tapDistance;
+                var y = pose.Y - tapDistance;
+
+                commonds.Add(new PoseCommand(x, y, 0));
+                commonds.Tap();
+                commonds.WaitForTouch();
+
+                commonds.TouchInSameRadius(new List<int> { rotate, -2 * rotate });
+
+                commonds.Rotate(rotate);
+            }
+
+            commonds.Reset();
+
+            commonds.Add(new DoneCommand(TaskNameCalibrationZ));
+
+            commonds.Add(new PauseCommand(30, -1));
 
             if (commonds.Count <= 0)
             {
@@ -216,12 +230,12 @@ namespace ArmController.lib
 
         public PosePosition ConvertCoordinatToPosition(Tuple<double, double, double> coordinate)
         {
-            return ArmPositionCalculator.SharedInstacne.ToPose(coordinate);
+            return ArmPositionCalculator.SharedInstance.ToPose(coordinate);
         }
 
         public Tuple<double, double, double>  ConvertPositionToCoordinat(PosePosition pose)
         {
-            return ArmPositionCalculator.SharedInstacne.ToCoordinate(pose);
+            return ArmPositionCalculator.SharedInstance.ToCoordinate(pose);
         }
     }
 }

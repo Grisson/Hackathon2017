@@ -18,6 +18,7 @@ namespace ArmController.Executor
         private CommandStore _commands => CommandStore.SharedInstance;
 
         public Action<string> LogHandler;
+        public SerialCommunicator SerialPort { get; set; }
 
         public bool IsWaitingResponse { get; set; }
 
@@ -107,6 +108,9 @@ namespace ArmController.Executor
                     break;
                 case CommandType.Done:
                     DoneCommandExecutor.SharedInstance.Execute(command);
+                    break;
+                case CommandType.Pose:
+                    PoseCommandExecutor.SharedInstance.Execute(command);
                     break;
                 default:
                     break;

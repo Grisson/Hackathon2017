@@ -1,16 +1,15 @@
 ﻿using ArmController.lib.Data;
 using System;
 using System.Collections.Generic;
-using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ArmController.Executor
 {
-    public class GCommandExecutor : IExecutor
+    public class PoseCommandExecutor : IExecutor
     {
-        public static readonly GCommandExecutor SharedInstance = new GCommandExecutor();
+        public static readonly PoseCommandExecutor SharedInstance = new PoseCommandExecutor();
 
         public SerialCommunicator SerialPort => CommandExecutor.SharedInstance.SerialPort;
 
@@ -26,34 +25,26 @@ namespace ArmController.Executor
             }
         }
 
-        private GCommandExecutor()
+        private PoseCommandExecutor()
         {
 
         }
 
         public void Execute(BaseCommand command)
         {
-            this.Execute(command as GCommand);
+            this.Execute(command as PoseCommand);
         }
 
-        public void Execute(GCommand command)
+        public void Execute(PoseCommand command)
         {
             if ((SerialPort == null) || !SerialPort.IsConnected)
             {
                 return;
             }
 
-            if(command.CurrentPosePosition == null)
+            if (command.CurrentPosePosition == null)
             {
                 command.CurrentPosePosition = CommandStore.SharedInstance.CurrentPosePosition;
-            }
-
-            if(command.ResetPosition)
-            {
-                command.XDelta = command.CurrentPosePosition.X * -1;
-                command.YDelta = command.CurrentPosePosition.Y * -1;
-                command.ZDelta = command.CurrentPosePosition.Z * -1;
-                command.RefreshCommandText();
             }
 
             command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();

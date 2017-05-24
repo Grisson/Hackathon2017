@@ -14,6 +14,11 @@ namespace ArmController.lib
         public static int WaitingTimeOutSeconds = 30;
         public static int RefreshIntervalMillSeconds = 500;
 
+        public static int GetTapDistance()
+        {
+            return LiftUpDistance * MMToSteps;
+        }
+
         public static void WaitForTouch(this List<BaseCommand> commands)
         {
             commands.Add(CommandHelper.WaitForTouch());
@@ -34,6 +39,7 @@ namespace ArmController.lib
             commands.AddRange(CommandHelper.Tap());
         }
 
+        [Obsolete("Use coordinate api")]
         public static void ChangeLength(this List<BaseCommand> commands, int dist)
         {
             commands.Add(CommandHelper.ChangeLength(dist));
@@ -99,6 +105,7 @@ namespace ArmController.lib
             return new List<BaseCommand> { TouchDown(), LiftUp() };
         }
 
+        [Obsolete("Use coordinate api")]
         public static GCommand ChangeLength(int dist)
         {
             return new GCommand(dist, -1 * dist, 0);

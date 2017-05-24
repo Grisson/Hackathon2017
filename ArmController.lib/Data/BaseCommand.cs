@@ -14,6 +14,7 @@ namespace ArmController.lib.Data
         WaitingForTouch,
         ScreenShot,
         Done,
+        Pose,
     }
 
     public class BaseCommand

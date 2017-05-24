@@ -16,7 +16,7 @@ namespace ArmController.lib.Tests
         [TestMethod()]
         public void AngleToMMTest()
         {
-            var steps = ArmPositionCalculator.SharedInstacne.AngleToMM(90);
+            var steps = ArmPositionCalculator.SharedInstance.AngleToMM(90);
 
             Assert.IsTrue(steps == 3600);
         }
@@ -24,7 +24,7 @@ namespace ArmController.lib.Tests
         [TestMethod()]
         public void TestPositionToCoord()
         {
-            var coord = ArmPositionCalculator.SharedInstacne.ToCoordinate(new Data.PosePosition(680, 1040, 0));
+            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new Data.PosePosition(680, 1040, 0));
 
             Assert.IsNotNull(coord);
             Assert.IsTrue(Math.Abs(coord.Item1 - 60) < Tolerance);
@@ -35,7 +35,7 @@ namespace ArmController.lib.Tests
         [TestMethod()]
         public void TestPositionToCoord2()
         {
-            var coord = ArmPositionCalculator.SharedInstacne.ToCoordinate(new Data.PosePosition(680, 1040, 2400));
+            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new Data.PosePosition(680, 1040, 2400));
 
             Assert.IsNotNull(coord);
             Assert.IsTrue(Math.Abs(coord.Item1 - 60/2) < Tolerance);
@@ -47,8 +47,8 @@ namespace ArmController.lib.Tests
         public void TestCoordToPose()
         {
             var initPose = new Data.PosePosition(680, 1040, 2400);
-            var coord = ArmPositionCalculator.SharedInstacne.ToCoordinate(new Data.PosePosition(680, 1040, 2400));
-            var postPose = ArmPositionCalculator.SharedInstacne.ToPose(coord);
+            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new Data.PosePosition(680, 1040, 2400));
+            var postPose = ArmPositionCalculator.SharedInstance.ToPose(coord);
 
             Assert.IsNotNull(postPose);
             Assert.IsTrue(Math.Abs(postPose.X - initPose.X) < Tolerance);

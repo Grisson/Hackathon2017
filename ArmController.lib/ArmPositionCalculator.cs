@@ -9,7 +9,7 @@ namespace ArmController.lib
 {
     public class ArmPositionCalculator
     {
-        public static ArmPositionCalculator SharedInstacne = new ArmPositionCalculator();
+        public static ArmPositionCalculator SharedInstance = new ArmPositionCalculator();
 
         public double GearRatio = 4.5;
         public int MotorStepsPerRev = 200;

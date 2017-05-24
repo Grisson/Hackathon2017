@@ -46,11 +46,11 @@ namespace ArmController
         {
             get
             {
-                return GCommandExecutor.SharedInstance.SerialPort;
+                return CommandExecutor.SharedInstance.SerialPort;
             }
             set
             {
-                GCommandExecutor.SharedInstance.SerialPort = value;
+                CommandExecutor.SharedInstance.SerialPort = value;
             }
         }
 
@@ -102,13 +102,27 @@ namespace ArmController
 
                     if (_currentCommand != null)
                     {
-                        var tmpCommand = _currentCommand as GCommand;
-                        tmpCommand.Receive(d);
-                        _dataContext.AddOutput(tmpCommand.ToReceiveLog());
-                        if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
+                        if(_currentCommand is GCommand)
                         {
-                            CommandComplete(tmpCommand);
+                            var tmpCommand = _currentCommand as GCommand;
+                            tmpCommand.Receive(d);
+                            _dataContext.AddOutput(tmpCommand.ToReceiveLog());
+                            if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                CommandComplete(tmpCommand.NextPosePosition, tmpCommand.SendTimeStamp);
+                            }
                         }
+                        else if(_currentCommand is PoseCommand)
+                        {
+                            var tmpCommand = _currentCommand as PoseCommand;
+                            tmpCommand.Receive(d);
+                            _dataContext.AddOutput(tmpCommand.ToReceiveLog());
+                            if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                CommandComplete(tmpCommand.NextPosePosition, tmpCommand.SendTimeStamp);
+                            }
+                        }
+                        
                     }
                 }
                 Scroller.ScrollToBottom();
@@ -116,10 +130,9 @@ namespace ArmController
             });
         }
 
-        private void CommandComplete(GCommand currentCommand)
+        private void CommandComplete(PosePosition nextP, long sendTimeStamp)
         {
             // update current test agent pose position
-            var nextP = currentCommand.NextPosePosition;
             if (nextP != null)
             {
                 _currentPosePosition = nextP;
@@ -127,7 +140,7 @@ namespace ArmController
             }
 
             // report pose position
-            _testBrain.ReportAgentPosePosition(currentCommand.SendTimeStamp,
+            _testBrain.ReportAgentPosePosition(sendTimeStamp,
                 _currentPosePosition.X,
                 _currentPosePosition.Y,
                 _currentPosePosition.Z);
@@ -144,7 +157,7 @@ namespace ArmController
 
         private void GetCommandsFromServer()
         {
-            var commandsText = _testBrain.GetCalibrationCommonds();
+            var commandsText = _testBrain.GetSecondCalibrationCommonds();
 
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
