@@ -25,6 +25,7 @@ namespace ArmController.lib
         internal List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping { get; set; }
         internal Point AgentLocation { get; set; }
         internal Tuple<double, double> F_length { get; set; }
+        internal Tuple<double, double> F_x { get; set; }
 
         public TestRunner()
         {
@@ -116,10 +117,13 @@ namespace ArmController.lib
             // rotate calibration -- no need
 
             // length calibration
-            var pointsOnXAxis = Calibrator.TouchPairsOnXAxis(PoseTouchMapping);
-            F_length = Calibrator.MapLength(pointsOnXAxis, AgentLocation);
+            var pirsOnXAxis = Calibrator.TouchPairsOnXAxis(PoseTouchMapping);
+            // TODO: may swith the X and Y in this function
+            F_length = Calibrator.MapLength(pirsOnXAxis, AgentLocation);
 
-            // ??????
+            // fx 
+            var pointsOnXAxis = Calibrator.TouchPointsOnXAxis(PoseTouchMapping);
+            F_x = Calibrator.FindFx(pointsOnXAxis);
         }
 
 
@@ -233,6 +237,15 @@ namespace ArmController.lib
 
         public PosePosition ConvertTouchPointToPosition(TouchResponse touchPoint)
         {
+            // 1. distance
+            var dist = MathHelper.CalculateDistance(new[] { AgentLocation.X, AgentLocation.Y }, new[] { touchPoint.X, touchPoint.Y });
+
+            // 2. map to coordinate X
+
+            // 3. calculate the Z
+
+            // 4. coordinate to distance
+
             return null;
         }
 
