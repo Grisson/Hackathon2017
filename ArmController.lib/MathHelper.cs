@@ -105,7 +105,7 @@ namespace ArmController.lib
             };
         }
 
-        public static double[] CalculateCentorOfCircle(TouchResponse[][] touchPoints)
+        public static double[] CalculateCenterOfCircle(TouchResponse[][] touchPoints)
         {
             List<double[]> X = new List<double[]>();
             List<double> Y = new List<double>();

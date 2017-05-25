@@ -36,8 +36,11 @@ namespace ArmController.lib
                 else if ((poseTimestamp[poseIndex] < touchTimestamp[touchIndex]) &&
                     ((poseIndex + 1 >= poseTimestamp.Count) || (touchTimestamp[touchIndex] < poseTimestamp[poseIndex + 1])))
                 {
-
-                    PoseTouchMapping.Add(new Tuple<PosePosition, TouchResponse>(PosePositions[poseTimestamp[poseIndex]], TouchPoints[touchTimestamp[touchIndex]]));
+                    var pose = PosePositions[poseTimestamp[poseIndex]];
+                    pose.X += CommandHelper.LiftUpDistance;
+                    pose.Y += CommandHelper.LiftUpDistance;
+                         
+                    PoseTouchMapping.Add(new Tuple<PosePosition, TouchResponse>(pose, TouchPoints[touchTimestamp[touchIndex]]));
 
                     poseIndex++;
                     touchIndex++;

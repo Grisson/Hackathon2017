@@ -110,7 +110,7 @@ namespace ArmController.lib
 
             // test agent corrdinate
             var pointsOnSameRadius = Calibrator.TouchPointsOnSameRadius(PoseTouchMapping);
-            var centerCoordinate = MathHelper.CalculateCentorOfCircle(pointsOnSameRadius);
+            var centerCoordinate = MathHelper.CalculateCenterOfCircle(pointsOnSameRadius);
             AgentLocation = new Point { X = centerCoordinate[0], Y = centerCoordinate[1] };
 
             // rotate calibration -- no need
@@ -205,7 +205,7 @@ namespace ArmController.lib
 
             commonds.Reset();
 
-            commonds.Add(new DoneCommand(TaskNameCalibrationZ));
+            commonds.Add(new DoneCommand(TaskNameCalibration));
 
             commonds.Add(new PauseCommand(30, -1));
 
