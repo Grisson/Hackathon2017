@@ -105,7 +105,7 @@ namespace ArmController.lib
             };
         }
 
-        public static double[] CalculatorCentorOfCircle(TouchResponse[][] touchPoints)
+        public static double[] CalculateCentorOfCircle(TouchResponse[][] touchPoints)
         {
             List<double[]> X = new List<double[]>();
             List<double> Y = new List<double>();
@@ -138,6 +138,17 @@ namespace ArmController.lib
 
             double[] result = Fit.MultiDim(X.ToArray(), Y.ToArray(), false, DirectRegressionMethod.NormalEquations);
 
+            return result;
+        }
+
+        public static double CalculateDistance(double[] center, double[] touchPoint)
+        {
+            return Distance.Euclidean(center, touchPoint);
+        }
+
+        public static Tuple<double, double> CalculateLine(double[] X, double[] Y)
+        {
+            var result = Fit.Line(X, Y);
             return result;
         }
     }

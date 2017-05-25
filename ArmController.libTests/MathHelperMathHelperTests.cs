@@ -52,22 +52,22 @@ namespace ArmController.lib.Tests
 
         }
 
-        [TestMethod()]
-        public void CalculatorCentorOfCircleTest()
-        {
-            //var points = GenerateTouchPoints();
-            var points = GenerateTouchPoints2();
-            var result = MathHelper.CalculatorCentorOfCircle(points);
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Length == 2);
-        }
+        //[TestMethod()]
+        //public void CalculatorCentorOfCircleTest()
+        //{
+        //    //var points = GenerateTouchPoints();
+        //    var points = GenerateTouchPoints2();
+        //    var result = MathHelper.CalculateCentorOfCircle(points);
+        //    Assert.IsNotNull(result);
+        //    Assert.IsTrue(result.Length == 2);
+        //}
 
         [TestMethod()]
         public void CalculatorCentorOfCircleTest2()
         {
             //var points = GenerateTouchPoints();
             var points = GenerateTouchPoints2();
-            var result = MathHelper.CalculatorCentorOfCircle(points);
+            var result = MathHelper.CalculateCentorOfCircle(points);
             Assert.IsNotNull(result);
             Assert.IsTrue(result.Length == 2);
             Assert.IsTrue((result[0] - 5) < 0.1);

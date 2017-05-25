@@ -51,53 +51,6 @@ namespace ArmController.lib
             return PoseTouchMapping;
         }
 
-
-        public static List<Tuple<double, double, double>> CalculatorBisectorLines(List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping)
-        {
-            var lines = new List<Tuple<double, double, double>>();
-
-            for (var i = 0; i < PoseTouchMapping.Count - 1; i++)
-            {
-                for (var j = i + 1; j < PoseTouchMapping.Count; j++)
-                {
-                    var agentAPosition = PoseTouchMapping[i].Item1;
-                    var agentBPosition = PoseTouchMapping[j].Item1;
-
-                    if ((Math.Abs(agentAPosition.X - agentBPosition.X) < Tolerance) &&
-                        (Math.Abs(agentAPosition.Y - agentBPosition.Y) < Tolerance) &&
-                        (Math.Abs(agentAPosition.Z - agentBPosition.Z) > Tolerance))
-                    {
-                        // touch point should on same cycle
-
-                        var touchPointA = PoseTouchMapping[i].Item2;
-                        var touchPointB = PoseTouchMapping[j].Item2;
-
-                        var line = MathHelper.CalculatorPerpendicularBisector(touchPointA, touchPointB);
-                        lines.Add((line));
-                    }
-                }
-            }
-
-            return lines;
-        }
-
-        public static List<Point> CalculatorCenterPoints(List<Tuple<double, double, double>> lines)
-        {
-            var points = new List<Point>();
-
-            for (var i = 0; i < lines.Count - 1; i++)
-            {
-                for (var j = i + 1; j < lines.Count; j++)
-                {
-                    var p = MathHelper.Intersect(lines[i], lines[j]);
-                    points.Add(p);
-                }
-            }
-
-            return points;
-        }
-
-
         public static List<List<Tuple<PosePosition, TouchResponse>>> MapPointsOnSameLine(List<Tuple<PosePosition, TouchResponse>> rawPoints)
         {
             Dictionary<double, List<Tuple<PosePosition, TouchResponse>>> dict = new Dictionary<double, List<Tuple<PosePosition, TouchResponse>>>();
@@ -122,29 +75,20 @@ namespace ArmController.lib
             return result;
         }
 
-        public static List<List<Tuple<PosePosition, TouchResponse>>> MapPointsOnSameAngle(List<Tuple<PosePosition, TouchResponse>> rawPoints)
+        public static List<Tuple<PosePosition, TouchResponse>> TouchPairsOnXAxis(List<Tuple<PosePosition, TouchResponse>> rawPoints)
         {
-            Dictionary<double, List<Tuple<PosePosition, TouchResponse>>> dict = new Dictionary<double, List<Tuple<PosePosition, TouchResponse>>>();
-            List<List<Tuple<PosePosition, TouchResponse>>> result = new List<List<Tuple<PosePosition, TouchResponse>>>(); ;
+            var result = new List<Tuple<PosePosition, TouchResponse>>(); ;
             for (var i = 0; i < (rawPoints.Count - 1); i++)
             {
-                for (var j = i + 1; j < rawPoints.Count; j++)
+                if (rawPoints[i].Item1.Z == 0)
                 {
-                    var z1 = rawPoints[i].Item1.Z;
-                    var z2 = rawPoints[j].Item1.Z;
-
-                    // Compare the values
-                    // The output to the console indicates that the two values are equal
-                    if (z1 == z2)
-                    {
-                        result.Add(new List<Tuple<PosePosition, TouchResponse>> { rawPoints[i], rawPoints[j] });
-                        break;
-                    }
+                    result.Add(rawPoints[i]);
                 }
             }
 
             return result;
         }
+
 
         public static TouchResponse[][] TouchPointsOnSameRadius(List<Tuple<PosePosition, TouchResponse>> rawPoints)
         {
@@ -175,6 +119,24 @@ namespace ArmController.lib
             }
 
             return result.ToArray();
+        }
+
+        public static Tuple<double, double> MapLength(List<Tuple<PosePosition, TouchResponse>> rawPoints, Point centerPoint)
+        {
+            var X = new List<double>();
+            var Y = new List<double>();
+
+            foreach(var p in rawPoints)
+            {
+                var x = ArmPositionCalculator.SharedInstance.ToCoordinate(p.Item1).Item1;
+                X.Add(x);
+                var y = MathHelper.CalculateDistance(new[] { p.Item2.TouchPoint.X, p.Item2.TouchPoint.Y }, new[] { centerPoint.X, centerPoint.Y });
+                Y.Add(y);
+            }
+
+            var result = MathHelper.CalculateLine(X.ToArray(), Y.ToArray());
+
+            return result;
         }
 
         public static Tuple<double, double> CalculatorZ(List<List<Tuple<PosePosition, TouchResponse>>> pointsOnLine)
@@ -261,5 +223,91 @@ namespace ArmController.lib
 
             return result;
         }
+
+        #region retired
+        public static List<Tuple<double, double, double>> CalculatorBisectorLines(List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping)
+        {
+            var lines = new List<Tuple<double, double, double>>();
+
+            for (var i = 0; i < PoseTouchMapping.Count - 1; i++)
+            {
+                for (var j = i + 1; j < PoseTouchMapping.Count; j++)
+                {
+                    var agentAPosition = PoseTouchMapping[i].Item1;
+                    var agentBPosition = PoseTouchMapping[j].Item1;
+
+                    if ((Math.Abs(agentAPosition.X - agentBPosition.X) < Tolerance) &&
+                        (Math.Abs(agentAPosition.Y - agentBPosition.Y) < Tolerance) &&
+                        (Math.Abs(agentAPosition.Z - agentBPosition.Z) > Tolerance))
+                    {
+                        // touch point should on same cycle
+
+                        var touchPointA = PoseTouchMapping[i].Item2;
+                        var touchPointB = PoseTouchMapping[j].Item2;
+
+                        var line = MathHelper.CalculatorPerpendicularBisector(touchPointA, touchPointB);
+                        lines.Add((line));
+                    }
+                }
+            }
+
+            return lines;
+        }
+
+        public static List<Point> CalculatorCenterPoints(List<Tuple<double, double, double>> lines)
+        {
+            var points = new List<Point>();
+
+            for (var i = 0; i < lines.Count - 1; i++)
+            {
+                for (var j = i + 1; j < lines.Count; j++)
+                {
+                    var p = MathHelper.Intersect(lines[i], lines[j]);
+                    points.Add(p);
+                }
+            }
+
+            return points;
+        }
+
+        public static List<List<Tuple<PosePosition, TouchResponse>>> MapPointsOnSameAngle(List<Tuple<PosePosition, TouchResponse>> rawPoints)
+        {
+            Dictionary<double, List<Tuple<PosePosition, TouchResponse>>> dict = new Dictionary<double, List<Tuple<PosePosition, TouchResponse>>>();
+            List<List<Tuple<PosePosition, TouchResponse>>> result = new List<List<Tuple<PosePosition, TouchResponse>>>(); ;
+            for (var i = 0; i < (rawPoints.Count - 1); i++)
+            {
+                for (var j = i + 1; j < rawPoints.Count; j++)
+                {
+                    var z1 = rawPoints[i].Item1.Z;
+                    var z2 = rawPoints[j].Item1.Z;
+
+                    // Compare the values
+                    // The output to the console indicates that the two values are equal
+                    if (z1 == z2)
+                    {
+                        result.Add(new List<Tuple<PosePosition, TouchResponse>> { rawPoints[i], rawPoints[j] });
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static TouchResponse[] TouchPointsOnXAxis(List<Tuple<PosePosition, TouchResponse>> rawPoints)
+        {
+            var result = new List<TouchResponse>(); ;
+            for (var i = 0; i < (rawPoints.Count - 1); i++)
+            {
+                if (rawPoints[i].Item1.Z == 0)
+                {
+                    result.Add(rawPoints[i].Item2);
+                }
+            }
+
+            return result.ToArray();
+        }
+        #endregion
+
     }
 }

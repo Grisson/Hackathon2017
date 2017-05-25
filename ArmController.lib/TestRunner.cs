@@ -24,7 +24,7 @@ namespace ArmController.lib
         internal SortedList<long, TouchResponse> TouchPoints { get; set; }
         internal List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping { get; set; }
         internal Point AgentLocation { get; set; }
-        internal Tuple<double, double> Fz { get; set; }
+        internal Tuple<double, double> F_length { get; set; }
 
         public TestRunner()
         {
@@ -110,27 +110,19 @@ namespace ArmController.lib
 
             // test agent corrdinate
             var pointsOnSameRadius = Calibrator.TouchPointsOnSameRadius(PoseTouchMapping);
-            var centerCoordinate = MathHelper.CalculatorCentorOfCircle(pointsOnSameRadius);
+            var centerCoordinate = MathHelper.CalculateCentorOfCircle(pointsOnSameRadius);
             AgentLocation = new Point { X = centerCoordinate[0], Y = centerCoordinate[1] };
 
-            // rotate calibration
-
-
+            // rotate calibration -- no need
 
             // length calibration
-            var pointsOnSameAngle = Calibrator.MapPointsOnSameAngle(PoseTouchMapping);
+            var pointsOnXAxis = Calibrator.TouchPairsOnXAxis(PoseTouchMapping);
+            F_length = Calibrator.MapLength(pointsOnXAxis, AgentLocation);
 
             // ??????
         }
 
-        public void CalibrateZ()
-        {
-            PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
 
-            // rotate calibration
-            var pointsOnSameLine = Calibrator.MapPointsOnSameLine(PoseTouchMapping);
-            Fz = Calibrator.CalculatorZ(pointsOnSameLine);
-        }
 
         public void Done(string data)
         {
@@ -140,7 +132,7 @@ namespace ArmController.lib
                     Calibrate();
                     break;
                 case TaskNameCalibrationZ:
-                    CalibrateZ();
+                    //CalibrateZ();
                     break;
                 default:
                     break;
@@ -238,136 +230,23 @@ namespace ArmController.lib
         {
             return ArmPositionCalculator.SharedInstance.ToCoordinate(pose);
         }
+
+        public PosePosition ConvertTouchPointToPosition(TouchResponse touchPoint)
+        {
+            return null;
+        }
+
+        //
+        // there is no need to calibrate Z 
+        //
+        [Obsolete("no need")]
+        public void CalibrateZ()
+        {
+            //PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
+
+            //// rotate calibration
+            //var pointsOnSameLine = Calibrator.MapPointsOnSameLine(PoseTouchMapping);
+            //Fz = Calibrator.CalculatorZ(pointsOnSameLine);
+        }
     }
 }
-
-/*
- 
-
-            commonds.Add(new GCommand(0, 0, 2.5));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X
-            commonds.Add(new GCommand(0, 0, -0.2));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X
-            commonds.Add(new GCommand(0, 0, -0.4));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X    X
-            commonds.Add(new GCommand(0, 0, -0.8));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));     
-
-    // Different Length, rotate back
-            commonds.Add(new GCommand(0.2, -0.2, 1.2));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X
-            commonds.Add(new GCommand(0, 0, -0.2));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X
-            commonds.Add(new GCommand(0, 0, -0.4));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X    X
-            commonds.Add(new GCommand(0, 0, -0.8));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-    // Different Length, rotate back
-            commonds.Add(new GCommand(0.4, -0.4, 1.2));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X
-            commonds.Add(new GCommand(0, 0, -0.2));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X
-            commonds.Add(new GCommand(0, 0, -0.4));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X    X
-            commonds.Add(new GCommand(0, 0, -0.8));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-    // Different Length, rotate back
-            commonds.Add(new GCommand(0.8, -0.8, 1.2));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X
-            commonds.Add(new GCommand(0, 0, -0.2));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X
-            commonds.Add(new GCommand(0, 0, -0.4));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-
-            // same length, X X  X    X
-            commonds.Add(new GCommand(0, 0, -0.8));
-
-            commonds.Add(new GCommand(2, 2, 0));
-            commonds.Add(new GCommand(-2, -2, 0));
-
-            commonds.Add(new PauseCommand(30, 500));
-*/
