@@ -8,6 +8,10 @@ namespace ArmController.lib
 {
     public class TestRunner
     {
+        public PosePosition initialProbPosition = new PosePosition(2500, 2500, 0);
+        public int ProbInterval = 2;
+        public bool isProbing = false;
+
         public const string TaskNameCalibration = "Calib";
 
         private bool isTouchReported = false;
@@ -109,6 +113,11 @@ namespace ArmController.lib
             }
         }
 
+        public bool WaitingProbResult()
+        {
+            return TouchPoints.Count > 0;
+        }
+
         public void Calibrate()
         {
             PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
@@ -185,6 +194,32 @@ namespace ArmController.lib
 
             return serialized;
             //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
+        }
+
+        public string GetProbCommands(int retry = 0)
+        {
+            if(retry > 10)
+            {
+                return string.Empty;
+            }
+
+            var commonds = new List<BaseCommand>();
+            var x = initialProbPosition.X + retry * ProbInterval;
+            var y = initialProbPosition.Y + retry * ProbInterval;
+            commonds.Add(new PoseCommand(x, y, 0));
+            commonds.Tap();
+            //commonds.Reset();
+            //commonds.Add(new ProbPauseCommand(30, 500, 0));
+
+            if (commonds.Count <= 0)
+            {
+                return string.Empty;
+            }
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            string serialized = JsonConvert.SerializeObject(commonds, settings);
+
+            return serialized;
         }
 
         public PosePosition ConvertCoordinatToPosition(Tuple<double, double, double> coordinate)

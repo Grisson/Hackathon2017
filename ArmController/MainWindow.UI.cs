@@ -37,7 +37,7 @@ namespace ArmController
 
         private void CalibButton_Click(object sender, RoutedEventArgs e)
         {
-            this.GetCommandsFromServer();
+            this.GetProbCommandsFromServer();
         }
 
         private void TapButton_Click(object sender, RoutedEventArgs e)

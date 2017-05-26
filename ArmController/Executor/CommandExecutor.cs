@@ -116,6 +116,9 @@ namespace ArmController.Executor
                 case CommandType.Pose:
                     PoseCommandExecutor.SharedInstance.Execute(command);
                     break;
+                case CommandType.Prob:
+                    ProbPauseCommandExecutor.SharedInstance.Execute(command);
+                    break;
                 default:
                     break;
             }

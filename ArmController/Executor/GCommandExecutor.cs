@@ -88,6 +88,8 @@ namespace ArmController.Executor
                             CommandStore.SharedInstance.CurrentPosePosition.Y,
                             CommandStore.SharedInstance.CurrentPosePosition.Z);
 
+                        LogHandler?.Invoke($"Reported Pose: {CommandStore.SharedInstance.CurrentPosePosition.X}, {CommandStore.SharedInstance.CurrentPosePosition.Y}, {CommandStore.SharedInstance.CurrentPosePosition.Z}");
+
                         // clean the current command
                         CommandStore.SharedInstance.CurrentCommand = null;
 

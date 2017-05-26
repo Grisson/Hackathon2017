@@ -74,8 +74,6 @@ namespace ArmController.Executor
                     Thread.Sleep(500);
                     CommandExecutor.SharedInstance.Execute();
                 }).Start();
-
-
             }
         }
     }

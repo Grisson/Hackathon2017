@@ -119,6 +119,21 @@ namespace ArmController
             new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
 
+        private void GetProbCommandsFromServer()
+        {
+            var commandsText = _testBrain.GetProbCommands();
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
+
+            foreach (var c in deserializedList)
+            {
+                _commands.Enqueue(c);
+            }
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+        }
+
         #region Utilities
 
         private double TextToDouble(string txt)
