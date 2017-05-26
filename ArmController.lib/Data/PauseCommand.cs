@@ -10,6 +10,7 @@ namespace ArmController.lib.Data
     {
         public long TimeOut { get; set; }
         public int RefreshInterval { get; set; }
+        public int RegreshURL { get; set; }
 
         public PauseCommand()
         {
