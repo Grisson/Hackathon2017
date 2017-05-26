@@ -93,64 +93,13 @@ namespace ArmController
 
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
+            CommandExecutor.SharedInstance.Callback(sender, string.Empty, _currentCommand);
+
             Application.Current.Dispatcher.Invoke(() =>
             {
-                var sp = (SerialPort)sender;
-                while (sp.BytesToRead > 0)
-                {
-                    var d = sp.ReadLine();
-
-                    if (_currentCommand != null)
-                    {
-                        if(_currentCommand is GCommand)
-                        {
-                            var tmpCommand = _currentCommand as GCommand;
-                            tmpCommand.Receive(d);
-                            _dataContext.AddOutput(tmpCommand.ToReceiveLog());
-                            if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                CommandComplete(tmpCommand.NextPosePosition, tmpCommand.SendTimeStamp);
-                            }
-                        }
-                        else if(_currentCommand is PoseCommand)
-                        {
-                            var tmpCommand = _currentCommand as PoseCommand;
-                            tmpCommand.Receive(d);
-                            _dataContext.AddOutput(tmpCommand.ToReceiveLog());
-                            if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                CommandComplete(tmpCommand.NextPosePosition, tmpCommand.SendTimeStamp);
-                            }
-                        }
-                        
-                    }
-                }
-                Scroller.ScrollToBottom();
-
-            });
-        }
-
-        private void CommandComplete(PosePosition nextP, long sendTimeStamp)
-        {
-            // update current test agent pose position
-            if (nextP != null)
-            {
-                _currentPosePosition = nextP;
                 ShowCurrentPosition();
-            }
-
-            // report pose position
-            _testBrain.ReportAgentPosePosition(sendTimeStamp,
-                _currentPosePosition.X,
-                _currentPosePosition.Y,
-                _currentPosePosition.Z);
-
-            CommandStore.SharedInstance.CurrentCommand = null;
-
-            lock (CommandExecutor.SharedInstance)
-            {
-                IsWaitingResponse = false;
-            }
+                Scroller.ScrollToBottom();
+            });
 
             new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
@@ -208,6 +157,7 @@ namespace ArmController
                 CurrentCoordinateZ.Text = $"Z: {coordinate.Item3}";
             }
         }
+
         private void DisableUI()
         {
             //SendCommandButton.IsEnabled = false;
@@ -226,10 +176,31 @@ namespace ArmController
             //ZCommandTextBox.IsEnabled = true;
         }
 
-
-
         #endregion
 
-        
+        [Obsolete]
+        private void CommandComplete(PosePosition nextP, long sendTimeStamp)
+        {
+            // update current test agent pose position
+            if (nextP != null)
+            {
+                _currentPosePosition = nextP;
+                ShowCurrentPosition();
+            }
+
+            // report pose position
+            _testBrain.ReportAgentPosePosition(sendTimeStamp,
+                _currentPosePosition.X,
+                _currentPosePosition.Y,
+                _currentPosePosition.Z);
+
+            CommandStore.SharedInstance.CurrentCommand = null;
+
+            lock (CommandExecutor.SharedInstance)
+            {
+                IsWaitingResponse = false;
+            }
+
+        }
     }
 }

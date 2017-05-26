@@ -117,6 +117,7 @@
     <Compile Include="Executor\IExecutor.cs" />
     <Compile Include="Executor\PauseCommandExecutor.cs" />
     <Compile Include="Executor\PoseCommandExecutor.cs" />
+    <Compile Include="Executor\ProbCommandExecutor.cs" />
     <Compile Include="MainWindow.CV.cs" />
     <Compile Include="MainWindow.UI.cs" />
     <Compile Include="SerialCommunicator.cs" />

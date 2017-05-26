@@ -15,6 +15,7 @@ namespace ArmController.lib.Data
         ScreenShot,
         Done,
         Pose,
+        Prob,
     }
 
     public class BaseCommand

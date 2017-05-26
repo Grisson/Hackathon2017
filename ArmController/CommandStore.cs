@@ -56,7 +56,11 @@ namespace ArmController
 
         public void DeleteAll()
         {
-            _commands = new ConcurrentQueue<BaseCommand>();
+            BaseCommand item;
+            while (_commands.TryDequeue(out item))
+            {
+                // spit all command
+            }
         }
     }
 }

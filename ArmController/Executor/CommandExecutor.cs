@@ -13,18 +13,19 @@ namespace ArmController.Executor
 {
     public class CommandExecutor
     {
+        public static readonly CommandExecutor SharedInstance = new CommandExecutor();
+
         public readonly TestRunner TestBrain = new TestRunner();
 
-        private CommandStore _commands => CommandStore.SharedInstance;
-
-        public Action<string> LogHandler;
         public SerialCommunicator SerialPort { get; set; }
 
         public bool IsWaitingResponse { get; set; }
 
         public bool IsStopped { get; set; }
 
-        public static readonly CommandExecutor SharedInstance = new CommandExecutor();
+        private CommandStore _commands => CommandStore.SharedInstance;
+
+        public Action<string> LogHandler;
 
         private CommandExecutor()
         {
@@ -57,6 +58,7 @@ namespace ArmController.Executor
 
             if (!continueToExcute)
             {
+                // no need to start again here, because there is another which is executing
                 return;
             }
 
@@ -75,6 +77,8 @@ namespace ArmController.Executor
                     {
                         IsWaitingResponse = false;
                     }
+
+                    // no need to start again here, because there is no command to execute
                 }
             }
             else
@@ -111,6 +115,21 @@ namespace ArmController.Executor
                     break;
                 case CommandType.Pose:
                     PoseCommandExecutor.SharedInstance.Execute(command);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public void Callback(object sender, String data, BaseCommand command)
+        {
+            switch (command.Type)
+            {
+                case CommandType.GCode:
+                    GCommandExecutor.SharedInstance.Callback(sender as SerialPort, command as GCommand);
+                    break;
+                case CommandType.Pose:
+                    PoseCommandExecutor.SharedInstance.Callback(sender as SerialPort, command as PoseCommand);
                     break;
                 default:
                     break;
