@@ -151,5 +151,10 @@ namespace ArmController.lib
             var result = Fit.Line(X, Y);
             return result;
         }
+
+        public static double CalculatoeDistanceFromPointToLine(double[] line, double[] point)
+        {
+            return 0;
+        }
     }
 }

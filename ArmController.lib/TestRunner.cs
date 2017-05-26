@@ -9,7 +9,6 @@ namespace ArmController.lib
     public class TestRunner
     {
         public const string TaskNameCalibration = "Calib";
-        public const string TaskNameCalibrationZ = "CalibZ";
 
         private bool isTouchReported = false;
 
@@ -24,8 +23,13 @@ namespace ArmController.lib
         internal SortedList<long, TouchResponse> TouchPoints { get; set; }
         internal List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping { get; set; }
         internal Point AgentLocation { get; set; }
-        internal Tuple<double, double> F_length { get; set; }
-        internal Tuple<double, double> F_x { get; set; }
+
+        // Length = F(distance)
+        // length = a + b * distance
+        internal Tuple<double, double> F_Dist_Length { get; set; }
+
+        // a + bx + cy = 0;
+        internal Tuple<double, double, double> F_x { get; set; }
 
         public TestRunner()
         {
@@ -36,24 +40,6 @@ namespace ArmController.lib
         public void RegisterTestAgent(string agentId)
         {
             Agent = string.IsNullOrEmpty(agentId) ? new TestAgent() : new TestAgent(agentId);
-        }
-
-        public string CanResume()
-        {
-            if (isTouchReported)
-            {
-                var tmp = new ResumeCommand();
-                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-                string serialized = JsonConvert.SerializeObject(tmp, settings);
-
-                isTouchReported = !isTouchReported;
-
-                return serialized;
-            }
-            else
-            {
-                return string.Empty;
-            }
         }
 
         public void UnRegisterTestAgent()
@@ -105,6 +91,24 @@ namespace ArmController.lib
             return true;
         }
 
+        public string CanResume()
+        {
+            if (isTouchReported)
+            {
+                var tmp = new ResumeCommand();
+                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                string serialized = JsonConvert.SerializeObject(tmp, settings);
+
+                isTouchReported = !isTouchReported;
+
+                return serialized;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
         public void Calibrate()
         {
             PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
@@ -119,14 +123,14 @@ namespace ArmController.lib
             // length calibration
             var pirsOnXAxis = Calibrator.TouchPairsOnXAxis(PoseTouchMapping);
             // TODO: may swith the X and Y in this function
-            F_length = Calibrator.MapLength(pirsOnXAxis, AgentLocation);
+            // length = a + b * distance
+            F_Dist_Length = Calibrator.MapLength(pirsOnXAxis, AgentLocation);
 
-            // fx 
+            // a + bx + cy = 0;
             var pointsOnXAxis = Calibrator.TouchPointsOnXAxis(PoseTouchMapping);
-            F_x = Calibrator.FindFx(pointsOnXAxis);
+            var ab = Calibrator.FindFx(pointsOnXAxis);
+            F_x = new Tuple<double, double, double>(ab.Item1, ab.Item2, -1);
         }
-
-
 
         public void Done(string data)
         {
@@ -135,51 +139,9 @@ namespace ArmController.lib
                 case TaskNameCalibration:
                     Calibrate();
                     break;
-                case TaskNameCalibrationZ:
-                    //CalibrateZ();
-                    break;
                 default:
                     break;
             }
-        }
-
-        public string GetCalibrationCommonds()
-        {
-            var commonds = new List<BaseCommand>();
-
-            // disable this
-            //commonds.Add(new GCommand(12.9, 14.7, 0));
-            var pose = ArmPositionCalculator.SharedInstance.ToPose(new Tuple<double, double, double>(60, 0, 0));
-
-            commonds.Add(new GCommand(3171, 2371, 0));
-
-            commonds.TouchInStairs(new List<int> { 0, -100, -100, -100, -100 }, new List<int> { 0, 100, 100, 100, 100 });
-
-            commonds.TouchInStairs(new List<int> { -100, -100, -100, -100 }, new List<int> { -100, -100, -100, -100 });
-
-            commonds.Reset();
-
-            commonds.Add(new DoneCommand(TaskNameCalibrationZ));
-
-            commonds.Add(new PauseCommand(30, -1));
-
-            commonds.Add(new GCommand()
-            {
-                ResetPosition = true
-            });
-
-            commonds.Add(new DoneCommand(TaskNameCalibration));
-
-            if (commonds.Count <= 0)
-            {
-                return string.Empty;
-            }
-
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            string serialized = JsonConvert.SerializeObject(commonds, settings);
-
-            return serialized;
-            //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
         }
 
         public string GetSecondCalibrationCommonds()
@@ -260,6 +222,46 @@ namespace ArmController.lib
             //// rotate calibration
             //var pointsOnSameLine = Calibrator.MapPointsOnSameLine(PoseTouchMapping);
             //Fz = Calibrator.CalculatorZ(pointsOnSameLine);
+        }
+
+        [Obsolete("no need")]
+        public string GetCalibrationCommonds()
+        {
+            var commonds = new List<BaseCommand>();
+
+            // disable this
+            //commonds.Add(new GCommand(12.9, 14.7, 0));
+            var pose = ArmPositionCalculator.SharedInstance.ToPose(new Tuple<double, double, double>(60, 0, 0));
+
+            commonds.Add(new GCommand(3171, 2371, 0));
+
+            commonds.TouchInStairs(new List<int> { 0, -100, -100, -100, -100 }, new List<int> { 0, 100, 100, 100, 100 });
+
+            commonds.TouchInStairs(new List<int> { -100, -100, -100, -100 }, new List<int> { -100, -100, -100, -100 });
+
+            commonds.Reset();
+
+            commonds.Add(new DoneCommand(TaskNameCalibration));
+
+            commonds.Add(new PauseCommand(30, -1));
+
+            commonds.Add(new GCommand()
+            {
+                ResetPosition = true
+            });
+
+            commonds.Add(new DoneCommand(TaskNameCalibration));
+
+            if (commonds.Count <= 0)
+            {
+                return string.Empty;
+            }
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            string serialized = JsonConvert.SerializeObject(commonds, settings);
+
+            return serialized;
+            //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
         }
     }
 }

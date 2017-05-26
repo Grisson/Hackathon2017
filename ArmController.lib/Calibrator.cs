@@ -68,6 +68,7 @@ namespace ArmController.lib
             return result;
         }
 
+        // a + bx + cy = 0;
         public static TouchResponse[] TouchPointsOnXAxis(List<Tuple<PosePosition, TouchResponse>> rawPoints)
         {
             var result = new List<TouchResponse>(); ;
@@ -113,6 +114,7 @@ namespace ArmController.lib
             return result.ToArray();
         }
 
+        // Length = F(distance)
         public static Tuple<double, double> MapLength(List<Tuple<PosePosition, TouchResponse>> rawPoints, Point centerPoint)
         {
             var X = new List<double>();
@@ -120,9 +122,9 @@ namespace ArmController.lib
 
             foreach(var p in rawPoints)
             {
-                var x = ArmPositionCalculator.SharedInstance.ToCoordinate(p.Item1).Item1;
+                var x = MathHelper.CalculateDistance(new[] { p.Item2.TouchPoint.X, p.Item2.TouchPoint.Y }, new[] { centerPoint.X, centerPoint.Y }); 
                 X.Add(x);
-                var y = MathHelper.CalculateDistance(new[] { p.Item2.TouchPoint.X, p.Item2.TouchPoint.Y }, new[] { centerPoint.X, centerPoint.Y });
+                var y = ArmPositionCalculator.SharedInstance.ToCoordinate(p.Item1).Item1;
                 Y.Add(y);
             }
 
