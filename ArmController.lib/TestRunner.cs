@@ -280,10 +280,7 @@ namespace ArmController.lib
 
             commonds.Add(new PauseCommand(30, -1));
 
-            commonds.Add(new GCommand()
-            {
-                ResetPosition = true
-            });
+            commonds.Add(new PoseCommand(0, 0, 0));
 
             commonds.Add(new DoneCommand(TaskNameCalibration));
 

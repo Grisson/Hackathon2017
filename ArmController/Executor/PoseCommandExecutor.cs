@@ -46,11 +46,6 @@ namespace ArmController.Executor
                 return;
             }
 
-            if (command.CurrentPosePosition == null)
-            {
-                command.CurrentPosePosition = CommandStore.SharedInstance.CurrentPosePosition;
-            }
-
             command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             // command text is based on target pose and current pose

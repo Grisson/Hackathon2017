@@ -50,14 +50,6 @@ namespace ArmController.Executor
                 command.CurrentPosePosition = CommandStore.SharedInstance.CurrentPosePosition;
             }
 
-            if (command.ResetPosition)
-            {
-                command.XDelta = command.CurrentPosePosition.X * -1;
-                command.YDelta = command.CurrentPosePosition.Y * -1;
-                command.ZDelta = command.CurrentPosePosition.Z * -1;
-                command.RefreshCommandText();
-            }
-
             command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             SerialPort.WriteLine(command.CommandText);
         }

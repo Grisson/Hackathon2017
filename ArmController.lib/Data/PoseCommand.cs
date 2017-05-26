@@ -10,8 +10,6 @@ namespace ArmController.lib.Data
     {
         public PosePosition TargetPose { get; set; }
 
-        public PosePosition CurrentPosePosition { get; set; }
-
         public PosePosition NextPosePosition => TargetPose;
 
         public long SendTimeStamp { get; set; }
@@ -34,18 +32,7 @@ namespace ArmController.lib.Data
         {
             get
             {
-                var xDelta = 0;
-                var yDelta = 0;
-                var zDelta = 0;
-
-                if ((TargetPose != null) && (CurrentPosePosition != null))
-                {
-                    xDelta = TargetPose.X - CurrentPosePosition.X;
-                    yDelta = TargetPose.Y - CurrentPosePosition.Y;
-                    zDelta = TargetPose.Z - CurrentPosePosition.Z;
-                }
-
-                return $"G91 G0 X{xDelta} Y{yDelta} Z{zDelta}";
+                return $"G90 G0 X{TargetPose.X} Y{TargetPose.Y} Z{TargetPose.Z}";
             }
         }
 

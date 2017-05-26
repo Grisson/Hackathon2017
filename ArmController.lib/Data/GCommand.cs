@@ -8,8 +8,6 @@ namespace ArmController.lib.Data
 {
     public class GCommand : BaseCommand
     {
-        public bool ResetPosition { get; set; }
-
         public int XDelta { get; set; }
         public int YDelta { get; set; }
         public int ZDelta { get; set; }

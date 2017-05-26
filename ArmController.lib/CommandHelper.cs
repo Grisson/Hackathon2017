@@ -75,9 +75,9 @@ namespace ArmController.lib
             commands.Add(CommandHelper.Reset());
         }
 
-        public static GCommand Reset()
+        public static PoseCommand Reset()
         {
-            return new GCommand() { ResetPosition = true };
+            return new PoseCommand(0, 0, 0);
         }
 
         public static GCommand Rotate(int steps)
