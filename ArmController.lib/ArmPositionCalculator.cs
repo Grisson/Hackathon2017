@@ -131,5 +131,13 @@ namespace ArmController.lib
         {
             return B1 + MmToAngle(x);
         }
+
+        public double RotateRadian(Point center, TouchResponse pont)
+        {
+            var deltaY = center.Y - pont.Y;
+            var deltaX = center.X - pont.X;
+
+            return Math.Atan2(deltaX, deltaY);
+        }
     }
 }

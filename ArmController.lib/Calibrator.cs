@@ -122,7 +122,7 @@ namespace ArmController.lib
 
             foreach(var p in rawPoints)
             {
-                var x = MathHelper.CalculateDistance(new[] { p.Item2.TouchPoint.X, p.Item2.TouchPoint.Y }, new[] { centerPoint.X, centerPoint.Y }); 
+                var x = MathHelper.CalculateEuclideanDistance(new[] { p.Item2.TouchPoint.X, p.Item2.TouchPoint.Y }, new[] { centerPoint.X, centerPoint.Y }); 
                 X.Add(x);
                 var y = ArmPositionCalculator.SharedInstance.ToCoordinate(p.Item1).Item1;
                 Y.Add(y);

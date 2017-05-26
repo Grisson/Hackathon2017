@@ -11,6 +11,7 @@ namespace ArmController.lib
         public PosePosition initialProbPosition = new PosePosition(2500, 2500, 0);
         public int ProbInterval = 2;
         public bool isProbing = false;
+        public PosePosition probbedPose = null;
 
         public const string TaskNameCalibration = "Calib";
 
@@ -235,65 +236,30 @@ namespace ArmController.lib
         public PosePosition ConvertTouchPointToPosition(TouchResponse touchPoint)
         {
             // 1. distance
-            var dist = MathHelper.CalculateDistance(new[] { AgentLocation.X, AgentLocation.Y }, new[] { touchPoint.X, touchPoint.Y });
+            var dist = MathHelper.CalculateEuclideanDistance(new[] { AgentLocation.X, AgentLocation.Y }, new[] { touchPoint.X, touchPoint.Y });
 
-            // 2. map to coordinate X
+            // 2. map dist to length (coordinate X)
+            // F_Dist_Length: length = a + b * distance
+            var coor_X = F_Dist_Length.Item1 + F_Dist_Length.Item2 * dist;
 
-            // 3. calculate the Z
-
-            // 4. coordinate to distance
-
-            return null;
-        }
-
-        //
-        // there is no need to calibrate Z 
-        //
-        [Obsolete("no need")]
-        public void CalibrateZ()
-        {
-            //PoseTouchMapping = Calibrator.MapPoseAndTouch(PosePositions, TouchPoints);
-
-            //// rotate calibration
-            //var pointsOnSameLine = Calibrator.MapPointsOnSameLine(PoseTouchMapping);
-            //Fz = Calibrator.CalculatorZ(pointsOnSameLine);
-        }
-
-        [Obsolete("no need")]
-        public string GetCalibrationCommonds()
-        {
-            var commonds = new List<BaseCommand>();
-
-            // disable this
-            //commonds.Add(new GCommand(12.9, 14.7, 0));
-            var pose = ArmPositionCalculator.SharedInstance.ToPose(new Tuple<double, double, double>(60, 0, 0));
-
-            commonds.Add(new GCommand(3171, 2371, 0));
-
-            commonds.TouchInStairs(new List<int> { 0, -100, -100, -100, -100 }, new List<int> { 0, 100, 100, 100, 100 });
-
-            commonds.TouchInStairs(new List<int> { -100, -100, -100, -100 }, new List<int> { -100, -100, -100, -100 });
-
-            commonds.Reset();
-
-            commonds.Add(new DoneCommand(TaskNameCalibration));
-
-            commonds.Add(new PauseCommand(30, -1));
-
-            commonds.Add(new PoseCommand(0, 0, 0));
-
-            commonds.Add(new DoneCommand(TaskNameCalibration));
-
-            if (commonds.Count <= 0)
+            // 3. coordinate Z
+            var coor_Z = 0;
+            if (probbedPose != null)
             {
-                return string.Empty;
+                coor_Z = probbedPose.Z;
             }
 
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            string serialized = JsonConvert.SerializeObject(commonds, settings);
+            // 4. convert coordinate to pose. At this point, the pose should contain X, Y. Z is till 0
+            var pose = ConvertCoordinatToPosition(new Tuple<double, double, double>(coor_X, 0, coor_Z));
 
-            return serialized;
-            //List<Base> deserializedList = JsonConvert.DeserializeObject<List<Base>>(Serialized, settings);
+            // 5. calculate the pose Z
+            var rotateRadian = ArmPositionCalculator.SharedInstance.RotateRadian(AgentLocation, touchPoint);
+            var rotateAngle = ArmPositionCalculator.SharedInstance.RadianToAngle(rotateRadian);
+            var rotateStep = ArmPositionCalculator.SharedInstance.AngleToMM(rotateAngle);
+
+            pose.Z = rotateStep;
+
+            return pose;
         }
     }
 }

@@ -141,7 +141,7 @@ namespace ArmController.lib
             return result;
         }
 
-        public static double CalculateDistance(double[] center, double[] touchPoint)
+        public static double CalculateEuclideanDistance(double[] center, double[] touchPoint)
         {
             return Distance.Euclidean(center, touchPoint);
         }
@@ -152,9 +152,15 @@ namespace ArmController.lib
             return result;
         }
 
+        // a + bx + cy = 0;
+        // dist = |a+bx+cy|/sqrt(b*b+c*c)
         public static double CalculatoeDistanceFromPointToLine(double[] line, double[] point)
         {
-            return 0;
+            var a = line[0];
+            var b = line[1];
+            var c = line[2];
+
+            return Math.Abs(a + b * point[0] + c * point[1]) / Math.Sqrt(b * b + c * c);
         }
     }
 }
