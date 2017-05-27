@@ -102,7 +102,7 @@ namespace ArmController.lib
 
         public static List<BaseCommand> Tap()
         {
-            return new List<BaseCommand> { TouchDown(), LiftUp() };
+            return new List<BaseCommand> { TouchDown(), new PauseCommand(0.5, -1), LiftUp() };
         }
 
         [Obsolete("Use coordinate api")]

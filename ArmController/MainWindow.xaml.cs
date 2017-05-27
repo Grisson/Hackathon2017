@@ -217,5 +217,20 @@ namespace ArmController
             }
 
         }
+
+        private void TestTouchButton_Click(object sender, RoutedEventArgs e)
+        {
+            var commandsText = _testBrain.GetTestTouchCommand();
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
+
+            foreach (var c in deserializedList)
+            {
+                _commands.Enqueue(c);
+            }
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+        }
     }
 }

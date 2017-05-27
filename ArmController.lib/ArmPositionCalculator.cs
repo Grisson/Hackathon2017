@@ -137,7 +137,7 @@ namespace ArmController.lib
 
         public double RotateRadian(Point center, TouchResponse pont)
         {
-            var deltaY = center.Y - pont.Y;
+            var deltaY = Math.Abs(center.Y - pont.Y);
             var deltaX = center.X - pont.X;
 
             return Math.Atan2(deltaX, deltaY);

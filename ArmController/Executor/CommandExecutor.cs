@@ -40,6 +40,7 @@ namespace ArmController.Executor
             {
                 CommandStore.SharedInstance.DeleteAll();
                 IsStopped = false;
+                IsWaitingResponse = false;
                 return;
             }
 

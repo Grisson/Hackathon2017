@@ -9,7 +9,7 @@ namespace ArmController.lib
 {
     public class TestRunner
     {
-        public PosePosition initialProbPose = new PosePosition(2800, 2800, 0);
+        public PosePosition initialProbPose = new PosePosition(2265,3303, 0);//(2800, 2800, 0);
         public int ProbInterval = 7;
         public bool isProbing = false;
 
@@ -241,6 +241,26 @@ namespace ArmController.lib
             string serialized = JsonConvert.SerializeObject(commonds, settings);
 
             return serialized;
+        }
+
+        public string GetTestTouchCommand()
+        {
+            var commonds = new List<BaseCommand>();
+
+            var tapDistance = CommandHelper.GetTapDistance();
+            var posePosition = ConvertTouchPointToPosition(new TouchResponse(100, -100));
+            posePosition.X -= tapDistance;
+            posePosition.Y -= tapDistance;
+
+            commonds.Add(new PoseCommand(posePosition.X, posePosition.Y, posePosition.Z));
+            commonds.Tap();
+            commonds.Reset();
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            string serialized = JsonConvert.SerializeObject(commonds, settings);
+
+            return serialized;
+
         }
 
         public PosePosition ConvertCoordinatToPosition(Tuple<double, double, double> coordinate)
