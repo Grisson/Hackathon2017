@@ -150,8 +150,7 @@ namespace ArmController
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
             _dataContext.AddOutput("Reset Button is clicked!");
-            GCommand resetCommand = new GCommand(0, 0, 0);
-            resetCommand.ResetPosition = true;
+            var resetCommand = new PoseCommand(0, 0, 0);
             _commands.Enqueue(resetCommand);
 
             new Thread(CommandExecutor.SharedInstance.Execute).Start();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using ArmController.lib.Data;
 using Newtonsoft.Json;
@@ -11,7 +12,6 @@ namespace ArmController.lib
         public PosePosition initialProbPosition = new PosePosition(2500, 2500, 0);
         public int ProbInterval = 2;
         public bool isProbing = false;
-        public PosePosition probbedPose = null;
 
         public const string TaskNameCalibration = "Calib";
 
@@ -91,8 +91,20 @@ namespace ArmController.lib
 
         public bool ReportTouchBegin(long timeStamp, double x, double y)
         {
-            TouchPoints[timeStamp] = new TouchResponse(x, y);
-            isTouchReported = true;
+
+            if(isProbing)
+            {
+                ArmPositionCalculator.SharedInstance.ProbbedPose = PosePositions.Last().Value;
+                ArmPositionCalculator.SharedInstance.ProbbedPose.X += CommandHelper.GetTapDistance();
+                ArmPositionCalculator.SharedInstance.ProbbedPose.Y += CommandHelper.GetTapDistance();
+                isProbing = false;
+            }
+            else
+            {
+                TouchPoints[timeStamp] = new TouchResponse(x, y);
+                isTouchReported = true;
+            }
+
             return true;
         }
 
@@ -116,7 +128,7 @@ namespace ArmController.lib
 
         public bool WaitingProbResult()
         {
-            return TouchPoints.Count > 0;
+            return ArmPositionCalculator.SharedInstance.IsProbDetected;
         }
 
         public void Calibrate()
@@ -161,12 +173,15 @@ namespace ArmController.lib
             var lengths = new[] { 60, 70, 80, 90, 100, 110, 120 };
             var rotates = new[] { 10, 15, 20, 25, 30, 35, 40 };
 
+            var coor_Z = (int)ArmPositionCalculator.SharedInstance.ToCoordinate(ArmPositionCalculator.SharedInstance.ProbbedPose).Item3;
+
+
             var tapDistance = CommandHelper.GetTapDistance();
             for (var i = 0; i < lengths.Length; i++)
             {
                 var length = lengths[i];
                 var rotate = rotates[i];
-                var pose = ArmPositionCalculator.SharedInstance.ToPose(new Tuple<double, double, double>(length, 0, 0));
+                var pose = ArmPositionCalculator.SharedInstance.ToPose(new Tuple<double, double, double>(length, 0, coor_Z));
                 var x = pose.X - tapDistance;
                 var y = pose.Y - tapDistance;
 
@@ -199,6 +214,12 @@ namespace ArmController.lib
 
         public string GetProbCommands(int retry = 0)
         {
+            isProbing = true;
+            if (retry == 0)
+            {
+                ArmPositionCalculator.SharedInstance.ProbbedPose = null;
+            }
+
             if(retry > 10)
             {
                 return string.Empty;
@@ -209,8 +230,7 @@ namespace ArmController.lib
             var y = initialProbPosition.Y + retry * ProbInterval;
             commonds.Add(new PoseCommand(x, y, 0));
             commonds.Tap();
-            //commonds.Reset();
-            //commonds.Add(new ProbPauseCommand(30, 500, 0));
+            commonds.Add(new ProbPauseCommand(30, 500, 0));
 
             if (commonds.Count <= 0)
             {
@@ -244,9 +264,9 @@ namespace ArmController.lib
 
             // 3. coordinate Z
             var coor_Z = 0;
-            if (probbedPose != null)
+            if (ArmPositionCalculator.SharedInstance.IsProbDetected)
             {
-                coor_Z = probbedPose.Z;
+                coor_Z = (int)ArmPositionCalculator.SharedInstance.ToCoordinate(ArmPositionCalculator.SharedInstance.ProbbedPose).Item3;
             }
 
             // 4. convert coordinate to pose. At this point, the pose should contain X, Y. Z is till 0
