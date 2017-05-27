@@ -52,7 +52,7 @@ namespace ArmController.lib.Data
         {
             get
             {
-                return $"[{SendTimeStamp}]:GoTo:{TargetPose.X}/{TargetPose.Y}/{TargetPose.Z}";
+                return $"[{SendTimeStamp}]:{CommandText}";
             }
         }
     }

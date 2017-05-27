@@ -74,6 +74,11 @@ namespace ArmController.Executor
                     newCommandString = CommandExecutor.SharedInstance.TestBrain.GetProbCommands(command.ProbRetry+1);
                 }
 
+                if(string.IsNullOrEmpty(newCommandString))
+                {
+                    return;
+                }
+
                 JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
                 var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
 

@@ -133,6 +133,7 @@ namespace ArmController.lib
             return result;
         }
 
+        // a + bx + cy = 0;
         public static Tuple<double, double> FindFx(TouchResponse[] points)
         {
             var X = new List<double>();
@@ -142,6 +143,8 @@ namespace ArmController.lib
             {
                 var x = p.X;
                 var y = p.Y;
+                X.Add(x);
+                Y.Add(y);
             }
 
             var result = MathHelper.CalculateLine(X.ToArray(), Y.ToArray());

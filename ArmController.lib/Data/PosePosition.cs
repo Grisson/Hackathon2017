@@ -42,9 +42,9 @@ namespace ArmController.lib.Data
         {
             return new PosePosition()
             {
-                X = this.X += x,
-                Y = this.Y += y,
-                Z = this.Z += z,
+                X = this.X + x,
+                Y = this.Y + y,
+                Z = this.Z + z,
             };
         }
 

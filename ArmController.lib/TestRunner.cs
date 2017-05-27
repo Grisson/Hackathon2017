@@ -9,8 +9,8 @@ namespace ArmController.lib
 {
     public class TestRunner
     {
-        public PosePosition initialProbPosition = new PosePosition(2500, 2500, 0);
-        public int ProbInterval = 2;
+        public PosePosition initialProbPose = new PosePosition(2800, 2800, 0);
+        public int ProbInterval = 7;
         public bool isProbing = false;
 
         public const string TaskNameCalibration = "Calib";
@@ -170,8 +170,8 @@ namespace ArmController.lib
         {
             var commonds = new List<BaseCommand>();
 
-            var lengths = new[] { 60, 70, 80, 90, 100, 110, 120 };
-            var rotates = new[] { 10, 15, 20, 25, 30, 35, 40 };
+            var lengths = new[] { 70, 80, 90, 100, 110, 120, 130 };  // coordinate_x
+            var rotates = new[] { 90, 100, 110, 120, 130, 140, 150 }; // step
 
             var coor_Z = (int)ArmPositionCalculator.SharedInstance.ToCoordinate(ArmPositionCalculator.SharedInstance.ProbbedPose).Item3;
 
@@ -226,11 +226,11 @@ namespace ArmController.lib
             }
 
             var commonds = new List<BaseCommand>();
-            var x = initialProbPosition.X + retry * ProbInterval;
-            var y = initialProbPosition.Y + retry * ProbInterval;
+            var x = initialProbPose.X + retry * ProbInterval;
+            var y = initialProbPose.Y + retry * ProbInterval;
             commonds.Add(new PoseCommand(x, y, 0));
             commonds.Tap();
-            commonds.Add(new ProbPauseCommand(30, 500, 0));
+            commonds.Add(new ProbPauseCommand(10, 500, retry));
 
             if (commonds.Count <= 0)
             {
