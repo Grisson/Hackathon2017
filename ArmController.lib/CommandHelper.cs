@@ -1,10 +1,6 @@
-﻿using ArmController.lib.Data;
-using ArmController.Models.Command;
+﻿using ArmController.Models.Command;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArmController.lib
 {
@@ -146,14 +142,14 @@ namespace ArmController.lib
 
         public static List<BaseCommand> TouchInStairs(List<int> lengths, List<int> zInternals, int repeatTimes)
         {
-            if(lengths.Count != zInternals.Count)
+            if (lengths.Count != zInternals.Count)
             {
                 throw new ArgumentException();
             }
 
             var result = new List<BaseCommand>();
 
-            for(var j = 0; j < lengths.Count; j++)
+            for (var j = 0; j < lengths.Count; j++)
             {
                 result.Add(CommandHelper.Rotate(zInternals[j]));
                 result.Add(CommandHelper.ChangeLength(lengths[j]));

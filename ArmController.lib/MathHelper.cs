@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
-using ArmController.lib.Data;
+﻿using ArmController.Models.Data;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearRegression;
-using ArmController.Models.Data;
+using System;
+using System.Collections.Generic;
 
 namespace ArmController.lib
 {
@@ -55,7 +50,7 @@ namespace ArmController.lib
         {
             List<double[]> X = new List<double[]>();
             List<double> Y = new List<double>();
-            foreach(var pointsInSameRow in touchPoints)
+            foreach (var pointsInSameRow in touchPoints)
             {
                 var point0 = pointsInSameRow[0];
                 var point1 = pointsInSameRow[1];
