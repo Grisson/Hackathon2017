@@ -40,7 +40,7 @@ namespace ArmController.lib
                     var pose = PosePositions[poseTimestamp[poseIndex]];
                     pose.X += CommandHelper.LiftUpDistance;
                     pose.Y += CommandHelper.LiftUpDistance;
-                         
+
                     PoseTouchMapping.Add(new Tuple<PosePosition, TouchPoint>(pose, TouchPoints[touchTimestamp[touchIndex]]));
 
                     poseIndex++;
@@ -121,9 +121,9 @@ namespace ArmController.lib
             var X = new List<double>();
             var Y = new List<double>();
 
-            foreach(var p in rawPoints)
+            foreach (var p in rawPoints)
             {
-                var x = MathHelper.CalculateEuclideanDistance(new[] { p.Item2.X, p.Item2.Y }, new[] { centerPoint.X, centerPoint.Y }); 
+                var x = MathHelper.CalculateEuclideanDistance(new[] { p.Item2.X, p.Item2.Y }, new[] { centerPoint.X, centerPoint.Y });
                 X.Add(x);
                 var y = ArmPositionCalculator.SharedInstance.ToCoordinate(p.Item1).Item1;
                 Y.Add(y);
@@ -333,7 +333,7 @@ namespace ArmController.lib
 
             return result;
         }
-       
+
         #endregion
     }
 }

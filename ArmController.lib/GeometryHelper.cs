@@ -2,10 +2,7 @@
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearRegression;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArmController.lib
 {
@@ -21,7 +18,7 @@ namespace ArmController.lib
 
             double low = 0;
 
-            if(az > 0)
+            if (az > 0)
             {
                 low = Math.Asin(rrot / rside) + ((Math.PI - high) / 2.0) - (Math.PI / 2.0);
 
