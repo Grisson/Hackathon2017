@@ -1,5 +1,6 @@
 ﻿using ArmController.Models.Data;
 using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearRegression;
 using System;
 using System.Collections.Generic;
@@ -102,6 +103,23 @@ namespace ArmController.lib
             var c = line[2];
 
             return Math.Abs(a + b * point[0] + c * point[1]) / Math.Sqrt(b * b + c * c);
+        }
+
+        public static double[] CalculatePlane(double[][] x)
+        {
+            Vector<double> y = Vector<double>.Build.Dense(x.Length);
+
+            double[] result = Fit.MultiDim(x, y.ToArray(), true, DirectRegressionMethod.NormalEquations);
+
+
+            return result;
+            //Vector<double> p = MultipleRegression.NormalEquations(X, y);
+            //MultipleRegression.QR or MultipleRegression.Svd
+
+            //double[] p = Fit.Polynomial(xdata, ydata, 3); // polynomial of order 3
+
+            // warning: preliminary api
+            //var p = WeightedRegression.Local(X, y, t, radius, kernel);
         }
     }
 }
