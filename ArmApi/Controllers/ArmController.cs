@@ -8,48 +8,48 @@ using System.Web.Http;
 
 namespace ArmApi.Controllers
 {
-    [RoutePrefix("api/arm")]
+    [RoutePrefix("api")]
     [ServiceRequestActionFilter]
     public class ArmController : ApiController
     {
-        [Route("register")]
+        [Route("arm/register")]
         [HttpGet]
         public IEnumerable<string> Register()
         {
             return new string[] { "value1", "value2" };
         }
 
-        [Route("reporttouch/{timeStamp}/{x:double}/{y:double}")]
+        [Route("arm/{id}/reporttouch/{timeStamp}/{x:double}/{y:double}")]
         [HttpPut]
-        public string ReportTouch()
+        public string ReportTouch(string id)
         {
             return "ReportTouch";
         }
 
-        [Route("reportpose/{timeStamp}/{x:int}/{y:int}/{z:int}")]
+        [Route("arm/{id}/reportpose/{timeStamp}/{x:int}/{y:int}/{z:int}")]
         [HttpPut]
-        public string ReportPose(string timeStamp, int x, int y, int z)
+        public string ReportPose(string id, string timeStamp, int x, int y, int z)
         {
             return "ReportPose";
         }
 
-        [Route("startcalibrate")]
+        [Route("arm/{id}/startcalibrate")]
         [HttpGet]
-        public string StartCalibrate()
+        public string StartCalibrate(string id)
         {
             return "Calibrate commands";
         }
 
-        [Route("EndCalibrate")]
+        [Route("arm/{id}/EndCalibrate")]
         [HttpGet]
-        public string EndCalibrate()
+        public string EndCalibrate(string id)
         {
             return "Calibrated";
         }
 
-        [Route("topose/{x:double}/{y:double}")]
+        [Route("arm/{id}/topose/{x:double}/{y:double}")]
         [HttpGet]
-        public IHttpActionResult ConvertToPose()
+        public IHttpActionResult ConvertToPose(string id, double x, double y)
         {
             return Ok<PosePosition>(new PosePosition(1,2,3));
         }
