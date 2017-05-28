@@ -21,7 +21,7 @@ namespace ArmApi.Controllers
 
         [Route("arm/{id}/reporttouch/{timeStamp}/{x:double}/{y:double}")]
         [HttpPut]
-        public string ReportTouch(string id)
+        public string ReportTouch(string id, string timeStamp, double x, double y)
         {
             return "ReportTouch";
         }
@@ -52,6 +52,14 @@ namespace ArmApi.Controllers
         public IHttpActionResult ConvertToPose(string id, double x, double y)
         {
             return Ok<PosePosition>(new PosePosition(1,2,3));
+        }
+
+
+        [Route("arm/{id}/touch/{x:double}/{y:double}")]
+        [HttpGet]
+        public IHttpActionResult Touch(string id, double x, double y)
+        {
+            return Ok<PosePosition>(new PosePosition(1, 2, 3));
         }
     }
 }

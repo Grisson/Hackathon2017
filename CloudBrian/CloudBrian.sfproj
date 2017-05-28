@@ -30,6 +30,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ArmActor\ArmActor.csproj" />
     <ProjectReference Include="..\ArmApi\ArmApi.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />

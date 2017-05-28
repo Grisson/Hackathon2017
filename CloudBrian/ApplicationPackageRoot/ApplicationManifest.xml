@@ -2,10 +2,16 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="CloudBrianType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="ArmApi_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="ArmActorService_PartitionCount" DefaultValue="10" />
+    <Parameter Name="ArmActorService_MinReplicaSetSize" DefaultValue="3" />
+    <Parameter Name="ArmActorService_TargetReplicaSetSize" DefaultValue="3" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
+  <ServiceManifestImport>
+    <ServiceManifestRef ServiceManifestName="ArmActorPkg" ServiceManifestVersion="1.0.0" />
+  </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="ArmApiPkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides />
@@ -20,6 +26,11 @@
       <StatelessService ServiceTypeName="ArmApiType" InstanceCount="[ArmApi_InstanceCount]">
         <SingletonPartition />
       </StatelessService>
+    </Service>
+    <Service Name="ArmActorService" GeneratedIdRef="3c32c5a1-d7f5-4c0a-9363-3048346a276c|Persisted">
+      <StatefulService ServiceTypeName="ArmActorServiceType" TargetReplicaSetSize="[ArmActorService_TargetReplicaSetSize]" MinReplicaSetSize="[ArmActorService_MinReplicaSetSize]">
+        <UniformInt64Partition PartitionCount="[ArmActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
+      </StatefulService>
     </Service>
   </DefaultServices>
 </ApplicationManifest>
