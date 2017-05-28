@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ArmController.lib.Data;
+using ArmController.Models.Data;
 
 namespace ArmController.lib
 {
@@ -11,6 +12,6 @@ namespace ArmController.lib
     {
         public Guid Id;
         public string DeviceOperationSystem;
-        public List<TouchResponse> Response;
+        public List<TouchPoint> Response;
     }
 }

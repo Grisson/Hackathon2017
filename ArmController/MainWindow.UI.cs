@@ -7,6 +7,8 @@ using ArmController.lib.Data;
 using System.Threading;
 using ArmController.Executor;
 using ArmController.lib;
+using ArmController.Models.Command;
+using ArmController.Models.Data;
 
 namespace ArmController
 {

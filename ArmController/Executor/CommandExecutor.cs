@@ -1,5 +1,7 @@
 ﻿using ArmController.lib;
 using ArmController.lib.Data;
+using ArmController.Models;
+using ArmController.Models.Command;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;

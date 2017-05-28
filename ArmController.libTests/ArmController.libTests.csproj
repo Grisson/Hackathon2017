@@ -80,6 +80,10 @@
       <Project>{9EF62E34-9EFA-4FB9-944E-2023127614A9}</Project>
       <Name>ArmController.lib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ArmController.Models\ArmController.Models.csproj">
+      <Project>{60B904C7-ABBB-4309-BA73-02BA561BB73F}</Project>
+      <Name>ArmController.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

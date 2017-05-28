@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ArmController.lib.Data;
+using ArmController.Models.Data;
 
 namespace ArmController.lib
 {
@@ -11,7 +12,7 @@ namespace ArmController.lib
     {
         public Guid Id;
         //public PosePosition FirstTouchPosition;
-        //public TouchResponse FirstTouchPoint;
+        //public TouchPoint FirstTouchPoint;
 
         public PosePosition CurrentPosition { get; set; }
 

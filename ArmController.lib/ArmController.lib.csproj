@@ -69,16 +69,7 @@
     <Compile Include="ArmPositionCalculator.cs" />
     <Compile Include="Calibrator.cs" />
     <Compile Include="CommandHelper.cs" />
-    <Compile Include="Data\BaseCommand.cs" />
-    <Compile Include="Data\DoneCommand.cs" />
-    <Compile Include="Data\GCommand.cs" />
-    <Compile Include="Data\Point.cs" />
-    <Compile Include="Data\PoseCommand.cs" />
-    <Compile Include="Data\PosePosition.cs" />
-    <Compile Include="Data\ProbPauseCommand.cs" />
-    <Compile Include="Data\ResumeCommand.cs" />
-    <Compile Include="Data\ScreenShotCommand.cs" />
-    <Compile Include="Data\PauseCommand.cs" />
+    <Compile Include="ExtensionMethod.cs" />
     <Compile Include="GeometryHelper.cs" />
     <Compile Include="MathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,10 +78,15 @@
     <Compile Include="TestRunner.cs" />
     <Compile Include="Data\TestStep.cs" />
     <Compile Include="TestTarget.cs" />
-    <Compile Include="Data\TouchResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ArmController.Models\ArmController.Models.csproj">
+      <Project>{60B904C7-ABBB-4309-BA73-02BA561BB73F}</Project>
+      <Name>ArmController.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

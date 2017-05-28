@@ -4,20 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArmController.lib.Data
+namespace ArmController.Models.Command
 {
-    public enum CommandType
-    {
-        GCode = 0,
-        Pause,
-        Resume,
-        WaitingForTouch,
-        ScreenShot,
-        Done,
-        Pose,
-        Prob,
-    }
-
     public class BaseCommand
     {
         public Guid CommandHistoryId { get; set; }

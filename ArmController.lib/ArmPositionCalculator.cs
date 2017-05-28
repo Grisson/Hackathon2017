@@ -1,4 +1,5 @@
 ﻿using ArmController.lib.Data;
+using ArmController.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,7 +136,7 @@ namespace ArmController.lib
             return B1 + MmToAngle(x);
         }
 
-        public double RotateRadian(Point center, TouchResponse pont)
+        public double RotateRadian(TouchPoint center, TouchPoint pont)
         {
             var deltaY = Math.Abs(center.Y - pont.Y);
             var deltaX = center.X - pont.X;

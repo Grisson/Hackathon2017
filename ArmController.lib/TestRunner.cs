@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using ArmController.lib.Data;
 using Newtonsoft.Json;
+using ArmController.Models.Data;
+using ArmController.Models.Command;
 
 namespace ArmController.lib
 {
@@ -25,9 +27,9 @@ namespace ArmController.lib
         internal List<TestCase> TestCases { get; set; }
 
         internal SortedList<long, PosePosition> PosePositions { get; set; }
-        internal SortedList<long, TouchResponse> TouchPoints { get; set; }
-        internal List<Tuple<PosePosition, TouchResponse>> PoseTouchMapping { get; set; }
-        internal Point AgentLocation { get; set; }
+        internal SortedList<long, TouchPoint> TouchPoints { get; set; }
+        internal List<Tuple<PosePosition, TouchPoint>> PoseTouchMapping { get; set; }
+        internal TouchPoint AgentLocation { get; set; }
 
         // Length = F(distance)
         // length = a + b * distance
@@ -39,7 +41,7 @@ namespace ArmController.lib
         public TestRunner()
         {
             PosePositions = new SortedList<long, PosePosition>();
-            TouchPoints = new SortedList<long, TouchResponse>();
+            TouchPoints = new SortedList<long, TouchPoint>();
         }
 
         public void RegisterTestAgent(string agentId)
@@ -101,7 +103,7 @@ namespace ArmController.lib
             }
             else
             {
-                TouchPoints[timeStamp] = new TouchResponse(x, y);
+                TouchPoints[timeStamp] = new TouchPoint(x, y);
                 isTouchReported = true;
             }
 
@@ -138,7 +140,7 @@ namespace ArmController.lib
             // test agent corrdinate
             var pointsOnSameRadius = Calibrator.TouchPointsOnSameRadius(PoseTouchMapping);
             var centerCoordinate = MathHelper.CalculateCenterOfCircle(pointsOnSameRadius);
-            AgentLocation = new Point { X = centerCoordinate[0], Y = centerCoordinate[1] };
+            AgentLocation = new TouchPoint { X = centerCoordinate[0], Y = centerCoordinate[1] };
 
             // rotate calibration -- no need
 
@@ -248,7 +250,7 @@ namespace ArmController.lib
             var commonds = new List<BaseCommand>();
 
             var tapDistance = CommandHelper.GetTapDistance();
-            var posePosition = ConvertTouchPointToPosition(new TouchResponse(100, -100));
+            var posePosition = ConvertTouchPointToPosition(new TouchPoint(100, -100));
             posePosition.X -= tapDistance;
             posePosition.Y -= tapDistance;
 
@@ -273,7 +275,7 @@ namespace ArmController.lib
             return ArmPositionCalculator.SharedInstance.ToCoordinate(pose);
         }
 
-        public PosePosition ConvertTouchPointToPosition(TouchResponse touchPoint)
+        public PosePosition ConvertTouchPointToPosition(TouchPoint touchPoint)
         {
             // 1. distance
             var dist = MathHelper.CalculateEuclideanDistance(new[] { AgentLocation.X, AgentLocation.Y }, new[] { touchPoint.X, touchPoint.Y });

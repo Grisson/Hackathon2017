@@ -7,36 +7,13 @@ using System.Threading.Tasks;
 using ArmController.lib.Data;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearRegression;
+using ArmController.Models.Data;
 
 namespace ArmController.lib
 {
-    public static class ExtensionMethod
-    {
-        public static double RandWithFiveDigites(this double a)
-        {
-            return Math.Round(a, 5, MidpointRounding.AwayFromZero);
-        }
-
-        public static bool IsEqualWithInTolerance(this double a, double b, double tolerance)
-        {
-            if (Math.Abs(a - b) < tolerance)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
     public static class MathHelper
     {
-        public static Tuple<double, double, double> CalculatorPerpendicularBisector(TouchResponse pointA, TouchResponse pointB)
-        {
-            return CalculatorPerpendicularBisector(pointA.TouchPoint, pointB.TouchPoint);
-        }
-
-        public static Tuple<double, double, double> CalculatorPerpendicularBisector(Point pa, Point pb)
+        public static Tuple<double, double, double> CalculatorPerpendicularBisector(TouchPoint pa, TouchPoint pb)
         {
             // ax + by = c
             var a = 2.0 * (pa.X - pb.X);
@@ -52,7 +29,7 @@ namespace ArmController.lib
             return new Tuple<double, double, double>(a, b, c);
         }
 
-        public static Point Intersect(Tuple<double, double, double> line1, Tuple<double, double, double> line2)
+        public static TouchPoint Intersect(Tuple<double, double, double> line1, Tuple<double, double, double> line2)
         {
             // for Ax + By = C
             var A1 = line1.Item1;
@@ -67,45 +44,14 @@ namespace ArmController.lib
             var x = (B2 * C1 - B1 * C2) / delta;
             var y = (A1 * C2 - A2 * C1) / delta;
 
-            return new Point()
+            return new TouchPoint()
             {
                 X = x,
                 Y = y,
             };
         }
 
-        public static Point MeanPoint(List<Point> points)
-        {
-            var count = points.Count;
-
-            if (count <= 0)
-            {
-                return null;
-            }
-
-            var allX = 0.0;
-            var allY = 0.0;
-
-            foreach (var p in points)
-            {
-                if(double.IsNaN(p.X) || double.IsNaN(p.Y))
-                {
-                    count--;
-                    continue;
-                }
-                allX += p.X;
-                allY += p.Y;
-            }
-
-
-            return new Point()
-            {
-                X = allX / (count * 1.0),
-                Y = allY / (count * 1.0),
-            };
-        }
-
-        public static double[] CalculateCenterOfCircle(TouchResponse[][] touchPoints)
+        public static double[] CalculateCenterOfCircle(TouchPoint[][] touchPoints)
         {
             List<double[]> X = new List<double[]>();
             List<double> Y = new List<double>();
@@ -115,12 +61,12 @@ namespace ArmController.lib
                 var point1 = pointsInSameRow[1];
                 var point2 = pointsInSameRow[2];
 
-                var x0 = point0.TouchPoint.X;
-                var y0 = point0.TouchPoint.Y;
-                var x1 = point1.TouchPoint.X;
-                var y1 = point1.TouchPoint.Y;
-                var x2 = point2.TouchPoint.X;
-                var y2 = point2.TouchPoint.Y;
+                var x0 = point0.X;
+                var y0 = point0.Y;
+                var x1 = point1.X;
+                var y1 = point1.Y;
+                var x2 = point2.X;
+                var y2 = point2.Y;
 
                 var Y0 = x1 * x1 + y1 * y1 - x0 * x0 - y0 * y0;
                 var Y1 = x2 * x2 + y2 * y2 - x1 * x1 - y1 * y1;

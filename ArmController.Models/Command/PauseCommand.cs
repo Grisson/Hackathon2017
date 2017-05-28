@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArmController.lib.Data
+namespace ArmController.Models.Command
 {
     public class PauseCommand : BaseCommand
     {

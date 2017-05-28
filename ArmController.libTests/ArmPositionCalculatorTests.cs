@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ArmController.Models.Data;
 
 namespace ArmController.lib.Tests
 {
@@ -24,7 +25,7 @@ namespace ArmController.lib.Tests
         [TestMethod()]
         public void TestPositionToCoord()
         {
-            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new Data.PosePosition(680, 1040, 0));
+            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new PosePosition(680, 1040, 0));
 
             Assert.IsNotNull(coord);
             Assert.IsTrue(Math.Abs(coord.Item1 - 60) < Tolerance);
@@ -35,7 +36,7 @@ namespace ArmController.lib.Tests
         [TestMethod()]
         public void TestPositionToCoord2()
         {
-            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new Data.PosePosition(680, 1040, 2400));
+            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new PosePosition(680, 1040, 2400));
 
             Assert.IsNotNull(coord);
             Assert.IsTrue(Math.Abs(coord.Item1 - 60/2) < Tolerance);
@@ -46,8 +47,8 @@ namespace ArmController.lib.Tests
         [TestMethod()]
         public void TestCoordToPose()
         {
-            var initPose = new Data.PosePosition(680, 1040, 2400);
-            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new Data.PosePosition(680, 1040, 2400));
+            var initPose = new PosePosition(680, 1040, 2400);
+            var coord = ArmPositionCalculator.SharedInstance.ToCoordinate(new PosePosition(680, 1040, 2400));
             var postPose = ArmPositionCalculator.SharedInstance.ToPose(coord);
 
             Assert.IsNotNull(postPose);

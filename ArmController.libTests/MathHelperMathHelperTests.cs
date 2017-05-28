@@ -6,47 +6,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ArmController.lib.Data;
+using ArmController.Models.Data;
 
 namespace ArmController.lib.Tests
 {
     [TestClass()]
     public class MathHelperMathHelperTests
     {
-        public static TouchResponse[][] GenerateTouchPoints()
+        public static TouchPoint[][] GenerateTouchPoints()
         {
-            var result = new List<TouchResponse[]>();
+            var result = new List<TouchPoint[]>();
 
-            result.Add(new[] { new TouchResponse(65, -365), new TouchResponse(88, -363.5), new TouchResponse(129, -360.5) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>(pose, new TouchResponse (218, -360)));
+            result.Add(new[] { new TouchPoint(65, -365), new TouchPoint(88, -363.5), new TouchPoint(129, -360.5) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>(pose, new TouchPoint (218, -360)));
 
-            result.Add(new[] { new TouchResponse(83.5, -334), new TouchResponse(104.5, -332.5), new TouchResponse(151.5, -330) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>(new PosePosition(8, 3175, 3650, 225), new TouchResponse(242.5, -332.5)));
+            result.Add(new[] { new TouchPoint(83.5, -334), new TouchPoint(104.5, -332.5), new TouchPoint(151.5, -330) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>(new PosePosition(8, 3175, 3650, 225), new TouchPoint(242.5, -332.5)));
 
-            result.Add(new[] { new TouchResponse(99.5, -274.5), new TouchResponse(124, -272.5), new TouchResponse(172, -271) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>( new PosePosition(12, 3275, 3550, 175), new TouchResponse (267, -274.5)));
+            result.Add(new[] { new TouchPoint(99.5, -274.5), new TouchPoint(124, -272.5), new TouchPoint(172, -271) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>( new PosePosition(12, 3275, 3550, 175), new TouchPoint (267, -274.5)));
 
-            result.Add(new[] { new TouchResponse(119, -160.5), new TouchResponse(143, -159.5), new TouchResponse(194.5, -159) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>( new PosePosition(14, 3475, 3350, 125), new TouchResponse (300.5, -163.5)));
+            result.Add(new[] { new TouchPoint(119, -160.5), new TouchPoint(143, -159.5), new TouchPoint(194.5, -159) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>( new PosePosition(14, 3475, 3350, 125), new TouchPoint (300.5, -163.5)));
 
             return result.ToArray();
 
         }
 
-        public static TouchResponse[][] GenerateTouchPoints2()
+        public static TouchPoint[][] GenerateTouchPoints2()
         {
-            var result = new List<TouchResponse[]>();
+            var result = new List<TouchPoint[]>();
 
-            result.Add(new[] { new TouchResponse(3, -10), new TouchResponse(4, -8.26), new TouchResponse(5, -8) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>(pose, new TouchResponse (218, -360)));
+            result.Add(new[] { new TouchPoint(3, -10), new TouchPoint(4, -8.26), new TouchPoint(5, -8) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>(pose, new TouchPoint (218, -360)));
 
-            result.Add(new[] { new TouchResponse(3, -7.76), new TouchResponse(4, -7.17), new TouchResponse(5, -7) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>(new PosePosition(8, 3175, 3650, 225), new TouchResponse(242.5, -332.5)));
+            result.Add(new[] { new TouchPoint(3, -7.76), new TouchPoint(4, -7.17), new TouchPoint(5, -7) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>(new PosePosition(8, 3175, 3650, 225), new TouchPoint(242.5, -332.5)));
 
-            result.Add(new[] { new TouchResponse(3, -6.54), new TouchResponse(4, -6.12), new TouchResponse(5, -6) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>( new PosePosition(12, 3275, 3550, 175), new TouchResponse (267, -274.5)));
+            result.Add(new[] { new TouchPoint(3, -6.54), new TouchPoint(4, -6.12), new TouchPoint(5, -6) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>( new PosePosition(12, 3275, 3550, 175), new TouchPoint (267, -274.5)));
 
-            result.Add(new[] { new TouchResponse(3, -5.42), new TouchResponse(4, -5.1), new TouchResponse(5, -5) });
-            //result.Add(new Tuple<PosePosition, TouchResponse>( new PosePosition(14, 3475, 3350, 125), new TouchResponse (300.5, -163.5)));
+            result.Add(new[] { new TouchPoint(3, -5.42), new TouchPoint(4, -5.1), new TouchPoint(5, -5) });
+            //result.Add(new Tuple<PosePosition, TouchPoint>( new PosePosition(14, 3475, 3350, 125), new TouchPoint (300.5, -163.5)));
 
             return result.ToArray();
 
