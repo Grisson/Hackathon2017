@@ -15,32 +15,27 @@ namespace ArmActor.Interfaces
     /// </summary>
     public interface IArmActor : IActor
     {
-        Task<bool> ReportTouchAsync(string timeStamp, double x, double y);
+        Task<bool> RegisterAgent(string agentId);
 
         Task<bool> ReportPoseAsync(string timeStamp, int x, int y, int z);
 
+        Task<bool> ReportTouchAsync(string timeStamp, double x, double y);
+
+        Task<string> CanResumeAsync();
+
+        Task DoneAsync(string data);
+
+        Task<bool> WaitingProbResultAsync();
+
         Task<string> StartCalibrateAsync();
 
-        Task<bool> EndCalibrateAsync();
+        Task<string> ProbAsync(int retry);
 
-        Task<PosePosition> ConvertToPoseAsync(double x, double y);
+        Task<PosePosition> ConvertCoordinatToPositionAsync(double x, double y, double z);
 
-        Task<IEnumerable<BaseCommand>> TouchAsync(double x, double y);
+        Task<Tuple<double, double, double>> ConvertPositionToCoordinatAsync(int x, int y, int z);
 
-        Task<bool> RegisterAgent(string agentId);
+        Task<PosePosition> ConvertTouchPointToPoseAsync(double x, double y);
 
-
-        ///// <summary>
-        ///// TODO: Replace with your own actor method.
-        ///// </summary>
-        ///// <returns></returns>
-        //Task<int> GetCountAsync(CancellationToken cancellationToken);
-
-        ///// <summary>
-        ///// TODO: Replace with your own actor method.
-        ///// </summary>
-        ///// <param name="count"></param>
-        ///// <returns></returns>
-        //Task SetCountAsync(int count, CancellationToken cancellationToken);
     }
 }

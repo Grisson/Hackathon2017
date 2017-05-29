@@ -61,8 +61,6 @@ namespace ArmController.lib
             };
         }
 
-       
-
         public bool ReportAgentPosePosition(long timeStamp, int x, int y, int z)
         {
             if (Agent == null)

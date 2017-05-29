@@ -44,18 +44,6 @@ namespace ArmActor
             return true;
         }
 
-        public async Task<PosePosition> ConvertToPoseAsync(double x, double y)
-        {
-            var tr = await ReadDataAsync();
-            var result = tr.ConvertTouchPointToPosition(new TouchPoint(x, y));
-            return result;
-        }
-
-        public Task<bool> EndCalibrateAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> ReportPoseAsync(string timeStamp, int x, int y, int z)
         {
             var tr = await ReadDataAsync();
@@ -64,37 +52,74 @@ namespace ArmActor
             return true;
         }
 
-        public Task<bool> ReportTouchAsync(string timeStamp, double x, double y)
+        public async Task<bool> ReportTouchAsync(string timeStamp, double x, double y)
         {
-            throw new NotImplementedException();
+            var tr = await ReadDataAsync();
+            tr.ReportTouchBegin(long.Parse(timeStamp), x, y);
+            await SaveDataAsync(tr);
+            return true;
         }
 
-        public Task<string> StartCalibrateAsync()
+        public async Task<string> CanResumeAsync()
         {
-            throw new NotImplementedException();
+            var tr = await ReadDataAsync();
+            var result = tr.CanResume();
+            await SaveDataAsync(tr);
+            return result;
         }
 
-        public Task<IEnumerable<BaseCommand>> TouchAsync(double x, double y)
+        public async Task DoneAsync(string data)
         {
-            throw new NotImplementedException();
+            var tr = await ReadDataAsync();
+            tr.Done(data);
         }
 
-        /// <summary>
-        /// This method is called whenever an actor is activated.
-        /// An actor is activated the first time any of its methods are invoked.
-        /// </summary>
-        protected override Task OnActivateAsync()
+        public async Task<bool> WaitingProbResultAsync()
         {
-            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
-
-            // The StateManager is this actor's private state store.
-            // Data stored in the StateManager will be replicated for high-availability for actors that use volatile or persisted state storage.
-            // Any serializable object can be saved in the StateManager.
-            // For more information, see https://aka.ms/servicefabricactorsstateserialization
-
-            return this.StateManager.TryAddStateAsync("count", 0);
+            var tr = await ReadDataAsync();
+            
+            return tr.WaitingProbResult();
         }
 
+        public async Task<string> StartCalibrateAsync()
+        {
+            var tr = await ReadDataAsync();
+            var result = tr.GetSecondCalibrationCommonds();
+            await SaveDataAsync(tr);
+            return result;
+        }
+
+        public async Task<string> ProbAsync(int retry)
+        {
+            var tr = await ReadDataAsync();
+            var result = tr.GetProbCommands(retry);
+            await SaveDataAsync(tr);
+            return result;
+        }
+
+        public async Task<PosePosition> ConvertCoordinatToPositionAsync(double x, double y, double z)
+        {
+            var tr = await ReadDataAsync();
+            var result = tr.ConvertCoordinatToPosition(new Tuple<double, double, double>(x, y, z));
+            await SaveDataAsync(tr);
+            return result;
+        }
+
+        public async Task<Tuple<double, double, double>> ConvertPositionToCoordinatAsync(int x, int y, int z)
+        {
+            var tr = await ReadDataAsync();
+            var result = tr.ConvertPositionToCoordinat(new PosePosition(x, y, z));
+            await SaveDataAsync(tr);
+            return result;
+        }
+
+
+        public async Task<PosePosition> ConvertTouchPointToPoseAsync(double x, double y)
+        {
+            var tr = await ReadDataAsync();
+            var result = tr.ConvertTouchPointToPosition(new TouchPoint(x, y));
+            return result;
+        }
 
         protected async Task<TestRunner> ReadDataAsync()
         {
@@ -116,5 +141,20 @@ namespace ArmActor
             return this.StateManager.SetStateAsync<TestRunner>(Key, tr);
         }
 
+        /// <summary>
+        /// This method is called whenever an actor is activated.
+        /// An actor is activated the first time any of its methods are invoked.
+        /// </summary>
+        protected override Task OnActivateAsync()
+        {
+            ActorEventSource.Current.ActorMessage(this, "Actor activated.");
+
+            // The StateManager is this actor's private state store.
+            // Data stored in the StateManager will be replicated for high-availability for actors that use volatile or persisted state storage.
+            // Any serializable object can be saved in the StateManager.
+            // For more information, see https://aka.ms/servicefabricactorsstateserialization
+
+            return this.StateManager.TryAddStateAsync("count", 0);
+        }
     }
 }
