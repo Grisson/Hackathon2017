@@ -245,6 +245,7 @@ namespace ArmController.REST
             this.BaseUri = new Uri("http://127.0.0.1:8182");
             SerializationSettings = new JsonSerializerSettings
             {
+                TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
@@ -258,6 +259,7 @@ namespace ArmController.REST
             };
             DeserializationSettings = new JsonSerializerSettings
             {
+                TypeNameHandling = TypeNameHandling.Auto,
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
                 NullValueHandling = NullValueHandling.Ignore,

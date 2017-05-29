@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Rest;
+using Newtonsoft.Json;
 
 namespace ArmController.Executor
 {
@@ -23,6 +24,10 @@ namespace ArmController.Executor
         public readonly TestRunner TestBrain = new TestRunner();
 
         public readonly CloudBrain brain;
+
+        public long? RegisterId;
+
+        public bool IsRegisted => RegisterId.HasValue;
 
         public SerialCommunicator SerialPort { get; set; }
 
@@ -38,10 +43,16 @@ namespace ArmController.Executor
         {
             var baseUrl = new Uri(ConfigurationManager.AppSettings["BaseUrl"]);
             brain = new CloudBrain(baseUrl, new BasicAuthenticationCredentials());
-
-            //var id = brain.Arm.Register();
         }
 
+
+        public void Register()
+        {
+            if(brain != null)
+            {
+                var id = brain.Arm.Register();
+            }
+        }
         /// <summary>
         /// Dequeue command from command store
         /// </summary>

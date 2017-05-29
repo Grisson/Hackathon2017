@@ -234,5 +234,10 @@ namespace ArmController
 
             new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
+
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            CommandExecutor.SharedInstance.Register();
+        }
     }
 }
