@@ -1,4 +1,6 @@
-﻿using ArmController.Models.Data;
+﻿using ArmApi.logic;
+using ArmController.Models.Data;
+using Microsoft.ServiceFabric.Actors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +16,12 @@ namespace ArmApi.Controllers
     {
         [Route("arm/register")]
         [HttpGet]
-        public IEnumerable<string> Register()
+        public long Register()
         {
-            return new string[] { "value1", "value2" };
+            var id = ActorId.CreateRandom();
+            ActorFactory.GetArm(id);
+
+            return id.GetLongId();
         }
 
         [Route("arm/{id}/reporttouch/{timeStamp}/{x:double}/{y:double}")]

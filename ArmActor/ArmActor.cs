@@ -23,6 +23,8 @@ namespace ArmActor
     [StatePersistence(StatePersistence.Persisted)]
     internal class ArmActor : Actor, IArmActor
     {
+
+    
         /// <summary>
         /// Initializes a new instance of ArmActor
         /// </summary>
@@ -33,32 +35,32 @@ namespace ArmActor
         {
         }
 
-        public Task<PosePosition> ConvertToPose(double x, double y)
+        public Task<PosePosition> ConvertToPoseAsync(double x, double y)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> EndCalibrate()
+        public Task<bool> EndCalibrateAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> ReportPose(string timeStamp, int x, int y, int z)
+        public Task<bool> ReportPoseAsync(string timeStamp, int x, int y, int z)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> ReportTouch(string timeStamp, double x, double y)
+        public Task<bool> ReportTouchAsync(string timeStamp, double x, double y)
         {
             throw new NotImplementedException();
         }
 
-        public Task<string> StartCalibrate()
+        public Task<string> StartCalibrateAsync()
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<BaseCommand>> Touch(double x, double y)
+        public Task<IEnumerable<BaseCommand>> TouchAsync(double x, double y)
         {
             throw new NotImplementedException();
         }

@@ -15,17 +15,17 @@ namespace ArmActor.Interfaces
     /// </summary>
     public interface IArmActor : IActor
     {
-        Task<bool> ReportTouch(string timeStamp, double x, double y);
+        Task<bool> ReportTouchAsync(string timeStamp, double x, double y);
 
-        Task<bool> ReportPose(string timeStamp, int x, int y, int z);
+        Task<bool> ReportPoseAsync(string timeStamp, int x, int y, int z);
 
-        Task<string> StartCalibrate();
+        Task<string> StartCalibrateAsync();
 
-        Task<bool> EndCalibrate();
+        Task<bool> EndCalibrateAsync();
 
-        Task<PosePosition> ConvertToPose(double x, double y);
+        Task<PosePosition> ConvertToPoseAsync(double x, double y);
 
-        Task<IEnumerable<BaseCommand>> Touch(double x, double y);
+        Task<IEnumerable<BaseCommand>> TouchAsync(double x, double y);
 
         ///// <summary>
         ///// TODO: Replace with your own actor method.
