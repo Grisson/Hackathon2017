@@ -9,6 +9,7 @@ using Microsoft.ServiceFabric.Actors.Client;
 using ArmActor.Interfaces;
 using ArmController.Models.Command;
 using ArmController.Models.Data;
+using ArmController.lib;
 
 namespace ArmActor
 {
@@ -23,8 +24,8 @@ namespace ArmActor
     [StatePersistence(StatePersistence.Persisted)]
     internal class ArmActor : Actor, IArmActor
     {
+        protected static readonly string Key = "running_status";
 
-    
         /// <summary>
         /// Initializes a new instance of ArmActor
         /// </summary>
@@ -35,9 +36,19 @@ namespace ArmActor
         {
         }
 
-        public Task<PosePosition> ConvertToPoseAsync(double x, double y)
+        public async Task<bool> RegisterAgent(string agentId)
         {
-            throw new NotImplementedException();
+            var tr = await ReadDataAsync();
+            tr.RegisterTestAgent(agentId);
+            await SaveDataAsync(tr);
+            return true;
+        }
+
+        public async Task<PosePosition> ConvertToPoseAsync(double x, double y)
+        {
+            var tr = await ReadDataAsync();
+            var result = tr.ConvertTouchPointToPosition(new TouchPoint(x, y));
+            return result;
         }
 
         public Task<bool> EndCalibrateAsync()
@@ -45,9 +56,12 @@ namespace ArmActor
             throw new NotImplementedException();
         }
 
-        public Task<bool> ReportPoseAsync(string timeStamp, int x, int y, int z)
+        public async Task<bool> ReportPoseAsync(string timeStamp, int x, int y, int z)
         {
-            throw new NotImplementedException();
+            var tr = await ReadDataAsync();
+            tr.ReportAgentPosePosition(long.Parse(timeStamp), x, y, z);
+            await SaveDataAsync(tr);
+            return true;
         }
 
         public Task<bool> ReportTouchAsync(string timeStamp, double x, double y)
@@ -81,6 +95,26 @@ namespace ArmActor
             return this.StateManager.TryAddStateAsync("count", 0);
         }
 
-        
+
+        protected async Task<TestRunner> ReadDataAsync()
+        {
+            var result = await StateManager.TryGetStateAsync<TestRunner>(Key);
+            if (result.HasValue)
+            {
+                return result.Value;
+            }
+            else
+            {
+                var tr = new TestRunner();
+                await SaveDataAsync(tr);
+                return tr;
+            }
+        }
+
+        protected Task SaveDataAsync(TestRunner tr)
+        {
+            return this.StateManager.SetStateAsync<TestRunner>(Key, tr);
+        }
+
     }
 }

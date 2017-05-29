@@ -27,6 +27,9 @@ namespace ArmActor.Interfaces
 
         Task<IEnumerable<BaseCommand>> TouchAsync(double x, double y);
 
+        Task<bool> RegisterAgent(string agentId);
+
+
         ///// <summary>
         ///// TODO: Replace with your own actor method.
         ///// </summary>

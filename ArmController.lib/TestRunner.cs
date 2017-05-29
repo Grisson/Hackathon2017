@@ -61,21 +61,7 @@ namespace ArmController.lib
             };
         }
 
-        public void StartTest()
-        {
-            TestCases = new List<TestCase>();
-            CurrentTestCaseIndex = 0;
-        }
-
-        public string[] GetNextTestCase()
-        {
-            if (CurrentTestCaseIndex <= TestCases.Count)
-            {
-                CurrenTestCase = TestCases[CurrentTestCaseIndex++];
-                return Agent.ToCommond(CurrenTestCase.Steps);
-            }
-            return new string[] { };
-        }
+       
 
         public bool ReportAgentPosePosition(long timeStamp, int x, int y, int z)
         {
@@ -301,6 +287,22 @@ namespace ArmController.lib
             pose.Z = rotateStep;
 
             return pose;
+        }
+
+        public void StartTest()
+        {
+            TestCases = new List<TestCase>();
+            CurrentTestCaseIndex = 0;
+        }
+
+        public string[] GetNextTestCase()
+        {
+            //if (CurrentTestCaseIndex <= TestCases.Count)
+            //{
+            //    CurrenTestCase = TestCases[CurrentTestCaseIndex++];
+            //    return Agent.ToCommond(CurrenTestCase.Steps);
+            //}
+            return new string[] { };
         }
     }
 }

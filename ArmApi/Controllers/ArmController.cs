@@ -16,26 +16,30 @@ namespace ArmApi.Controllers
     {
         [Route("arm/register")]
         [HttpGet]
-        public long Register()
+        public async Task<long> Register()
         {
             var id = ActorId.CreateRandom();
-            ActorFactory.GetArm(id);
-
+            var actor = ActorFactory.GetArm(id);
+            await actor.RegisterAgent(id.GetLongId().ToString());
             return id.GetLongId();
         }
 
         [Route("arm/{id:long}/reporttouch/{timeStamp}/{x:double}/{y:double}")]
         [HttpPut]
-        public string ReportTouch(long id, string timeStamp, double x, double y)
+        public async Task<bool> ReportTouch(long id, string timeStamp, double x, double y)
         {
-            return "ReportTouch";
+            var armActor = ActorFactory.GetArm(id);
+            return await armActor.ReportTouchAsync(timeStamp, x, y);
+            //return "ReportTouch";
         }
 
         [Route("arm/{id:long}/reportpose/{timeStamp}/{x:int}/{y:int}/{z:int}")]
         [HttpPut]
-        public string ReportPose(long id, string timeStamp, int x, int y, int z)
+        public async Task<bool> ReportPose(long id, string timeStamp, int x, int y, int z)
         {
-            return "ReportPose";
+            var armActor = ActorFactory.GetArm(id);
+            return await armActor.ReportPoseAsync(timeStamp, x, y, z);
+            //return "ReportPose";
         }
 
         [Route("arm/{id:long}/startcalibrate")]
