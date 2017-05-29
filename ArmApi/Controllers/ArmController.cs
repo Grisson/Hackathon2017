@@ -24,45 +24,45 @@ namespace ArmApi.Controllers
             return id.GetLongId();
         }
 
-        [Route("arm/{id}/reporttouch/{timeStamp}/{x:double}/{y:double}")]
+        [Route("arm/{id:long}/reporttouch/{timeStamp}/{x:double}/{y:double}")]
         [HttpPut]
-        public string ReportTouch(string id, string timeStamp, double x, double y)
+        public string ReportTouch(long id, string timeStamp, double x, double y)
         {
             return "ReportTouch";
         }
 
-        [Route("arm/{id}/reportpose/{timeStamp}/{x:int}/{y:int}/{z:int}")]
+        [Route("arm/{id:long}/reportpose/{timeStamp}/{x:int}/{y:int}/{z:int}")]
         [HttpPut]
-        public string ReportPose(string id, string timeStamp, int x, int y, int z)
+        public string ReportPose(long id, string timeStamp, int x, int y, int z)
         {
             return "ReportPose";
         }
 
-        [Route("arm/{id}/startcalibrate")]
+        [Route("arm/{id:long}/startcalibrate")]
         [HttpGet]
-        public string StartCalibrate(string id)
+        public string StartCalibrate(long id)
         {
             return "Calibrate commands";
         }
 
-        [Route("arm/{id}/EndCalibrate")]
+        [Route("arm/{id:long}/EndCalibrate")]
         [HttpGet]
-        public string EndCalibrate(string id)
+        public string EndCalibrate(long id)
         {
             return "Calibrated";
         }
 
-        [Route("arm/{id}/topose/{x:double}/{y:double}")]
+        [Route("arm/{id:long}/topose/{x:double}/{y:double}")]
         [HttpGet]
-        public IHttpActionResult ConvertToPose(string id, double x, double y)
+        public IHttpActionResult ConvertToPose(long id, double x, double y)
         {
             return Ok<PosePosition>(new PosePosition(1,2,3));
         }
 
 
-        [Route("arm/{id}/touch/{x:double}/{y:double}")]
+        [Route("arm/{id:long}/touch/{x:double}/{y:double}")]
         [HttpGet]
-        public IHttpActionResult Touch(string id, double x, double y)
+        public IHttpActionResult Touch(long id, double x, double y)
         {
             return Ok<PosePosition>(new PosePosition(1, 2, 3));
         }

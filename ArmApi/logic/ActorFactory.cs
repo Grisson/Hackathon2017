@@ -13,7 +13,7 @@ namespace ArmApi.logic
     {
         private static readonly Uri ArmActorUrl = new Uri("fabric:/CloudBrian/ArmActorService");
 
-        public static IArmActor GetArm(string actorId)
+        public static IArmActor GetArm(long actorId)
         {
             return ActorProxy.Create<IArmActor>(new ActorId(actorId), ArmActorUrl);
         }
