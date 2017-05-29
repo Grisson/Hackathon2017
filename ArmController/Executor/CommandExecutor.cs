@@ -2,7 +2,9 @@
 using ArmController.lib.Data;
 using ArmController.Models;
 using ArmController.Models.Command;
+using ArmController.REST;
 using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -10,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Rest;
 
 namespace ArmController.Executor
 {
@@ -18,6 +21,8 @@ namespace ArmController.Executor
         public static readonly CommandExecutor SharedInstance = new CommandExecutor();
 
         public readonly TestRunner TestBrain = new TestRunner();
+
+        public readonly CloudBrain brain;
 
         public SerialCommunicator SerialPort { get; set; }
 
@@ -31,6 +36,10 @@ namespace ArmController.Executor
 
         private CommandExecutor()
         {
+            var baseUrl = new Uri(ConfigurationManager.AppSettings["BaseUrl"]);
+            brain = new CloudBrain(baseUrl, new BasicAuthenticationCredentials());
+
+            //var id = brain.Arm.Register();
         }
 
         /// <summary>
