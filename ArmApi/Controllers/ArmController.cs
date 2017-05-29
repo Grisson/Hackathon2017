@@ -24,15 +24,6 @@ namespace ArmApi.Controllers
             return id.GetLongId();
         }
 
-        [Route("arm/{id:long}/reporttouch/{timeStamp}/{x:double}/{y:double}")]
-        [HttpPut]
-        public async Task<bool> ReportTouch(long id, string timeStamp, double x, double y)
-        {
-            var armActor = ActorFactory.GetArm(id);
-            return await armActor.ReportTouchAsync(timeStamp, x, y);
-            //return "ReportTouch";
-        }
-
         [Route("arm/{id:long}/reportpose/{timeStamp}/{x:int}/{y:int}/{z:int}")]
         [HttpPut]
         public async Task<bool> ReportPose(long id, string timeStamp, int x, int y, int z)
@@ -42,33 +33,82 @@ namespace ArmApi.Controllers
             //return "ReportPose";
         }
 
+        [Route("arm/{id:long}/reporttouch/{timeStamp}/{x:double}/{y:double}")]
+        [HttpPut]
+        public async Task<bool> ReportTouch(long id, string timeStamp, double x, double y)
+        {
+            var armActor = ActorFactory.GetArm(id);
+            return await armActor.ReportTouchAsync(timeStamp, x, y);
+            //return "ReportTouch";
+        }
+
+        [Route("arm/{id:long}/canresume")]
+        [HttpGet]
+        public async Task<string> CanResume(long id)
+        {
+            var armActor = ActorFactory.GetArm(id);
+            return await armActor.CanResumeAsync();
+        }
+
+        [Route("arm/{id:long}/done/{data}")]
+        [HttpGet]
+        public async void Done(long id, string data)
+        {
+            var armActor = ActorFactory.GetArm(id);
+            await armActor.DoneAsync(data);
+        }
+
+        [Route("arm/{id:long}/waitprob")]
+        [HttpGet]
+        public async void WaitProb(long id)
+        {
+            var armActor = ActorFactory.GetArm(id);
+            await armActor.WaitingProbResultAsync();
+        }
+
         [Route("arm/{id:long}/startcalibrate")]
         [HttpGet]
-        public string StartCalibrate(long id)
+        public async Task<string> StartCalibrate(long id)
         {
-            return "Calibrate commands";
+            var armActor = ActorFactory.GetArm(id);
+            return await armActor.StartCalibrateAsync();
+            //return "Calibrate commands";
         }
 
-        [Route("arm/{id:long}/EndCalibrate")]
+        [Route("arm/{id:long}/prob/{retry:int}")]
         [HttpGet]
-        public string EndCalibrate(long id)
+        public async Task<string> Prob(long id, int retry = 0)
         {
-            return "Calibrated";
+            var armActor = ActorFactory.GetArm(id);
+            return await armActor.ProbAsync(retry);
+            //return "Calibrate commands";
         }
 
-        [Route("arm/{id:long}/topose/{x:double}/{y:double}")]
+        [Route("arm/{id:long}/coordinate/{x:double}/{y:double}/{z:double}")]
         [HttpGet]
-        public IHttpActionResult ConvertToPose(long id, double x, double y)
+        public async Task<IHttpActionResult> ConvertCoordinateToPose(long id, double x, double y, double z)
         {
-            return Ok<PosePosition>(new PosePosition(1,2,3));
+            var armActor = ActorFactory.GetArm(id);
+            var result = await armActor.ConvertCoordinatToPositionAsync(x, y, z);
+            return Ok<PosePosition>(result);
         }
 
-
-        [Route("arm/{id:long}/touch/{x:double}/{y:double}")]
+        [Route("arm/{id:long}/pose/{x:int}/{y:int}/{z:int}")]
         [HttpGet]
-        public IHttpActionResult Touch(long id, double x, double y)
+        public async Task<IHttpActionResult> ConvertPoseToCoordinate(long id, int x, int y, int z)
         {
-            return Ok<PosePosition>(new PosePosition(1, 2, 3));
+            var armActor = ActorFactory.GetArm(id);
+            var result = await armActor.ConvertPositionToCoordinatAsync(x, y, z);
+            return Ok<double[]>(new[] {result.Item1, result.Item2, result.Item3 });
+        }
+
+        [Route("arm/{id:long}/touchpoint/{x:double}/{y:double}")]
+        [HttpGet]
+        public async Task<IHttpActionResult> ConvertTouchPointToPose(long id, double x, double y)
+        {
+            var armActor = ActorFactory.GetArm(id);
+            var result = await armActor.ConvertTouchPointToPoseAsync(x, y);
+            return Ok<PosePosition>(result);
         }
     }
 }
