@@ -1,0 +1,544 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1",
+    "title": "CloudBrain"
+  },
+  "host": "127.0.0.1:8182",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/arm/register": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_Register",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "format": "int64",
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/reportpose/{timeStamp}/{x}/{y}/{z}": {
+      "put": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_ReportPose",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "timeStamp",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "x",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "y",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/reporttouch/{timeStamp}/{x}/{y}": {
+      "put": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_ReportTouch",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "timeStamp",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "x",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "y",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/canresume": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_CanResume",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/done/{data}": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_Done",
+        "consumes": [],
+        "produces": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "data",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/waitprob": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_WaitProb",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/startcalibrate": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_StartCalibrate",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/prob/{retry}": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_Prob",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "retry",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/coordinate/{x}/{y}/{z}": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_ConvertCoordinateToPose",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "x",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "y",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/pose/{x}/{y}/{z}": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_ConvertPoseToCoordinate",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "x",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "y",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "z",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/arm/{id}/touchpoint/{x}/{y}": {
+      "get": {
+        "tags": [
+          "Arm"
+        ],
+        "operationId": "Arm_ConvertTouchPointToPose",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "x",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "y",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "/api/target/{id}/reporttouch/{timeStamp}/{x}/{y}": {
+      "put": {
+        "tags": [
+          "TestTarget"
+        ],
+        "operationId": "TestTarget_ReportTouch",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "timeStamp",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "x",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "y",
+            "in": "path",
+            "required": true,
+            "type": "number",
+            "format": "double"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/Values": {
+      "get": {
+        "tags": [
+          "Values"
+        ],
+        "operationId": "Values_Get",
+        "consumes": [],
+        "produces": [
+          "application/json",
+          "text/json",
+          "application/xml",
+          "text/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}

@@ -1,14 +1,13 @@
-﻿using System;
+﻿using ArmController.Executor;
+using ArmController.Models.Command;
+using ArmController.Models.Data;
+using ArmController.REST;
+using System;
 using System.IO.Ports;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using ArmController.lib.Data;
-using System.Threading;
-using ArmController.Executor;
-using ArmController.lib;
-using ArmController.Models.Command;
-using ArmController.Models.Data;
 
 namespace ArmController
 {
@@ -26,15 +25,17 @@ namespace ArmController
             var coorX = TextToDouble(CoordinateXTextBox.Text);
             var coorY = TextToDouble(CoordinateYTextBox.Text);
             var coorZ = TextToDouble(CoordinateZTextBox.Text);
-            var targetPose = _testBrain.ConvertCoordinatToPosition(new Tuple<double, double, double>(coorX, coorY, coorZ));
-            var newCommand = new GCommand(targetPose.X - _currentPosePosition.X, 
-                targetPose.Y - _currentPosePosition.Y, 
-                targetPose.Z - _currentPosePosition.Z, 
+            var targetPose = _testBrain.Arm.ConvertCoordinateToPose(
+                CommandExecutor.SharedInstance.RegisterId.Value,
+                coorX, coorY, coorZ) as PosePosition;
+            var newCommand = new GCommand(targetPose.X - _currentPosePosition.X,
+                targetPose.Y - _currentPosePosition.Y,
+                targetPose.Z - _currentPosePosition.Z,
                 _currentPosePosition);
 
-            _commands.Enqueue(newCommand);
+            //_commands.Enqueue(newCommand);
 
-            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+            //new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
 
         private void CalibButton_Click(object sender, RoutedEventArgs e)
@@ -44,14 +45,14 @@ namespace ArmController
 
         private void TapButton_Click(object sender, RoutedEventArgs e)
         {
-            var deserializedList = CommandHelper.Tap();
+            //var deserializedList = CommandHelper.Tap();
 
-            foreach (var c in deserializedList)
-            {
-                _commands.Enqueue(c);
-            }
+            //foreach (var c in deserializedList)
+            //{
+            //    _commands.Enqueue(c);
+            //}
 
-            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+            //new Thread(CommandExecutor.SharedInstance.Execute).Start();
 
         }
 
@@ -72,7 +73,7 @@ namespace ArmController
                 ConnectButton.Content = "Conntect";
                 _currentPosePosition = PosePosition.InitializePosition();
                 ShowCurrentPosition();
-                _testBrain.UnRegisterTestAgent();
+                //_testBrain.UnRegisterTestAgent();
 
                 Title = Title.Substring(0, Title.Length - Title.LastIndexOf("-", StringComparison.Ordinal));
             }
@@ -90,8 +91,8 @@ namespace ArmController
                     Scroller.ScrollToBottom();
                     ConnectButton.Content = "Disconntect";
                     Title = Title + " - Connected";
-
-                    _testBrain.RegisterTestAgent(_deviceId.ToString());
+                    CommandExecutor.SharedInstance.Register();
+                    //_testBrain.RegisterTestAgent(_deviceId.ToString());
                 }
             }
         }
@@ -138,7 +139,11 @@ namespace ArmController
                 y = -1 * y;
             }
 
-            _testBrain.ReportTouchBegin(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y);
+            _testBrain.Arm.ReportTouch(
+                CommandExecutor.SharedInstance.RegisterId.Value,
+                DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(), 
+                x, 
+                y);
 
             _dataContext.AddOutput("Touch is reported!");
             Scroller.ScrollToBottom();

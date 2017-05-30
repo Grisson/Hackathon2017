@@ -1,27 +1,16 @@
-﻿using ArmController.lib;
-using ArmController.lib.Data;
-using ArmController.Models;
+﻿using ArmController.Models;
 using ArmController.Models.Command;
 using ArmController.REST;
+using Microsoft.Rest;
 using System;
 using System.Configuration;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using Microsoft.Rest;
-using Newtonsoft.Json;
 
 namespace ArmController.Executor
 {
     public class CommandExecutor
     {
         public static readonly CommandExecutor SharedInstance = new CommandExecutor();
-
-        public readonly TestRunner TestBrain = new TestRunner();
 
         public readonly CloudBrain brain;
 

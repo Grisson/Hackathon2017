@@ -183,10 +183,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ArmController.lib\ArmController.lib.csproj">
-      <Project>{9ef62e34-9efa-4fb9-944e-2023127614a9}</Project>
-      <Name>ArmController.lib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ArmController.Models\ArmController.Models.csproj">
       <Project>{60B904C7-ABBB-4309-BA73-02BA561BB73F}</Project>
       <Name>ArmController.Models</Name>

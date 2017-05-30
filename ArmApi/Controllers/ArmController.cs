@@ -60,10 +60,12 @@ namespace ArmApi.Controllers
 
         [Route("arm/{id:long}/waitprob")]
         [HttpGet]
-        public async void WaitProb(long id)
+        public async Task<bool> WaitProb(long id)
         {
             var armActor = ActorFactory.GetArm(id);
-            await armActor.WaitingProbResultAsync();
+            var result = await armActor.WaitingProbResultAsync();
+
+            return result;
         }
 
         [Route("arm/{id:long}/startcalibrate")]

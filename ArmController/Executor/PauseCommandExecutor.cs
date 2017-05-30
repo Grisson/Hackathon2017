@@ -1,12 +1,8 @@
-﻿using ArmController.lib.Data;
-using ArmController.Models.Command;
+﻿using ArmController.Models.Command;
+using ArmController.REST;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ArmController.Executor
 {
@@ -39,7 +35,8 @@ namespace ArmController.Executor
                     if (command.RefreshInterval > 0)
                     {
                         // do something
-                        var retrunCommand = CommandExecutor.SharedInstance.TestBrain.CanResume();
+                        var retrunCommand = CommandExecutor.SharedInstance.brain.Arm.CanResume(
+                            CommandExecutor.SharedInstance.RegisterId.Value);
 
                         if(!string.IsNullOrEmpty(retrunCommand))
                         {

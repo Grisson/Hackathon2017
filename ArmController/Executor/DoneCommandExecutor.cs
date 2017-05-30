@@ -1,11 +1,7 @@
-﻿using ArmController.lib.Data;
-using ArmController.Models.Command;
+﻿using ArmController.Models.Command;
+using ArmController.REST;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ArmController.Executor
 {
@@ -26,7 +22,7 @@ namespace ArmController.Executor
 
         public void Execute(DoneCommand command)
         {
-            CommandExecutor.SharedInstance.TestBrain.Done(command.RetrunData);
+            CommandExecutor.SharedInstance.brain.Arm.Done(CommandExecutor.SharedInstance.RegisterId.Value, command.RetrunData);
             LogHandler?.Invoke($"DoneCommand({command.RetrunData}) is executed!");
 
             lock (CommandExecutor.SharedInstance)

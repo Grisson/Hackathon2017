@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using ArmController.Executor;
+using ArmController.Models.Command;
+using ArmController.Models.Data;
+using ArmController.REST;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Ports;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using ArmController.lib;
-using ArmController.lib.Data;
-using System.Collections.Generic;
-using System.Threading;
-using Emgu.CV.UI;
-using Newtonsoft.Json;
-using ArmController.Executor;
-using ArmController.Models.Data;
-using ArmController.Models.Command;
 
 namespace ArmController
 {
@@ -41,7 +38,7 @@ namespace ArmController
             }
         }
 
-        private TestRunner _testBrain => CommandExecutor.SharedInstance.TestBrain; // assume this is the cloud
+        private CloudBrain _testBrain => CommandExecutor.SharedInstance.brain; // assume this is the cloud
         private CommandStore _commands => CommandStore.SharedInstance; // from cloud or human inputs
         private BaseCommand _currentCommand => CommandStore.SharedInstance.CurrentCommand;
         private SerialCommunicator _serialPort
@@ -73,7 +70,7 @@ namespace ArmController
             InitializeComponent();
 
             //_testBrain = new TestRunner();
-            _testBrain.RegisterTestTarget();
+            //_testBrain.RegisterTestTarget();
 
             _deviceId = Guid.NewGuid();
             _currentPosePosition = PosePosition.InitializePosition();
@@ -108,7 +105,7 @@ namespace ArmController
 
         private void GetCommandsFromServer()
         {
-            var commandsText = _testBrain.GetSecondCalibrationCommonds();
+            var commandsText = _testBrain.Arm.StartCalibrate(CommandExecutor.SharedInstance.RegisterId.Value); ; //.GetSecondCalibrationCommonds();
 
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
@@ -123,7 +120,7 @@ namespace ArmController
 
         private void GetProbCommandsFromServer()
         {
-            var commandsText = _testBrain.GetProbCommands();
+            var commandsText = _testBrain.Arm.Prob(CommandExecutor.SharedInstance.RegisterId.Value, 0); //.GetProbCommands();
 
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
@@ -168,10 +165,14 @@ namespace ArmController
                 CurrentPositionY.Text = $"Y: {_currentPosePosition.Y.ToString(CultureInfo.InvariantCulture)}";
                 CurrentPositionZ.Text = $"Z: {_currentPosePosition.Z.ToString(CultureInfo.InvariantCulture)}";
 
-                var coordinate = _testBrain.ConvertPositionToCoordinat(_currentPosePosition);
-                CurrentCoordinateX.Text = $"X: {coordinate.Item1}";
-                CurrentCoordinateY.Text = $"Y: {coordinate.Item2}";
-                CurrentCoordinateZ.Text = $"Z: {coordinate.Item3}";
+                var coordinate = _testBrain.Arm.ConvertPoseToCoordinate(
+                    CommandExecutor.SharedInstance.RegisterId.Value,
+                    _currentPosePosition.X,
+                    _currentPosePosition.Y,
+                    _currentPosePosition.Z);
+                //CurrentCoordinateX.Text = $"X: {coordinate.Item1}";
+                //CurrentCoordinateY.Text = $"Y: {coordinate.Item2}";
+                //CurrentCoordinateZ.Text = $"Z: {coordinate.Item3}";
             }
         }
 
@@ -206,7 +207,9 @@ namespace ArmController
             }
 
             // report pose position
-            _testBrain.ReportAgentPosePosition(sendTimeStamp,
+            _testBrain.Arm.ReportPose(
+                CommandExecutor.SharedInstance.RegisterId.Value,
+                sendTimeStamp.ToString(),
                 _currentPosePosition.X,
                 _currentPosePosition.Y,
                 _currentPosePosition.Z);
@@ -222,22 +225,24 @@ namespace ArmController
 
         private void TestTouchButton_Click(object sender, RoutedEventArgs e)
         {
-            var commandsText = _testBrain.GetTestTouchCommand();
+            //var commandsText = _testBrain.GetTestTouchCommand();
 
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
+            //JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            //List<BaseCommand> deserializedList = JsonConvert.DeserializeObject<List<BaseCommand>>(commandsText, settings);
 
-            foreach (var c in deserializedList)
-            {
-                _commands.Enqueue(c);
-            }
+            //foreach (var c in deserializedList)
+            //{
+            //    _commands.Enqueue(c);
+            //}
 
-            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+            //new Thread(CommandExecutor.SharedInstance.Execute).Start();
         }
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
+            ShowLog("Register Button is clicked!");
             CommandExecutor.SharedInstance.Register();
+            ShowLog($"Devic is registed as {CommandExecutor.SharedInstance.RegisterId}");
         }
     }
 }

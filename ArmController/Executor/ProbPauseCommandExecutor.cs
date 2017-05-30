@@ -1,12 +1,9 @@
-﻿using ArmController.lib.Data;
-using ArmController.Models.Command;
+﻿using ArmController.Models.Command;
+using ArmController.REST;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ArmController.Executor
 {
@@ -30,7 +27,7 @@ namespace ArmController.Executor
             this.Execute(command as ProbPauseCommand);
         }
 
-        public void Execute(ProbPauseCommand command)
+        public async void Execute(ProbPauseCommand command)
         {
             var now = DateTime.Now;
             var endTime = now.AddSeconds(command.TimeOut);
@@ -44,8 +41,9 @@ namespace ArmController.Executor
                     if (command.RefreshInterval > 0)
                     {
                         // do something
-                        isTouchDetected = CommandExecutor.SharedInstance.TestBrain.WaitingProbResult();
-
+                        //isTouchDetected = CommandExecutor.SharedInstance.brain.Arm.WaitProb(
+                        //    CommandExecutor.SharedInstance.RegisterId.Value);
+                        //isTouchDetected = Boolean.Parse(response.Response.Content.ToString());
                         if (isTouchDetected)
                         {
                             LogHandler?.Invoke("Will resume!");
@@ -68,11 +66,16 @@ namespace ArmController.Executor
                 var newCommandString = string.Empty;
                 if(isTouchDetected)
                 {
-                    newCommandString = CommandExecutor.SharedInstance.TestBrain.GetSecondCalibrationCommonds();
+                    var response = await CommandExecutor.SharedInstance.brain.Arm.StartCalibrateWithHttpMessagesAsync(
+                        CommandExecutor.SharedInstance.RegisterId.Value);
+                    newCommandString = response.Body;
                 }
                 else
                 {
-                    newCommandString = CommandExecutor.SharedInstance.TestBrain.GetProbCommands(command.ProbRetry+1);
+                    var response = await CommandExecutor.SharedInstance.brain.Arm.ProbWithHttpMessagesAsync(
+                        CommandExecutor.SharedInstance.RegisterId.Value,
+                        command.ProbRetry + 1); 
+                    newCommandString = response.Body;
                 }
 
                 if(string.IsNullOrEmpty(newCommandString))

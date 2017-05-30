@@ -1,11 +1,7 @@
-﻿using ArmController.lib.Data;
-using ArmController.Models.Command;
+﻿using ArmController.Models.Command;
+using ArmController.REST;
 using System;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArmController.Executor
 {
@@ -74,7 +70,9 @@ namespace ArmController.Executor
                         }
 
                         // report current position
-                        CommandExecutor.SharedInstance.TestBrain.ReportAgentPosePosition(command.SendTimeStamp,
+                        CommandExecutor.SharedInstance.brain.Arm.ReportPose(
+                            CommandExecutor.SharedInstance.RegisterId.Value,
+                            command.SendTimeStamp.ToString(),
                             CommandStore.SharedInstance.CurrentPosePosition.X,
                             CommandStore.SharedInstance.CurrentPosePosition.Y,
                             CommandStore.SharedInstance.CurrentPosePosition.Z);
