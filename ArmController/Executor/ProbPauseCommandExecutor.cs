@@ -11,7 +11,6 @@ namespace ArmController.Executor
     {
         public static readonly ProbPauseCommandExecutor SharedInstance = new ProbPauseCommandExecutor();
 
-
         private Queue<BaseCommand> localCommandQueue = new Queue<BaseCommand>();
 
         public Action<string> LogHandler => CommandExecutor.SharedInstance.LogHandler;
@@ -27,7 +26,7 @@ namespace ArmController.Executor
             this.Execute(command as ProbPauseCommand);
         }
 
-        public async void Execute(ProbPauseCommand command)
+        public void Execute(ProbPauseCommand command)
         {
             var now = DateTime.Now;
             var endTime = now.AddSeconds(command.TimeOut);
@@ -41,9 +40,9 @@ namespace ArmController.Executor
                     if (command.RefreshInterval > 0)
                     {
                         // do something
-                        //isTouchDetected = CommandExecutor.SharedInstance.brain.Arm.WaitProb(
-                        //    CommandExecutor.SharedInstance.RegisterId.Value);
-                        //isTouchDetected = Boolean.Parse(response.Response.Content.ToString());
+                        isTouchDetected = CommandExecutor.SharedInstance.brain.Arm.WaitProb(
+                            CommandExecutor.SharedInstance.RegisterId.Value) ?? false;
+
                         if (isTouchDetected)
                         {
                             LogHandler?.Invoke("Will resume!");
@@ -66,16 +65,14 @@ namespace ArmController.Executor
                 var newCommandString = string.Empty;
                 if(isTouchDetected)
                 {
-                    var response = await CommandExecutor.SharedInstance.brain.Arm.StartCalibrateWithHttpMessagesAsync(
+                    newCommandString = CommandExecutor.SharedInstance.brain.Arm.StartCalibrate(
                         CommandExecutor.SharedInstance.RegisterId.Value);
-                    newCommandString = response.Body;
                 }
                 else
                 {
-                    var response = await CommandExecutor.SharedInstance.brain.Arm.ProbWithHttpMessagesAsync(
+                    newCommandString = CommandExecutor.SharedInstance.brain.Arm.Prob(
                         CommandExecutor.SharedInstance.RegisterId.Value,
                         command.ProbRetry + 1); 
-                    newCommandString = response.Body;
                 }
 
                 if(string.IsNullOrEmpty(newCommandString))
@@ -113,8 +110,6 @@ namespace ArmController.Executor
         {
 
         }
-
-        
 
         private void CompleteCurrentCommand()
         {

@@ -176,9 +176,9 @@ namespace ArmController.REST
             /// </param>
             /// <param name='id'>
             /// </param>
-            public static void WaitProb(this IArm operations, long id)
+            public static bool? WaitProb(this IArm operations, long id)
             {
-                Task.Factory.StartNew(s => ((IArm)s).WaitProbAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IArm)s).WaitProbAsync(id), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -189,9 +189,12 @@ namespace ArmController.REST
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task WaitProbAsync(this IArm operations, long id, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<bool?> WaitProbAsync(this IArm operations, long id, CancellationToken cancellationToken = default(CancellationToken))
             {
-                await operations.WaitProbWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false);
+                using (var _result = await operations.WaitProbWithHttpMessagesAsync(id, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
             }
 
             /// <param name='operations'>
