@@ -153,6 +153,9 @@ namespace ArmController.lib
 
         public string GetSecondCalibrationCommonds()
         {
+            PosePositions.Clear();
+            TouchPoints.Clear();
+
             var commonds = new List<BaseCommand>();
 
             var lengths = new[] { 70, 80, 90, 100, 110, 120, 130 };  // coordinate_x

@@ -39,7 +39,7 @@ namespace ArmController.Executor
         {
             if(brain != null)
             {
-                var id = brain.Arm.Register();
+                RegisterId = brain.Arm.Register();
             }
         }
         /// <summary>

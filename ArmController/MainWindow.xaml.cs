@@ -3,6 +3,7 @@ using ArmController.Models.Command;
 using ArmController.Models.Data;
 using ArmController.REST;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -169,10 +170,10 @@ namespace ArmController
                     CommandExecutor.SharedInstance.RegisterId.Value,
                     _currentPosePosition.X,
                     _currentPosePosition.Y,
-                    _currentPosePosition.Z);
-                //CurrentCoordinateX.Text = $"X: {coordinate.Item1}";
-                //CurrentCoordinateY.Text = $"Y: {coordinate.Item2}";
-                //CurrentCoordinateZ.Text = $"Z: {coordinate.Item3}";
+                    _currentPosePosition.Z) as JArray;
+                CurrentCoordinateX.Text = $"X: {coordinate[0]}";
+                CurrentCoordinateY.Text = $"Y: {coordinate[1]}";
+                CurrentCoordinateZ.Text = $"Z: {coordinate[2]}";
             }
         }
 

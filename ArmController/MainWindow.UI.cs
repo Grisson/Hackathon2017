@@ -92,6 +92,7 @@ namespace ArmController
                     ConnectButton.Content = "Disconntect";
                     Title = Title + " - Connected";
                     CommandExecutor.SharedInstance.Register();
+                    ShowLog($"Devic is registed as {CommandExecutor.SharedInstance.RegisterId}");
                     //_testBrain.RegisterTestAgent(_deviceId.ToString());
                 }
             }
