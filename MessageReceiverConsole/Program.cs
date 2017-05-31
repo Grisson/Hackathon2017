@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Emgu.CV;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -14,7 +15,7 @@ namespace MessageReceiverConsole
             string imageFilePath = @".\test.jpg";//Console.ReadLine();
 
             var image = GetImageAsByteArray(imageFilePath);
-
+            
             MakeOCRRequest(imageFilePath);
 
             Console.WriteLine("\n\n\nHit ENTER to exit...");

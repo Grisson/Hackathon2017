@@ -16,6 +16,9 @@ namespace ArmController
         private int currentCameraId = -1;
         private bool shouldDetectCamera = true;
         private Mat _frame;
+        private Image<Bgr, Byte> savedFame;
+
+        public bool SaveAFrame;
 
         protected void InitCamera(int cameraId)
         {
@@ -45,6 +48,12 @@ namespace ArmController
             if (_camera != null && _camera.Ptr != IntPtr.Zero)
             {
                 _camera.Retrieve(_frame, 0);
+
+                if(SaveAFrame)
+                {
+                    SaveAFrame = !SaveAFrame;
+                    savedFame = _frame.ToImage<Bgr, Byte>();
+                }
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
