@@ -13,6 +13,8 @@ namespace MessageReceiverConsole
             Console.Write("Enter image file path: ");
             string imageFilePath = @".\test.jpg";//Console.ReadLine();
 
+            var image = GetImageAsByteArray(imageFilePath);
+
             MakeOCRRequest(imageFilePath);
 
             Console.WriteLine("\n\n\nHit ENTER to exit...");
