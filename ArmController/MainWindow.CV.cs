@@ -5,6 +5,8 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using System.Threading;
+using System.Drawing;
 
 namespace ArmController
 {
@@ -16,9 +18,9 @@ namespace ArmController
         private int currentCameraId = -1;
         private bool shouldDetectCamera = true;
         private Mat _frame;
-        private Image<Bgr, Byte> savedFame;
+        public Image<Bgr, Byte> SavedFame { get; set; }
 
-        public bool SaveAFrame;
+        public bool SaveAFrame { get; set; }
 
         protected void InitCamera(int cameraId)
         {
@@ -52,7 +54,7 @@ namespace ArmController
                 if(SaveAFrame)
                 {
                     SaveAFrame = !SaveAFrame;
-                    savedFame = _frame.ToImage<Bgr, Byte>();
+                    SavedFame = _frame.ToImage<Bgr, Byte>();
                 }
 
                 Application.Current.Dispatcher.Invoke(() =>
@@ -66,6 +68,30 @@ namespace ArmController
                 //cannyImageBox.Image = _cannyFrame;
             }
         }
+
+        private void TestLogicBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.SaveAFrame = true;
+
+            new Thread(() => {
+                Thread.Sleep(100);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (!this.SaveAFrame)
+                    {
+                        var roi = new Rectangle(100, 100, 200, 200);
+                        SavedFame.ROI = roi;
+                        var imagepart = SavedFame.Copy();
+                        imagepart.Save($"{DateTime.Now.Ticks}.jpg");
+                        //imagepart.Bytes;
+                    }
+                });
+               
+            }).Start();
+            
+        }
+
 
         /*
          Mat image = new Mat(100, 400, DepthType.Cv8U, 3);

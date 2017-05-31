@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO.Ports;
 using System.Threading;
@@ -245,5 +246,7 @@ namespace ArmController
             CommandExecutor.SharedInstance.Register();
             ShowLog($"Devic is registed as {CommandExecutor.SharedInstance.RegisterId}");
         }
+
+        
     }
 }
