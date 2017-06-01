@@ -18,9 +18,11 @@ namespace ArmController
         private int currentCameraId = -1;
         private bool shouldDetectCamera = true;
         private Mat _frame;
-        public Image<Bgr, Byte> SavedFame { get; set; }
 
+        // save image function
+        public Image<Bgr, Byte> SavedFame { get; set; }
         public bool SaveAFrame { get; set; }
+        public string SaveImgFileName { get; set; }
 
         protected void InitCamera(int cameraId)
         {
@@ -55,6 +57,13 @@ namespace ArmController
                 {
                     SaveAFrame = !SaveAFrame;
                     SavedFame = _frame.ToImage<Bgr, Byte>();
+                    if(string.IsNullOrEmpty(SaveImgFileName))
+                    {
+                        var n = DateTime.Now;
+                        SaveImgFileName = $"{n.Hour}-{n.Minute}-{n.Second}-{n.Millisecond}.jpg";
+                    }
+                    SavedFame.Save(SaveImgFileName);
+                    SaveImgFileName = string.Empty;
                 }
 
                 Application.Current.Dispatcher.Invoke(() =>
@@ -73,23 +82,22 @@ namespace ArmController
         {
             this.SaveAFrame = true;
 
-            new Thread(() => {
-                Thread.Sleep(100);
+            //new Thread(() => {
+            //    Thread.Sleep(100);
 
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    if (!this.SaveAFrame)
-                    {
-                        var roi = new Rectangle(100, 100, 200, 200);
-                        SavedFame.ROI = roi;
-                        var imagepart = SavedFame.Copy();
-                        imagepart.Save($"{DateTime.Now.Ticks}.jpg");
-                        //imagepart.Bytes;
-                    }
-                });
+            //    Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        if (!this.SaveAFrame)
+            //        {
+            //            var roi = new Rectangle(100, 100, 200, 200);
+            //            SavedFame.ROI = roi;
+            //            var imagepart = SavedFame.Copy();
+            //            imagepart.Save($"{DateTime.Now.Ticks}.jpg");
+            //            //imagepart.Bytes;
+            //        }
+            //    });
                
-            }).Start();
-            
+            //}).Start();
         }
 
 
@@ -99,6 +107,13 @@ namespace ArmController
          CvInvoke.PutText(image, "Hello, world", new System.Drawing.Point(10, 50), Emgu.CV.CvEnum.FontFace.HersheyPlain, 3.0, new Bgr(255.0, 0.0, 0.0).MCvScalar);
 
          image1.Source = BitmapSourceConvert.ToBitmapSource(image); 
+         
+         var roi = new Rectangle(100, 100, 200, 200);
+                        SavedFame.ROI = roi;
+                        var imagepart = SavedFame.Copy();
+                        imagepart.Save($"{DateTime.Now.Ticks}.jpg");
+                        //imagepart.Bytes;
+         
          */
 
 
