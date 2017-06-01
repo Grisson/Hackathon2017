@@ -1,6 +1,6 @@
 ﻿namespace ArmController.Models.Command
 {
-    public class ScreenShotCommand : BaseCommand
+    public class VisionCommand : BaseCommand
     {
         public double X { get; set; }
         public double Y { get; set; }
@@ -9,9 +9,16 @@
         public double Height { get; set; }
 
 
-        public ScreenShotCommand()
+        public string Data { get; set; }
+
+        public VisionCommand()
         {
-            this.Type = CommandType.ScreenShot;
+            this.Type = CommandType.Vision;
+        }
+
+        public VisionCommand(string data) : this()
+        {
+            this.Data = data;
         }
 
         public override string ToSendLog

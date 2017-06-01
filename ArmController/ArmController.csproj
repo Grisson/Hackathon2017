@@ -136,6 +136,7 @@
     <Compile Include="Executor\PauseCommandExecutor.cs" />
     <Compile Include="Executor\PoseCommandExecutor.cs" />
     <Compile Include="Executor\ProbPauseCommandExecutor.cs" />
+    <Compile Include="Executor\VisionCommandExecutor.cs" />
     <Compile Include="MainWindow.CV.cs" />
     <Compile Include="MainWindow.UI.cs" />
     <Compile Include="SerialCommunicator.cs" />

@@ -10,7 +10,6 @@ namespace ArmController
 
         public PosePosition CurrentPosePosition { get; set; }
 
-
         private ConcurrentQueue<BaseCommand> _commands = new ConcurrentQueue<BaseCommand>(); // from cloud or human inputs
 
         public BaseCommand CurrentCommand { get; set; }
@@ -27,6 +26,7 @@ namespace ArmController
                 return 0;
             }
         }
+
         private CommandStore()
         {
         }

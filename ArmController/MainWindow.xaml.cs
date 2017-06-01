@@ -82,6 +82,15 @@ namespace ArmController
             ComboBoxBaud.SelectedIndex = 5;
 
             CommandExecutor.SharedInstance.LogHandler = ShowLog;
+
+            CommandExecutor.SharedInstance.TakePhoto = (string fileName) => {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    // not thread safe
+                    this.SaveImgFileName = fileName;
+                    this.SaveAFrame = true;
+                });
+            };
         }
 
         public void ShowLog(string log)
@@ -238,13 +247,6 @@ namespace ArmController
             //}
 
             //new Thread(CommandExecutor.SharedInstance.Execute).Start();
-        }
-
-        private void RegisterButton_Click(object sender, RoutedEventArgs e)
-        {
-            ShowLog("Register Button is clicked!");
-            CommandExecutor.SharedInstance.Register();
-            ShowLog($"Devic is registed as {CommandExecutor.SharedInstance.RegisterId}");
         }
 
         

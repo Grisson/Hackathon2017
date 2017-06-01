@@ -28,6 +28,8 @@ namespace ArmController.Executor
 
         public Action<string> LogHandler;
 
+        public Action<string> TakePhoto;
+
         private CommandExecutor()
         {
             var baseUrl = new Uri(ConfigurationManager.AppSettings["BaseUrl"]);
@@ -119,8 +121,8 @@ namespace ArmController.Executor
                 case CommandType.Resume:
                     //this.Execute(command as ResumeCommand);
                     break;
-                case CommandType.ScreenShot:
-                    //this.Execute(command as ScreenShotCommand);
+                case CommandType.Vision:
+                    VisionCommandExecutor.SharedInstance.Execute(command);
                     break;
                 case CommandType.Done:
                     DoneCommandExecutor.SharedInstance.Execute(command);

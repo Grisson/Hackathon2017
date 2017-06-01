@@ -166,6 +166,24 @@ namespace ArmController
             Scroller.ScrollToBottom();
         }
 
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowLog("Register Button is clicked!");
+            CommandExecutor.SharedInstance.Register();
+            ShowLog($"Devic is registed as {CommandExecutor.SharedInstance.RegisterId}");
+        }
+
+        private void TestVisionButton_Click(object sender, RoutedEventArgs e)
+        {
+            _dataContext.AddOutput("Test Vision Button is clicked!");
+            var command = new VisionCommand("test");
+            _commands.Enqueue(command);
+
+            new Thread(CommandExecutor.SharedInstance.Execute).Start();
+
+            Scroller.ScrollToBottom();
+        }
+
         #endregion
 
         #region Camera
@@ -251,6 +269,8 @@ namespace ArmController
             }
 
         }
+
+        
 
         #endregion
     }

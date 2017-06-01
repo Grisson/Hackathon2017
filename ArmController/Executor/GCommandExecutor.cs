@@ -81,12 +81,11 @@ namespace ArmController.Executor
 
                         LogHandler?.Invoke($"Reported Pose: {CommandStore.SharedInstance.CurrentPosePosition.X}, {CommandStore.SharedInstance.CurrentPosePosition.Y}, {CommandStore.SharedInstance.CurrentPosePosition.Z}");
 
-                        // clean the current command
-                        CommandStore.SharedInstance.CurrentCommand = null;
-
-                        // clean the waiting flag
                         lock (CommandExecutor.SharedInstance)
                         {
+                            // clean the current command
+                            CommandStore.SharedInstance.CurrentCommand = null;
+                            // clean the waiting flag
                             IsWaitingResponse = false;
                         }
                     }

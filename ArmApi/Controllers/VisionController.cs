@@ -9,8 +9,8 @@ namespace ArmApi.Controllers
     [ServiceRequestActionFilter]
     public class VisionController : ApiController
     {
-        [HttpPost, Route("api/upload")]
-        public async Task<IHttpActionResult> Upload()
+        [HttpPost, Route("vision/{id:long}/{data:string}")]
+        public async Task<IHttpActionResult> Upload(long id, string data)
         {
             if (!Request.Content.IsMimeMultipartContent())
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
