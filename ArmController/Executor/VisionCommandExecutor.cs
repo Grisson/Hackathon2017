@@ -9,6 +9,9 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure; // Namespace for CloudConfigurationManager
+using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
+using Microsoft.WindowsAzure.Storage.Blob; // Namespace for Blob storage types
 
 namespace ArmController.Executor
 {
@@ -16,12 +19,22 @@ namespace ArmController.Executor
     {
         public static readonly VisionCommandExecutor SharedInstance = new VisionCommandExecutor();
 
+        private CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("StorageConnectionString"));
+        private CloudBlobClient blobClient;
+        private CloudBlobContainer container;
         public Action<string> LogHandler => CommandExecutor.SharedInstance.LogHandler;
         public Action<string> TakePhoto => CommandExecutor.SharedInstance.TakePhoto;
 
         private VisionCommandExecutor()
         {
-
+            blobClient = storageAccount.CreateCloudBlobClient();
+            var registerId = "test"; ;
+            if(CommandExecutor.SharedInstance.RegisterId.HasValue)
+            {
+                registerId = CommandExecutor.SharedInstance.RegisterId.Value.ToString();
+            }
+            container = blobClient.GetContainerReference($"{registerId}-image");
+            container.CreateIfNotExists();
         }
 
         public void Execute(BaseCommand command)
@@ -38,7 +51,8 @@ namespace ArmController.Executor
 
             if (File.Exists(fileName))
             {
-                SendImageToServer(fileName, command.Data);
+                //SendImageToServer(fileName, command.Data);
+                UploadImageAsBlob(fileName).Wait();
             }
 
             lock (CommandExecutor.SharedInstance)
@@ -76,5 +90,52 @@ namespace ArmController.Executor
 
             File.Delete(imageFilePath);
         }
+
+        async Task UploadImageAsBlob(string imageFilePath)
+        {
+            var blockBlob = container.GetBlockBlobReference(imageFilePath);
+            byte[] byteData = GetImageAsByteArray(imageFilePath);
+
+            //blockBlob.Properties.ContentType = image.ContentType;
+
+            await blockBlob.UploadFromByteArrayAsync(byteData, 0, byteData.Length);
+        }
     }
 }
+
+
+/*
+ * CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+    CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+// Create the blob client.
+CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+// Retrieve reference to a previously created container.
+CloudBlobContainer container = blobClient.GetContainerReference("mycontainer");
+
+// Retrieve reference to a blob named "photo1.jpg".
+CloudBlockBlob blockBlob = container.GetBlockBlobReference("photo1.jpg");
+
+// Save blob contents to a file.
+using (var fileStream = System.IO.File.OpenWrite(@"path\myfile"))
+{
+    blockBlob.DownloadToStream(fileStream);
+}
+
+    // Retrieve storage account from connection string.
+CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+    CloudConfigurationManager.GetSetting("StorageConnectionString"));
+
+// Create the blob client.
+CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+// Retrieve reference to a previously created container.
+CloudBlobContainer container = blobClient.GetContainerReference("mycontainer");
+
+// Retrieve reference to a blob named "myblob.txt".
+CloudBlockBlob blockBlob = container.GetBlockBlobReference("myblob.txt");
+
+// Delete the blob.
+blockBlob.Delete();
+ */
