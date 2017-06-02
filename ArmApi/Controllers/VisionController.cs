@@ -5,12 +5,14 @@ using System.Web.Http;
 
 namespace ArmApi.Controllers
 {
-    [RoutePrefix("api")]
+    [RoutePrefix("api/vision/{id:long}")]
     [ServiceRequestActionFilter]
     public class VisionController : ApiController
     {
-        [HttpPost, Route("vision/{id:long}/{data:string}")]
-        public async Task<IHttpActionResult> Upload(long id, string data)
+        //[Route("vision/{id:long}/upload/{command:string}")]
+        [Route("upload/{command}")]
+        [HttpPost]
+        public async Task<IHttpActionResult> Upload(long id, string command)
         {
             if (!Request.Content.IsMimeMultipartContent())
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
