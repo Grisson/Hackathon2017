@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Media.Imaging;
-using Emgu.CV;
+﻿using Emgu.CV;
 using Emgu.CV.Structure;
-using System.Threading;
-using System.Drawing;
+using System;
+using System.Windows;
 
 namespace ArmController
 {
