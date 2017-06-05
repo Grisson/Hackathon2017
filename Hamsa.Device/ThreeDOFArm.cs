@@ -5,7 +5,7 @@ using System.IO.Ports;
 
 namespace Hamsa.Device
 {
-    // TODO: 1. waiting for result 2. send out feedback 3. 
+    // TODO: *  
     public class ThreeDOFArm : UsbDevice
     {
         public double GearRatio = 4.5;
@@ -26,6 +26,8 @@ namespace Hamsa.Device
         public PosePosition CurrentPose { get; set; }
         public PosePosition TargetPose { get; set; }
 
+        public Action<string> completionHandler { get; set; }
+
         public ThreeDOFArm(string portName, int baudRate) : base(portName, baudRate)
         {
 
@@ -33,34 +35,51 @@ namespace Hamsa.Device
 
         protected override void DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            var port = sender as SerialPort;
-            while (port.BytesToRead > 0)
+            try
             {
-                var d = port.ReadLine();
+                var port = sender as SerialPort;
+                while (port.BytesToRead > 0)
+                {
+                    var d = port.ReadLine();
 
-                //DataReceivedHandler?.Invoke(d);
+                    if (TargetPose != null)
+                    {
+                        CurrentPose = TargetPose;
+                        TargetPose = null;
+                    }
+
+                    completionHandler?.Invoke(d);
+                }
+            }
+            finally
+            {
+                lock(Syncroot)
+                {
+                    IsIdel = true;
+                }
             }
         }
 
-        public void GoTo(ThreeDimensionCoordinates point)
+        public bool GoTo(ThreeDimensionCoordinates point)
         {
             // coordinate to pose
             var pose = ToPose(new Tuple<double, double, double>(point.X, point.Y, point.Z));
 
             // Go to pose
-            GoTo(pose);
+            return GoTo(pose);
         }
 
-        public void GoTo(PosePosition pose)
+        public bool GoTo(PosePosition pose)
         {
             var command = ToGCommand(pose);
             
-            ExecuteCommand(command);
+            return ExecuteCommand(command);
         }
 
-        public void ExecuteCommand(string data)
+        public bool ExecuteCommand(string data)
         {
             Device.Write(data);
+            return true;
         }
 
         public string ToGCommand(PosePosition TargetPose)
@@ -126,7 +145,9 @@ namespace Hamsa.Device
             var highAngle = (lowAngle - B1) + B2 - RadianToAngle(highRadian);
             var highMm = (int)AngleToMM(highAngle);
 
-            return new PosePosition(lowMm, highMm, rotateZMM);
+            TargetPose = new PosePosition(lowMm, highMm, rotateZMM);
+
+            return TargetPose;
         }
 
         public int AngleToMM(double a)

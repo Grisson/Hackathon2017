@@ -8,7 +8,40 @@ namespace Hamsa.Common
 {
     public abstract class BaseDevice<T> : IDisposable
     {
+        protected object Syncroot = new object();
+
+        public bool IsIdel { get; protected set; }
+
         protected T Device { get; set; }
+
+        public bool Lock()
+        {
+            if(IsIdel)
+            {
+                lock (Syncroot)
+                {
+                    if (IsIdel)
+                    {
+                        IsIdel = false;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+
+        //public bool Unlock()
+        //{
+        //    if(!IsIdel)
+        //    {
+        //        lock(Syncroot)
+        //        {
+
+        //        }
+        //    }
+        //}
 
         #region Dispose
 
