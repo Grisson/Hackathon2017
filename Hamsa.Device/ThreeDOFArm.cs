@@ -5,7 +5,6 @@ using System.IO.Ports;
 
 namespace Hamsa.Device
 {
-    // TODO: *  
     public class ThreeDOFArm : UsbDevice
     {
         public double GearRatio = 4.5;

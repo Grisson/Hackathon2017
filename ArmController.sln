@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageReceiverConsole", "MessageReceiverConsole\MessageReceiverConsole.csproj", "{20BFB201-69D4-4575-AF70-05E25AF3F537}"
 EndProject
@@ -28,6 +28,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hamsa.Common", "Hamsa.Common\Hamsa.Common.csproj", "{84470DD5-B606-40C3-9B37-0959707B5E77}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hamsa.Device", "Hamsa.Device\Hamsa.Device.csproj", "{DE57301B-9788-42FF-862B-603443C5E4C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hamsa.UI", "Hamsa.UI\Hamsa.UI.csproj", "{58A401D5-064F-48E4-9E38-138A56862746}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -195,6 +197,22 @@ Global
 		{DE57301B-9788-42FF-862B-603443C5E4C2}.Release|x64.Build.0 = Release|Any CPU
 		{DE57301B-9788-42FF-862B-603443C5E4C2}.Release|x86.ActiveCfg = Release|Any CPU
 		{DE57301B-9788-42FF-862B-603443C5E4C2}.Release|x86.Build.0 = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|ARM.Build.0 = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|x64.Build.0 = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Debug|x86.Build.0 = Debug|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|ARM.ActiveCfg = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|ARM.Build.0 = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|x64.ActiveCfg = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|x64.Build.0 = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|x86.ActiveCfg = Release|Any CPU
+		{58A401D5-064F-48E4-9E38-138A56862746}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
