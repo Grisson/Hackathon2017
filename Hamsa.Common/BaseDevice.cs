@@ -12,7 +12,7 @@ namespace Hamsa.Common
 
         public bool IsIdel { get; protected set; }
 
-        protected T Device { get; set; }
+        public T Device { get; set; }
 
         public bool Lock()
         {

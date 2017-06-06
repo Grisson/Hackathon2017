@@ -7,6 +7,49 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <TabControl>
+
+            <TabItem Header="Scratch" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="200"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Row="0" Grid.Column ="0" Background="#2f5cb6"/>
+                    <Border Grid.Row="0" Grid.Column ="1" Background="#1f3d7a"/>
+                    <Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Background="#152951"/>
+                    <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" >
+                        <!--<StackPanel Orientation="Horizontal">-->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" x:Name="CameraName">Camera</Label>
+                            <TextBlock Grid.Column="1" Width="20" x:Name="CameraId">0</TextBlock>
+                            <Button Grid.Column="2" x:Name="CameraShowBtn" Click="CameraShowBtn_Click">Connect</Button>
+                        </Grid>
+                        <!--</StackPanel>-->
+                        <Image Name="LiveVideoBox" HorizontalAlignment="Left" ></Image>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0"  Grid.Column="1" Orientation="Vertical">
+                        <StackPanel Orientation="Vertical">
+                            <Label Name="Arm">Arm1</Label>
+                            <Label Name="XPosition"></Label>
+                            <Label Name="YPosition"></Label>
+                            <Label Name="ZPosition"></Label>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+                <!--<Label Content="Content goes here..." />-->
+            </TabItem>
+            <TabItem Header="Arduino" >
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

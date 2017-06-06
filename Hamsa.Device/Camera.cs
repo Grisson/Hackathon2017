@@ -17,12 +17,30 @@ namespace Hamsa.Device
         public Camera(int cameraId) : base(1)
         {
             Device = new Capture(cameraId);
+            Device.ImageGrabbed += ProcessFrame;
+        }
+
+        public void Start()
+        {
+            if(Device != null)
+            {
+                Device.Start();
+            }
+        }
+
+        public void Stop()
+        {
+            if (Device != null)
+            {
+                Device.Stop();
+            }
         }
 
         public override void CleanUp()
         {
             if(Device != null)
             {
+                Device.Stop();
                 Device.Dispose();
             }
         }
