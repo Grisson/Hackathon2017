@@ -24,10 +24,27 @@ namespace Hamsa.UI
 
         private void CameraShowBtn_Click(object sender, RoutedEventArgs e)
         {
-            var cameraId = int.Parse(CameraId.Text);
-            eye = new Camera(cameraId);
-            eye.Subscript("newFrame", ProcessFrame);
-            eye.Start();
+            if (string.Equals(CameraShowBtn.Content.ToString(), "Show", StringComparison.CurrentCultureIgnoreCase))
+            {
+                var cameraId = int.Parse(CameraId.Text);
+                eye = new Camera(cameraId);
+                eye.Subscript("newFrame", ProcessFrame);
+                eye.Start();
+
+                CameraShowBtn.Content = "Hide";
+            }
+            else
+            {
+                if(eye != null)
+                {
+                    eye.Stop();
+                    eye.Dispose();
+                    LiveVideoBox.Source = null;
+                }
+
+                CameraShowBtn.Content = "Show";
+            }
+
         }
 
         protected void ProcessFrame(Bitmap frame)

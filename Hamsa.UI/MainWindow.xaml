@@ -32,7 +32,7 @@
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" x:Name="CameraName">Camera</Label>
                             <TextBlock Grid.Column="1" Width="20" x:Name="CameraId">0</TextBlock>
-                            <Button Grid.Column="2" x:Name="CameraShowBtn" Click="CameraShowBtn_Click">Connect</Button>
+                            <Button Grid.Column="2" x:Name="CameraShowBtn" Click="CameraShowBtn_Click">Show</Button>
                         </Grid>
                         <!--</StackPanel>-->
                         <Image Name="LiveVideoBox" HorizontalAlignment="Left" ></Image>
