@@ -38,12 +38,15 @@
                         <Image Name="LiveVideoBox" HorizontalAlignment="Left" ></Image>
                     </StackPanel>
                     <StackPanel Grid.Row="0"  Grid.Column="1" Orientation="Vertical">
-                        <StackPanel Orientation="Vertical">
-                            <Label Name="Arm">Arm1</Label>
-                            <Label Name="XPosition"></Label>
-                            <Label Name="YPosition"></Label>
-                            <Label Name="ZPosition"></Label>
+                        <StackPanel Orientation="Horizontal">
+                            <ComboBox x:Name="ComboBoxPort" VerticalAlignment="Center" Width="100" DropDownOpened="ComboBoxPort_DropDownOpened">
+                            </ComboBox>
+                            <Button x:Name="ConnectButton" Content="Connect" HorizontalAlignment="Center" VerticalAlignment="Center" Width="75" Background="White" Click="ConnectButton_Click" />
                         </StackPanel>
+                        <Label Name="Arm">Arm1</Label>
+                        <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateX"></TextBlock>
+                        <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateY"></TextBlock>
+                        <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateZ"></TextBlock>
                     </StackPanel>
                 </Grid>
                 <!--<Label Content="Content goes here..." />-->

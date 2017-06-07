@@ -3,9 +3,10 @@ using Hamsa.Common.Data;
 using System;
 using System.IO.Ports;
 
+
 namespace Hamsa.Device
 {
-    public class ThreeDOFArm : UsbDevice
+    public class ThreeDOFArm : UsbDevice, IPull<PosePosition>
     {
         public double GearRatio = 4.5;
         public int MotorStepsPerRev = 200;
@@ -29,7 +30,7 @@ namespace Hamsa.Device
 
         public ThreeDOFArm(string portName, int baudRate) : base(portName, baudRate)
         {
-
+            CurrentPose = PosePosition.InitializePosition();
         }
 
         protected override void DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -184,6 +185,11 @@ namespace Hamsa.Device
             return B1 + MmToAngle(x);
         }
 
+        public PosePosition GetLatestData()
+        {
+            return CurrentPose.Clone();
+        }
+
         //public double TriangleCorner(double radian)
         //{
         //    return ((Math.PI - radian) / 2);//.RandWithFiveDigites();
@@ -196,61 +202,61 @@ namespace Hamsa.Device
 
         //    return Math.Atan2(deltaX, deltaY);
         //}
+    }
 
-        public class PosePosition
+    public class PosePosition
+    {
+        public int MotorOneSteps { get; set; }
+        public int MotorTwoSteps { get; set; }
+        public int MotorThreeSteps { get; set; }
+        public long TimeStamp;
+
+        public int X => MotorOneSteps;
+        public int Y => MotorTwoSteps;
+        public int Z => MotorThreeSteps;
+
+        public PosePosition() : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), 0, 0, 0)
         {
-            public int MotorOneSteps { get; set; }
-            public int MotorTwoSteps { get; set; }
-            public int MotorThreeSteps { get; set; }
-            public long TimeStamp;
 
-            public int X => MotorOneSteps;
-            public int Y => MotorTwoSteps;
-            public int Z => MotorThreeSteps;
+        }
 
-            public PosePosition() : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), 0, 0, 0)
+        public PosePosition(int x, int y, int z)
+            : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y, z)
+        {
+
+        }
+
+        public PosePosition(long timeStamp, int x, int y, int z)
+        {
+            TimeStamp = timeStamp;
+            MotorOneSteps = x;
+            MotorTwoSteps = y;
+            MotorThreeSteps = z;
+        }
+
+        public PosePosition Clone()
+        {
+            return new PosePosition()
             {
+                MotorOneSteps = this.X,
+                MotorTwoSteps = this.Y,
+                MotorThreeSteps = this.Z,
+            };
+        }
 
-            }
-
-            public PosePosition(int x, int y, int z)
-                : this(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(), x, y, z)
+        public PosePosition Incremental(int x, int y, int z)
+        {
+            return new PosePosition()
             {
+                MotorOneSteps = this.X + x,
+                MotorTwoSteps = this.Y + y,
+                MotorThreeSteps = this.Z + z,
+            };
+        }
 
-            }
-
-            public PosePosition(long timeStamp, int x, int y, int z)
-            {
-                TimeStamp = timeStamp;
-                MotorOneSteps = x;
-                MotorTwoSteps = y;
-                MotorThreeSteps = z;
-            }
-
-            public PosePosition Clone()
-            {
-                return new PosePosition()
-                {
-                    MotorOneSteps = this.X,
-                    MotorTwoSteps = this.Y,
-                    MotorThreeSteps = this.Z,
-                };
-            }
-
-            public PosePosition Incremental(int x, int y, int z)
-            {
-                return new PosePosition()
-                {
-                    MotorOneSteps = this.X + x,
-                    MotorTwoSteps = this.Y + y,
-                    MotorThreeSteps = this.Z + z,
-                };
-            }
-
-            public static PosePosition InitializePosition()
-            {
-                return new PosePosition(0, 0, 0);
-            }
+        public static PosePosition InitializePosition()
+        {
+            return new PosePosition(0, 0, 0);
         }
     }
 }

@@ -25,6 +25,8 @@ namespace Hamsa.Common
             Close();
         }
 
+        public bool IsConnected => Device != null ? Device.IsOpen: false;
+
         public void Connect()
         {
             if (Device == null)

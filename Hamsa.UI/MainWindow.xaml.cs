@@ -3,8 +3,11 @@ using Emgu.CV.CvEnum;
 using Hamsa.Device;
 using System;
 using System.Drawing;
+using System.IO.Ports;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -16,6 +19,7 @@ namespace Hamsa.UI
     public partial class MainWindow : Window
     {
         public Camera eye { get; set; }
+        public ThreeDOFArm arm { get; set; }
 
         public MainWindow()
         {
@@ -53,6 +57,74 @@ namespace Hamsa.UI
             {
                 LiveVideoBox.Source = BitmapSourceConvert.ToBitmapSource(frame);
             });
+        }
+
+        private void ComboBoxPort_DropDownOpened(object sender, EventArgs e)
+        {
+            ComboBoxPort.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Source = SerialPort.GetPortNames() });
+        }
+
+        private void ConnectButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (string.Equals(ConnectButton.Content.ToString(), "Disconntect", StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (((arm != null) && arm.IsConnected))
+                {
+                    arm.Dispose();
+                    arm = null;
+                    ConnectButton.Content = "Conntect";
+
+                    CurrentCoordinateX.Text = "";
+                    CurrentCoordinateY.Text = "";
+                    CurrentCoordinateZ.Text = "";
+                }
+                
+                //_dataContext.AddOutput($"Disconnected");
+                //Scroller.ScrollToBottom();
+                //_currentPosePosition = PosePosition.InitializePosition();
+                //ShowCurrentPosition();
+                //_testBrain.UnRegisterTestAgent();
+
+                //Title = Title.Substring(0, Title.Length - Title.LastIndexOf("-", StringComparison.Ordinal));
+            }
+            else
+            {
+                if (arm == null)
+                {
+                    var portName = ComboBoxPort.SelectedValue.ToString();
+                    var baud = 115200;
+                    arm = new ThreeDOFArm(portName, baud);
+                    arm.Subscript(string.Empty, handleArmCallback);
+                }
+
+                if(!arm.IsConnected)
+                {
+                    arm.Connect();
+                }
+
+                if (arm.IsConnected)
+                {
+                    ConnectButton.Content = "Disconntect";
+                    var currentPose = arm.GetLatestData();
+                    var currentCoordinate = arm.ToCoordinate(currentPose);
+                    ShowPosition(currentCoordinate.Item1, currentCoordinate.Item2, currentCoordinate.Item3);
+                    //var currentPosition =
+                }
+                //_serialPort.StartRead(DataReceivedHandler);
+            }
+        }
+
+        protected void handleArmCallback(string data)
+        {
+            
+        }
+
+        protected void ShowPosition(double x, double y, double z)
+        {
+            CurrentCoordinateX.Text = $"X: {Math.Round(x, 2, MidpointRounding.AwayFromZero)}";
+            CurrentCoordinateY.Text = $"Y: {Math.Round(y, 2, MidpointRounding.AwayFromZero)}";
+            CurrentCoordinateZ.Text = $"Z: {Math.Round(z, 2, MidpointRounding.AwayFromZero)}";
         }
     }
 
