@@ -3,6 +3,7 @@ using Microsoft.ProjectOxford.Face.Contract;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,9 @@ namespace Hamsa.Azure
 {
     public partial class Cognitive
     {
-        protected FaceServiceClient faceServiceClient;
+        public FaceServiceClient faceServiceClient;
 
-        private FaceRectangle[] UploadAndDetectFaces(string imageFilePath)
+        public FaceRectangle[] UploadAndDetectFaces(string imageFilePath)
         {
             try
             {
@@ -38,7 +39,7 @@ namespace Hamsa.Azure
 
             using (var memoryStream = new MemoryStream())
             {
-                image.Save(memoryStream, image.RawFormat);
+                image.Save(memoryStream, ImageFormat.Jpeg);
                 return UploadAndDetectFaces(memoryStream);
             }
         }
