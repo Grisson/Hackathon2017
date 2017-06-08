@@ -53,10 +53,13 @@ namespace Hamsa.UI
 
         protected void ProcessFrame(Bitmap frame)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            if ((Application.Current != null) && (Application.Current.Dispatcher != null))
             {
-                LiveVideoBox.Source = BitmapSourceConvert.ToBitmapSource(frame);
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    LiveVideoBox.Source = BitmapSourceConvert.ToBitmapSource(frame);
+                });
+            }
         }
 
         private void ComboBoxPort_DropDownOpened(object sender, EventArgs e)
@@ -125,6 +128,12 @@ namespace Hamsa.UI
             CurrentCoordinateX.Text = $"X: {Math.Round(x, 2, MidpointRounding.AwayFromZero)}";
             CurrentCoordinateY.Text = $"Y: {Math.Round(y, 2, MidpointRounding.AwayFromZero)}";
             CurrentCoordinateZ.Text = $"Z: {Math.Round(z, 2, MidpointRounding.AwayFromZero)}";
+        }
+
+
+        private void PlayBtn_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 

@@ -23,7 +23,6 @@
                     <Border Grid.Row="0" Grid.Column ="1" Background="#1f3d7a"/>
                     <Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Background="#152951"/>
                     <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" >
-                        <!--<StackPanel Orientation="Horizontal">-->
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -34,7 +33,6 @@
                             <TextBlock Grid.Column="1" Width="20" x:Name="CameraId">0</TextBlock>
                             <Button Grid.Column="2" x:Name="CameraShowBtn" Click="CameraShowBtn_Click">Show</Button>
                         </Grid>
-                        <!--</StackPanel>-->
                         <Image Name="LiveVideoBox" HorizontalAlignment="Left" ></Image>
                     </StackPanel>
                     <StackPanel Grid.Row="0"  Grid.Column="1" Orientation="Vertical">
@@ -48,8 +46,14 @@
                         <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateY"></TextBlock>
                         <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateZ"></TextBlock>
                     </StackPanel>
+                    <StackPanel Grid.Row="1" Orientation="Vertical">
+                        <Button x:Name="PlayBtn" Width="100" Height="100" Click="PlayBtn_Click">
+                            <StackPanel>
+                                <Image Source="Asset/play.png" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
                 </Grid>
-                <!--<Label Content="Content goes here..." />-->
             </TabItem>
             <TabItem Header="Arduino" >
             </TabItem>
