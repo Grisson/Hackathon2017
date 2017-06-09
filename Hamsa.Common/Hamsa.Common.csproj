@@ -41,19 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseDevice.cs" />
-    <Compile Include="BaseDeviceWithCircularBuffer.cs" />
-    <Compile Include="BaseExecutableCode.cs" />
-    <Compile Include="CircularQueue.cs" />
-    <Compile Include="CodeEngine.cs" />
+    <Compile Include="Hardware\BaseDevice.cs" />
+    <Compile Include="Hardware\BaseDeviceWithCircularBuffer.cs" />
+    <Compile Include="CodeExecuteEngine\BaseExecutableCode.cs" />
+    <Compile Include="Hardware\CircularQueue.cs" />
+    <Compile Include="CodeExecuteEngine\CodeEngine.cs" />
     <Compile Include="Data\ThreeDimensionCoordinates.cs" />
-    <Compile Include="ICodeEngine.cs" />
-    <Compile Include="IExecutableCode.cs" />
-    <Compile Include="IPull.cs" />
-    <Compile Include="IPush.cs" />
-    <Compile Include="ISubscription.cs" />
+    <Compile Include="CodeExecuteEngine\ICodeEngine.cs" />
+    <Compile Include="CodeExecuteEngine\IExecutableCode.cs" />
+    <Compile Include="Hardware\IPull.cs" />
+    <Compile Include="Hardware\IPush.cs" />
+    <Compile Include="Hardware\ISubscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UsbDevice.cs" />
+    <Compile Include="Hardware\UsbDevice.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
