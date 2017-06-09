@@ -1,14 +1,10 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
-using Hamsa.Azure;
 using Hamsa.Common;
 using Hamsa.Device;
 using Hamsa.UI.Code;
-using Microsoft.ProjectOxford.Face;
 using System;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -77,7 +73,6 @@ namespace Hamsa.UI
 
         private void ConnectButton_Click(object sender, RoutedEventArgs e)
         {
-
             if (string.Equals(ConnectButton.Content.ToString(), "Disconntect", StringComparison.CurrentCultureIgnoreCase))
             {
                 if (((arm != null) && arm.IsConnected))
@@ -90,14 +85,6 @@ namespace Hamsa.UI
                     CurrentCoordinateY.Text = "";
                     CurrentCoordinateZ.Text = "";
                 }
-                
-                //_dataContext.AddOutput($"Disconnected");
-                //Scroller.ScrollToBottom();
-                //_currentPosePosition = PosePosition.InitializePosition();
-                //ShowCurrentPosition();
-                //_testBrain.UnRegisterTestAgent();
-
-                //Title = Title.Substring(0, Title.Length - Title.LastIndexOf("-", StringComparison.Ordinal));
             }
             else
             {
