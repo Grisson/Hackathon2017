@@ -45,6 +45,7 @@
     <Compile Include="BaseDeviceWithCircularBuffer.cs" />
     <Compile Include="CircularQueue.cs" />
     <Compile Include="Data\ThreeDimensionCoordinates.cs" />
+    <Compile Include="IExecutableCode.cs" />
     <Compile Include="IPull.cs" />
     <Compile Include="IPush.cs" />
     <Compile Include="ISubscription.cs" />

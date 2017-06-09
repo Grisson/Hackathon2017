@@ -148,16 +148,12 @@ namespace Hamsa.UI
             }
 
             var img = eye.GetLatestData();
+            img.Save("fromcamer.jpg");
            
             var cog = new Cognitive();
 
             var faces = await cog.DetectFaces(img);
 
-            foreach (var face in faces)
-            {
-                ;
-            }
-            
             // map the location
 
             // Command ARM

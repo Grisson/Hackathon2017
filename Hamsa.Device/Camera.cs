@@ -4,6 +4,7 @@ using Emgu.Util;
 using Hamsa.Common;
 using System;
 using System.Drawing;
+using System.Threading;
 
 namespace Hamsa.Device
 {
@@ -20,11 +21,25 @@ namespace Hamsa.Device
             Device.ImageGrabbed += ProcessFrame;
         }
 
+        public override Bitmap GetLatestData()
+        {
+            if(Device != null)
+            {
+                var aFrame = Device.QueryFrame();
+                return aFrame.Bitmap;
+            }
+
+            return null;
+        }
+
         public void Start()
         {
             if(Device != null)
             {
                 Device.Start();
+                //new Thread(() => { Device.Start(); }).Start();
+
+                //Thread.Sleep(100);
             }
         }
 

@@ -10,7 +10,7 @@ namespace Hamsa.Common
     {
         protected CircularBuffer<D> DataBuffer { get; set; }
 
-        public D GetLatestData()
+        public virtual D GetLatestData()
         {
             return DataBuffer.Peek();
         }
