@@ -5,6 +5,7 @@ using Hamsa.Device;
 using Microsoft.ProjectOxford.Face;
 using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
@@ -147,27 +148,19 @@ namespace Hamsa.UI
             }
 
             var img = eye.GetLatestData();
-            var fileName = $"{DateTime.Now.Ticks}.jpg";
-            img.Save(fileName);
+           
+            var cog = new Cognitive();
 
-            var cog = new Cognitive("cd079d2a5dca4e0d9d7224f2871e6e14");
+            var faces = await cog.DetectFaces(img);
 
-            using (Stream s = File.OpenRead(fileName))
+            foreach (var face in faces)
             {
-                if (cog.faceServiceClient == null)
-                {
-                    cog.faceServiceClient = new FaceServiceClient("2f7b0f6bd71d473f9c81e5416c9cdbe6", "https://westus.api.cognitive.microsoft.com/face/v1.0");
-                }
-                var faces = await cog.faceServiceClient.DetectAsync(s, true, true);
-
-                foreach (var face in faces)
-                {
-                    var rect = face.FaceRectangle;
-                    var landmarks = face.FaceLandmarks;
-                }
+                ;
             }
+            
+            // map the location
 
-            //var face = cog.UploadAndDetectFaces(fileName);
+            // Command ARM
 
         }
     }

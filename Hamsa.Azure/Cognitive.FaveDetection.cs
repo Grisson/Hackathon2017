@@ -13,55 +13,52 @@ namespace Hamsa.Azure
 {
     public partial class Cognitive
     {
-        public FaceServiceClient faceServiceClient;
-
-        public FaceRectangle[] UploadAndDetectFaces(string imageFilePath)
+        public async Task<Face[]> DetectFaces(string imageFilePath)
         {
             try
             {
                 using (Stream imageFileStream = File.OpenRead(imageFilePath))
                 {
-                    return UploadAndDetectFaces(imageFileStream);
+                    return await DetectFaces(imageFileStream);
                 }
             }
             catch (Exception)
             {
-                return new FaceRectangle[0];
+                return new Face[0];
             }
         }
 
-        public FaceRectangle[] UploadAndDetectFaces(Bitmap image)
+        public async Task<Face[]> DetectFaces(Bitmap image)
         {
-            if (faceServiceClient == null)
+            var fileName = $"{DateTime.Now.Ticks}.jpg";
+            image.Save(fileName);
+
+            Face[] result = null;
+            using (Stream s = File.OpenRead(fileName))
             {
-                faceServiceClient = new FaceServiceClient(SecretKey);
+                result = await DetectFaces(s);
             }
 
-            using (var memoryStream = new MemoryStream())
+            if(File.Exists(fileName))
             {
-                image.Save(memoryStream, ImageFormat.Jpeg);
-                return UploadAndDetectFaces(memoryStream);
+                File.Delete(fileName);
             }
+
+            return result;
         }
 
 
-        public FaceRectangle[] UploadAndDetectFaces(Stream imageStream)
+        public async Task<Face[]> DetectFaces(Stream imageStream)
         {
-            if (faceServiceClient == null)
+            if (FaceServiceClient == null)
             {
-                faceServiceClient = new FaceServiceClient(SecretKey);
+                FaceServiceClient = new FaceServiceClient(FaceSecretKey, FaceApiBaseUrl);
             }
 
-            FaceRectangle[] result = new FaceRectangle[0];
+            Face[] result = new Face[0];
             try
             {
-                var task = faceServiceClient.DetectAsync(imageStream).ContinueWith((taskWithFaces) =>
-                {
-                    var faces = taskWithFaces.Result;
-                    var faceRects = faces.Select(face => face.FaceRectangle);
-                    result = faceRects.ToArray();
-                });
-                task.Wait();
+                result = await FaceServiceClient.DetectAsync(imageStream, true, true);
             }
             catch (Exception)
             {

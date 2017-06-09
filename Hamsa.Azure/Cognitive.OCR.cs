@@ -65,7 +65,7 @@ namespace Hamsa.Azure
             var client = new HttpClient();
 
             // Request headers. NOTE: Replace this example key with a valid subscription key.
-            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", SecretKey);
+            client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", VisionSecretKey);
 
             // Request parameters. A third optional parameter is "details".
             string requestParameters = "visualFeatures=Categories&language=en";
