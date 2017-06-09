@@ -1,7 +1,9 @@
 ﻿using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Hamsa.Azure;
+using Hamsa.Common;
 using Hamsa.Device;
+using Hamsa.UI.Code;
 using Microsoft.ProjectOxford.Face;
 using System;
 using System.Drawing;
@@ -24,6 +26,8 @@ namespace Hamsa.UI
     {
         public Camera eye { get; set; }
         public ThreeDOFArm arm { get; set; }
+
+        public ICodeEngine engine;
 
         public MainWindow()
         {
@@ -135,29 +139,24 @@ namespace Hamsa.UI
         }
 
 
-        private async void PlayBtn_Click(object sender, RoutedEventArgs e)
+        private void PlayBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (eye == null)
+            if (string.Equals(PlayBtn.Content.ToString(), "Play", StringComparison.CurrentCultureIgnoreCase))
             {
-                var cameraId = int.Parse(CameraId.Text);
-                eye = new Camera(cameraId);
-                eye.Subscript("newFrame", ProcessFrame);
-                eye.Start();
-
-                CameraShowBtn.Content = "Hide";
+                engine = new CodeEngine<TrackFaceSample>();
+                engine.Run();
+                PlayBtn.Content = "Stop";
             }
-
-            var img = eye.GetLatestData();
-            img.Save("fromcamer.jpg");
-           
-            var cog = new Cognitive();
-
-            var faces = await cog.DetectFaces(img);
-
-            // map the location
-
-            // Command ARM
-
+            else
+            {
+                if(engine != null)
+                {
+                    engine.Stop();
+                    engine.Dispose();
+                }
+                PlayBtn.Content = "Play";
+            }
+                
         }
     }
 

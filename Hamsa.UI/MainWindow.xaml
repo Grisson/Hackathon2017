@@ -47,11 +47,7 @@
                         <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateZ"></TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Orientation="Vertical">
-                        <Button x:Name="PlayBtn" Width="100" Height="100" Click="PlayBtn_Click">
-                            <StackPanel>
-                                <Image Source="Asset/play.png" />
-                            </StackPanel>
-                        </Button>
+                        <Button x:Name="PlayBtn" Click="PlayBtn_Click">Play</Button>
                     </StackPanel>
                 </Grid>
             </TabItem>

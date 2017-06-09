@@ -43,8 +43,11 @@
   <ItemGroup>
     <Compile Include="BaseDevice.cs" />
     <Compile Include="BaseDeviceWithCircularBuffer.cs" />
+    <Compile Include="BaseExecutableCode.cs" />
     <Compile Include="CircularQueue.cs" />
+    <Compile Include="CodeEngine.cs" />
     <Compile Include="Data\ThreeDimensionCoordinates.cs" />
+    <Compile Include="ICodeEngine.cs" />
     <Compile Include="IExecutableCode.cs" />
     <Compile Include="IPull.cs" />
     <Compile Include="IPush.cs" />

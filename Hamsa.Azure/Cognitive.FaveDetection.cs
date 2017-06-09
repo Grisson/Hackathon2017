@@ -13,13 +13,13 @@ namespace Hamsa.Azure
 {
     public partial class Cognitive
     {
-        public async Task<Face[]> DetectFaces(string imageFilePath)
+        public Face[] DetectFaces(string imageFilePath)
         {
             try
             {
                 using (Stream imageFileStream = File.OpenRead(imageFilePath))
                 {
-                    return await DetectFaces(imageFileStream);
+                    return DetectFaces(imageFileStream);
                 }
             }
             catch (Exception)
@@ -28,7 +28,7 @@ namespace Hamsa.Azure
             }
         }
 
-        public async Task<Face[]> DetectFaces(Bitmap image)
+        public Face[] DetectFaces(Bitmap image)
         {
             var fileName = $"{DateTime.Now.Ticks}.jpg";
             image.Save(fileName);
@@ -36,10 +36,10 @@ namespace Hamsa.Azure
             Face[] result = null;
             using (Stream s = File.OpenRead(fileName))
             {
-                result = await DetectFaces(s);
+                result = DetectFaces(s);
             }
 
-            if(File.Exists(fileName))
+            if (File.Exists(fileName))
             {
                 File.Delete(fileName);
             }
@@ -48,7 +48,7 @@ namespace Hamsa.Azure
         }
 
 
-        public async Task<Face[]> DetectFaces(Stream imageStream)
+        public Face[] DetectFaces(Stream imageStream)
         {
             if (FaceServiceClient == null)
             {
@@ -58,10 +58,11 @@ namespace Hamsa.Azure
             Face[] result = new Face[0];
             try
             {
-                result = await FaceServiceClient.DetectAsync(imageStream, true, true);
+                result = FaceServiceClient.DetectAsync(imageStream, true, true).Result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 // log
                 //return new FaceRectangle[0];
             }

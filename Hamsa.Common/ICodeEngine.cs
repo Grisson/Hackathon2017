@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Hamsa.Common
 {
-    public interface IExecutableCode : IDisposable
+    public interface ICodeEngine: IDisposable
     {
-        void Setup();
+        void Run();
 
-        void Loop();
+        void Stop();
     }
 }
