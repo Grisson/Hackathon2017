@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Hamsa.UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        Title="MainWindow" Height="550" Width="900">
     <Grid>
         <TabControl>
 
@@ -21,7 +23,7 @@
                     </Grid.ColumnDefinitions>
                     <Border Grid.Row="0" Grid.Column ="0" Background="#2f5cb6"/>
                     <Border Grid.Row="0" Grid.Column ="1" Background="#1f3d7a"/>
-                    <Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Background="#152951"/>
+                    <Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Background="White"/>
                     <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical" >
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -46,8 +48,36 @@
                         <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateY"></TextBlock>
                         <TextBlock Foreground="White" FontSize="25" Text="" Name="CurrentCoordinateZ"></TextBlock>
                     </StackPanel>
-                    <StackPanel Grid.Row="1" Orientation="Vertical">
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Vertical">
                         <Button x:Name="PlayBtn" Click="PlayBtn_Click">Play</Button>
+                        <Path x:Name="CodeBlocks" Stroke="Black" StrokeThickness="1" >
+                            <!--<Path.Data>
+                                <PathGeometry>
+                                    <PathGeometry.Figures>
+                                        <PathFigure StartPoint="10,50">
+                                            <PathFigure.Segments>
+                                                <BezierSegment
+              Point1="100,0"
+              Point2="200,200"
+              Point3="300,100"/>
+                                                <LineSegment Point="400,100" />
+                                                <ArcSegment
+              Size="50,50" RotationAngle="45"
+              IsLargeArc="True" SweepDirection="Clockwise"
+              Point="200,100"/>
+                                            </PathFigure.Segments>
+                                        </PathFigure>
+
+                                        <PathFigure StartPoint="10,100">
+                                            <PathFigure.Segments>
+                                                <PolyLineSegment Points="50,100 50,150" />
+                                                <QuadraticBezierSegment Point1="200,200" Point2="300,100"/>
+                                            </PathFigure.Segments>
+                                        </PathFigure>
+                                    </PathGeometry.Figures>
+                                </PathGeometry>
+                            </Path.Data>-->
+                        </Path>
                     </StackPanel>
                 </Grid>
             </TabItem>
