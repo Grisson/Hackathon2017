@@ -72,19 +72,25 @@ namespace Hamsa.Device
         public bool GoTo(PosePosition pose)
         {
             var command = ToGCommand(pose);
-            
             return ExecuteCommand(command);
         }
 
         public bool ExecuteCommand(string data)
         {
-            Device.Write(data);
-            return true;
+            if(Device != null && Device.IsOpen)
+            {
+                Device.WriteLine(data);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public string ToGCommand(PosePosition TargetPose)
         {
-            return $"G90 G0 X{TargetPose.X} Y{TargetPose.Y} Z{TargetPose.Z}";
+            return $"G90 X{TargetPose.X} Y{TargetPose.Y} Z{TargetPose.Z}";
         }
 
         public Tuple<double, double, double> ToCoordinate(PosePosition pos)

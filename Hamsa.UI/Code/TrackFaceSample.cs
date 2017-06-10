@@ -19,6 +19,7 @@ namespace Hamsa.UI.Code
             Eye.Start();
 
             Arm = new ThreeDOFArm("COM4", 115200);
+            Arm.Connect();
 
             Brain = new Cognitive();
         }
@@ -32,16 +33,36 @@ namespace Hamsa.UI.Code
             if(faces.Length > 0)
             {
                 var firstFace = faces.First();
-                Console.WriteLine($"{firstFace.FaceRectangle.Left}, {firstFace.FaceRectangle.Top}, {firstFace.FaceRectangle.Width}, {firstFace.FaceRectangle.Top}");
+
+                // map the location
+                var x = firstFace.FaceRectangle.Left + firstFace.FaceRectangle.Width / 2;
+                var y = firstFace.FaceRectangle.Top + firstFace.FaceRectangle.Height / 2;
+                var coordinateX = 80;
+                var coordinateZ = 120 * (1 - (y * 1.0) / img.Height);
+                var pose = Arm.ToPose(new Tuple<double, double, double>(coordinateX, 0, coordinateZ));
+
+                var rotate = 180 * (x * 1.0 / img.Width);
+                var rotateStep = Arm.AngleToMM(rotate);
+                pose.MotorThreeSteps = rotateStep;
+
+                // Command ARM
+                Arm.GoTo(pose);
+                //Arm.GoTo(new PosePosition() { MotorOneSteps = 1000, MotorTwoSteps = 1000, MotorThreeSteps = 1000 });
+                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
+                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
+                //Arm.GoTo(new PosePosition() { MotorOneSteps = 1000, MotorTwoSteps = 1000, MotorThreeSteps = 1000 });
+                //Arm.GoTo(new PosePosition() { MotorOneSteps = 1000, MotorTwoSteps = 1000, MotorThreeSteps = 1000 });
+
+                //Arm.Device.WriteLine("G90 X1000 Y1000 Z1000");
+                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
+                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
+                //Arm.Device.WriteLine("G90 X1000 Y1000 Z1000");
+                //Arm.Device.WriteLine("G90 X1000 Y1000 Z1000");
             }
             else
             {
                 Console.WriteLine("Face is not detected!");
             }
-
-            // map the location
-
-            // Command ARM
 
             Thread.Sleep(1000);
         }

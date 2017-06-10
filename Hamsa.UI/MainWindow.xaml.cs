@@ -188,7 +188,7 @@ namespace Hamsa.UI
             blocks.Figures.Add(detectFace);
             blocks.Figures.Add(mapLocation);
             blocks.Figures.Add(moveArm);
-
+            
             CodeBlocks.Stroke = System.Windows.Media.Brushes.Black;
             CodeBlocks.StrokeThickness = 2;
             CodeBlocks.Data = blocks;
@@ -387,7 +387,13 @@ namespace Hamsa.UI
     }
 }
 /*
- * 
+ * FormattedText text = new FormattedText("Text to display",
+        CultureInfo.CurrentCulture,
+        FlowDirection.LeftToRight,
+        new Typeface("Tahoma"),
+        16,
+        Brushes.Black);
+    Geometry geometry = text.BuildGeometry(new Point(5, 5));
  * private PathFigure DrawLeftTopLine(System.Windows.Point startPoint, int width, int height)
         {
             var block = new PathFigure();
