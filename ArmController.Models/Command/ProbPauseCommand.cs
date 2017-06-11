@@ -1,17 +1,17 @@
 ﻿namespace ArmController.Models.Command
 {
-    public class ProbPauseCommand : BaseCommand
+    public class ProbWaitingCommand : BaseCommand
     {
         public int ProbRetry = 0;
         public long TimeOut { get; set; }
         public int RefreshInterval { get; set; }
 
-        public ProbPauseCommand() : base()
+        public ProbWaitingCommand() : base()
         {
             this.Type = CommandType.Prob;
         }
 
-        public ProbPauseCommand(long timeout, int refresh, int retry) : this()
+        public ProbWaitingCommand(long timeout, int refresh, int retry) : this()
         {
             TimeOut = timeout;
             RefreshInterval = refresh;

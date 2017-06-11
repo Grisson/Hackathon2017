@@ -23,10 +23,10 @@ namespace ArmController.Executor
 
         public void Execute(BaseCommand command)
         {
-            this.Execute(command as ProbPauseCommand);
+            this.Execute(command as ProbWaitingCommand);
         }
 
-        public void Execute(ProbPauseCommand command)
+        public void Execute(ProbWaitingCommand command)
         {
             var now = DateTime.Now;
             var endTime = now.AddSeconds(command.TimeOut);

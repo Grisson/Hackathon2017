@@ -42,10 +42,13 @@ namespace Hamsa.Device
                 {
                     var d = port.ReadLine();
 
-                    if (TargetPose != null)
+                    if (d.Equals("OK\r", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        CurrentPose = TargetPose;
-                        TargetPose = null;
+                        if (TargetPose != null)
+                        {
+                            CurrentPose = TargetPose;
+                            TargetPose = null;
+                        }
                     }
 
                     completionHandler?.Invoke(d);
