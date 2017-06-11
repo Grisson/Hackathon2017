@@ -102,6 +102,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Code\TestMachine.cs" />
     <Compile Include="Code\TrackFaceSample.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -137,6 +138,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ArmController.Models\ArmController.Models.csproj">
+      <Project>{60b904c7-abbb-4309-ba73-02ba561bb73f}</Project>
+      <Name>ArmController.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Hamsa.Azure\Hamsa.Azure.csproj">
       <Project>{0f91438f-ac5c-4541-b7d1-80cfaa9a868e}</Project>
       <Name>Hamsa.Azure</Name>

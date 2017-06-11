@@ -4,6 +4,8 @@ namespace Hamsa.Common
 {
     public abstract class BaseExecutableCode : IExecutableCode
     {
+        protected object SyncRoot = new object();
+
         public abstract void Setup();
 
         public abstract void Loop();
