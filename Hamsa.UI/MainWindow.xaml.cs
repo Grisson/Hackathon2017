@@ -111,7 +111,7 @@ namespace Hamsa.UI
                 {
                     ConnectButton.Content = "Disconntect";
                     var currentPose = arm.GetLatestData();
-                    var currentCoordinate = arm.ToCoordinate(currentPose);
+                    var currentCoordinate = arm.ConvertToCoordinate(currentPose);
                     ShowPosition(currentCoordinate.Item1, currentCoordinate.Item2, currentCoordinate.Item3);
                     //var currentPosition =
                 }

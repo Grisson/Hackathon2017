@@ -55,25 +55,21 @@ namespace Hamsa.Common
         }
 
         protected abstract void DataReceived(object sender, SerialDataReceivedEventArgs e);
-        //protected void DataReceived(object sender, SerialDataReceivedEventArgs e)
-        //{
-        //    var port = sender as SerialPort;
-        //    while (port.BytesToRead > 0)
-        //    {
-        //        var d = port.ReadLine();
 
-        //        DataReceivedHandler?.Invoke(d);
-        //    }
-        //}
-
-        void IPush<string>.Push(string data)
+        public void Push(string data)
         {
-            Device.WriteLine(data);
+            if(Device!=null && Device.IsOpen)
+            {
+                Device.WriteLine(data);
+            }
         }
 
-        void IPush<byte[]>.Push(byte[] data)
+        public void Push(byte[] data)
         {
-            Device.Write(data, 0, data.Length);
+            if (Device != null && Device.IsOpen)
+            {
+                Device.Write(data, 0, data.Length);
+            }
         }
 
         public void Subscript(string eventName, Action<string> callBack)

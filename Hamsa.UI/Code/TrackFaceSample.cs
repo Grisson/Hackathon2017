@@ -39,7 +39,7 @@ namespace Hamsa.UI.Code
                 var y = firstFace.FaceRectangle.Top + firstFace.FaceRectangle.Height / 2;
                 var coordinateX = 80;
                 var coordinateZ = 60 + 120 * (1 - (y * 1.0) / img.Height);
-                var pose = Arm.ToPose(new Tuple<double, double, double>(coordinateX, 0, coordinateZ));
+                var pose = Arm.ConvertToPose(new Tuple<double, double, double>(coordinateX, 0, coordinateZ));
 
                 var rotate = 45 + 90 * (1 - x * 1.0 / img.Width);
                 var rotateStep = Arm.AngleToMM(rotate);

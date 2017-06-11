@@ -63,37 +63,24 @@ namespace Hamsa.Device
             }
         }
 
-        public bool MoveTo(ThreeDimensionCoordinates point)
+        public void MoveTo(ThreeDimensionCoordinates point)
         {
             // coordinate to pose
-            var pose = ToPose(new Tuple<double, double, double>(point.X, point.Y, point.Z));
-
+            var pose = ConvertToPose(new Tuple<double, double, double>(point.X, point.Y, point.Z));
             // Go to pose
-            return MoveTo(pose);
+            MoveTo(pose);
         }
 
-        public bool MoveTo(PosePosition pose)
+        public void MoveTo(PosePosition pose)
         {
+            
             var command = ToGCommand(pose);
-            return ExecuteCommand(command);
+            Push(command);
         }
 
-        public bool ResetPosePosition()
+        public void ResetPosePosition()
         {
-            return ExecuteCommand("G90 X0 Y0 Z0");
-        }
-
-        public bool ExecuteCommand(string data)
-        {
-            if(Device != null && Device.IsOpen)
-            {
-                Device.WriteLine(data);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            Push("G90 X0 Y0 Z0");
         }
 
         public string ToGCommand(PosePosition TargetPose)
@@ -101,7 +88,7 @@ namespace Hamsa.Device
             return $"G90 X{TargetPose.X} Y{TargetPose.Y} Z{TargetPose.Z}";
         }
 
-        public Tuple<double, double, double> ToCoordinate(PosePosition pos)
+        public Tuple<double, double, double> ConvertToCoordinate(PosePosition pos)
         {
             var lowAngle = LowAngle(pos.X);
             var highAngle = HighAngle(pos.X, pos.Y);
@@ -129,7 +116,7 @@ namespace Hamsa.Device
             return new Tuple<double, double, double>(xCoord, yCoord, zCoord);
         }
 
-        public PosePosition ToPose(Tuple<double, double, double> coor)
+        public PosePosition ConvertToPose(Tuple<double, double, double> coor)
         {
             var x = coor.Item1;
             var y = coor.Item2;

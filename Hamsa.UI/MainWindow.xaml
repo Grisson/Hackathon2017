@@ -12,7 +12,7 @@
         <TabControl>
             <TabItem Header="Code" >
                 <StackPanel Orientation="Horizontal">
-                    <Button x:Name="PlayCodeBtn" Click="PlayBtn_Click">Play</Button>
+                    <Button x:Name="PlayCodeBtn" Click="PlayCodeBtn_Click">Play</Button>
                 </StackPanel>
             </TabItem>
 
