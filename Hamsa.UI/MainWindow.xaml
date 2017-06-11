@@ -10,8 +10,13 @@
         Title="MainWindow" Height="550" Width="900">
     <Grid>
         <TabControl>
+            <TabItem Header="Code" >
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="PlayCodeBtn" Click="PlayBtn_Click">Play</Button>
+                </StackPanel>
+            </TabItem>
 
-            <TabItem Header="Scratch" >
+            <TabItem Header="Blocks" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="200"></RowDefinition>
@@ -51,38 +56,12 @@
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Vertical">
                         <Button x:Name="PlayBtn" Click="PlayBtn_Click">Play</Button>
                         <Path x:Name="CodeBlocks" Stroke="Black" StrokeThickness="1" >
-                            <!--<Path.Data>
-                                <PathGeometry>
-                                    <PathGeometry.Figures>
-                                        <PathFigure StartPoint="10,50">
-                                            <PathFigure.Segments>
-                                                <BezierSegment
-              Point1="100,0"
-              Point2="200,200"
-              Point3="300,100"/>
-                                                <LineSegment Point="400,100" />
-                                                <ArcSegment
-              Size="50,50" RotationAngle="45"
-              IsLargeArc="True" SweepDirection="Clockwise"
-              Point="200,100"/>
-                                            </PathFigure.Segments>
-                                        </PathFigure>
-
-                                        <PathFigure StartPoint="10,100">
-                                            <PathFigure.Segments>
-                                                <PolyLineSegment Points="50,100 50,150" />
-                                                <QuadraticBezierSegment Point1="200,200" Point2="300,100"/>
-                                            </PathFigure.Segments>
-                                        </PathFigure>
-                                    </PathGeometry.Figures>
-                                </PathGeometry>
-                            </Path.Data>-->
+                            
                         </Path>
                     </StackPanel>
                 </Grid>
             </TabItem>
-            <TabItem Header="Arduino" >
-            </TabItem>
+            
         </TabControl>
     </Grid>
 </Window>

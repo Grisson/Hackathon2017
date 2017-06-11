@@ -152,6 +152,25 @@ namespace Hamsa.UI
 
         }
 
+        private void PlayCodeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.Equals(PlayCodeBtn.Content.ToString(), "Play", StringComparison.CurrentCultureIgnoreCase))
+            {
+                engine = new CodeEngine<TestMachine>();
+                engine.Run();
+                PlayCodeBtn.Content = "Stop";
+            }
+            else
+            {
+                if (engine != null)
+                {
+                    engine.Stop();
+                    engine.Dispose();
+                }
+                PlayCodeBtn.Content = "Play";
+            }
+        }
+
         private void GenerateBlocks()
         {
             var x0 = 50;
@@ -317,7 +336,6 @@ namespace Hamsa.UI
 
             return block;
         }
-
     }
 
     public static class BitmapSourceConvert
