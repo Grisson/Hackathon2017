@@ -16,6 +16,6 @@ namespace ArmController.Models
         Vision,
         Done,
         Pose,
-        Prob,
+        WaitingProb,
     }
 }

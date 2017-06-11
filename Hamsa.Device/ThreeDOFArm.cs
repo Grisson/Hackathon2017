@@ -73,8 +73,8 @@ namespace Hamsa.Device
 
         public void MoveTo(PosePosition pose)
         {
-            
-            var command = ToGCommand(pose);
+            TargetPose = pose;
+            var command = ConvertToGCommand(pose);
             Push(command);
         }
 
@@ -83,7 +83,7 @@ namespace Hamsa.Device
             Push("G90 X0 Y0 Z0");
         }
 
-        public string ToGCommand(PosePosition TargetPose)
+        public string ConvertToGCommand(PosePosition TargetPose)
         {
             return $"G90 X{TargetPose.X} Y{TargetPose.Y} Z{TargetPose.Z}";
         }
@@ -146,9 +146,9 @@ namespace Hamsa.Device
             var highAngle = (lowAngle - B1) + B2 - RadianToAngle(highRadian);
             var highMm = (int)AngleToMM(highAngle);
 
-            TargetPose = new PosePosition(lowMm, highMm, rotateZMM);
+             var position = new PosePosition(lowMm, highMm, rotateZMM);
 
-            return TargetPose;
+            return position;
         }
 
         public int AngleToMM(double a)

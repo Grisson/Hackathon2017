@@ -29,7 +29,7 @@ namespace ArmController.Executor
         public void Execute(ProbWaitingCommand command)
         {
             var now = DateTime.Now;
-            var endTime = now.AddSeconds(command.TimeOut);
+            var endTime = now.AddSeconds(command.TimeOutSeconds);
             var timeOutTimeSpan = endTime - now;
             LogHandler?.Invoke("Start to Execute Prob Pause Command");
             var isTouchDetected = false;

@@ -4,6 +4,7 @@ using Hamsa.Common;
 using Hamsa.Device;
 using Hamsa.REST;
 using Microsoft.Rest;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -18,8 +19,8 @@ namespace Hamsa.UI.Code
             Idle,
             Executing,
             Waiting,
-            WaitingArm,
             WaitingTouch,
+            WaitingProb,
         }
 
         public Camera Eye;
@@ -56,7 +57,7 @@ namespace Hamsa.UI.Code
                 case Status.Idle:
                     if (CommandList.Count > 0)
                     {
-                        ExecuteCommand();
+                        ExecuteNextCommand();
                     }
                     else
                     {
@@ -76,11 +77,11 @@ namespace Hamsa.UI.Code
                         }
                     }
                     break;
-                case Status.WaitingArm:
-                    Thread.Yield();
-                    break;
                 case Status.WaitingTouch:
                     WaitingTouch();
+                    break;
+                case Status.WaitingProb:
+                    WaitingProb();
                     break;
                 case Status.Waiting:
                 default:
@@ -89,9 +90,9 @@ namespace Hamsa.UI.Code
             }
         }
 
-        public void ExecuteCommand()
+        public void ExecuteNextCommand()
         {
-            lock(SyncRoot)
+            lock (SyncRoot)
             {
                 CurrentCommand = CommandList.Dequeue();
                 CurrentStatus = Status.Executing;
@@ -102,8 +103,7 @@ namespace Hamsa.UI.Code
                 case CommandType.GCode:
                     var command = CurrentCommand as GCommand;
                     command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                    // TODO: Move to Pose
-                    //Arm.MoveTo(armCoordinate);
+                    Arm.MoveTo(new PosePosition() { MotorOneSteps = command.XDelta, MotorTwoSteps = command.YDelta, MotorThreeSteps = command.ZDelta });
                     break;
                 case CommandType.Vision:
                     // TODO: Start Camear, Query a frame, Corp, Send to Server
@@ -111,21 +111,14 @@ namespace Hamsa.UI.Code
                 case CommandType.WaitingForVisionAnalyze:
                     // TODO: Check Server Status;
                     break;
-                case CommandType.Prob:
-                    //if (isTouchDetected)
-                    //{
-                    //    newCommandString = CommandExecutor.SharedInstance.brain.Arm.StartCalibrate(
-                    //        CommandExecutor.SharedInstance.RegisterId.Value);
-                    //}
-                    //else
-                    //{
-                    //    newCommandString = CommandExecutor.SharedInstance.brain.Arm.Prob(
-                    //        CommandExecutor.SharedInstance.RegisterId.Value,
-                    //        command.ProbRetry + 1);
-                    //}
+                case CommandType.WaitingProb:
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.WaitingProb;
+                    }
                     break;
                 case CommandType.WaitingForTouch:
-                    lock(SyncRoot)
+                    lock (SyncRoot)
                     {
                         CurrentStatus = Status.WaitingTouch;
                     }
@@ -148,12 +141,13 @@ namespace Hamsa.UI.Code
             {
                 var command = CurrentCommand as ProbWaitingCommand;
                 var now = DateTime.Now;
-                var endTime = now.AddSeconds(command.TimeOut);
+                var endTime = now.AddSeconds(command.TimeOutSeconds);
 
                 if (DateTime.Now < endTime)
                 {
                     // TODO: rename this to WaitTouch
-                    var isTouchDetected = Brain.Arm.WaitProb(ArmId) ?? false;
+                    //var isTouchDetected = Brain.Arm.touc.WaitProb(ArmId) ?? false;
+                    var isTouchDetected = true;
 
                     if (isTouchDetected)
                     {
@@ -164,15 +158,80 @@ namespace Hamsa.UI.Code
                         }
                     }
                     else
-                    { 
+                    {
                         Thread.Sleep(command.RefreshInterval);
                         Thread.Yield();
+                    }
+                }
+                else
+                {
+                    // TimeOut
+                }
+            }
+            else
+            {
+                lock (SyncRoot)
+                {
+                    CurrentStatus = Status.Idle;
+                    CurrentCommand = null;
+                }
+            }
+        }
+
+        public void WaitingProb()
+        {
+            if (CurrentCommand is ProbWaitingCommand)
+            {
+                var command = CurrentCommand as ProbWaitingCommand;
+                var now = DateTime.Now;
+                var endTime = now.AddSeconds(command.TimeOutSeconds);
+
+                if (DateTime.Now < endTime)
+                {
+                    // check if prob rename this to WaitTouch
+                    var isTouchDetected = Brain.Arm.WaitProb(ArmId) ?? false;
+
+                    if (isTouchDetected)
+                    {
+                        IsProbed = true;
+                        lock (SyncRoot)
+                        {
+                            CurrentStatus = Status.Idle;
+                            CurrentCommand = null;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(command.RefreshInterval);
+                        Thread.Yield();
+                    }
+                }
+                else
+                {
+                    // TimeOut, try next prob position
+                    var newCommandString = Brain.Arm.Prob(
+                        ArmId,
+                        command.ProbRetry + 1);
+
+                    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                    var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
+
+                    foreach (var c in newCommands)
+                    {
+                        CommandList.Enqueue(c);
+                    }
+
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.Idle;
+                        CurrentCommand = null;
                     }
                 }
             }
             else
             {
-                lock(SyncRoot)
+                // current command is wrong, reset
+                lock (SyncRoot)
                 {
                     CurrentStatus = Status.Idle;
                     CurrentCommand = null;

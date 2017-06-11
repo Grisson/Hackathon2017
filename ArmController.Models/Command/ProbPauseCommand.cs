@@ -3,17 +3,17 @@
     public class ProbWaitingCommand : BaseCommand
     {
         public int ProbRetry = 0;
-        public long TimeOut { get; set; }
+        public long TimeOutSeconds { get; set; }
         public int RefreshInterval { get; set; }
 
         public ProbWaitingCommand() : base()
         {
-            this.Type = CommandType.Prob;
+            this.Type = CommandType.WaitingProb;
         }
 
         public ProbWaitingCommand(long timeout, int refresh, int retry) : this()
         {
-            TimeOut = timeout;
+            TimeOutSeconds = timeout;
             RefreshInterval = refresh;
             ProbRetry = retry;
         }
