@@ -1,4 +1,5 @@
-﻿using ArmController.Models.Command;
+﻿using ArmController.Models;
+using ArmController.Models.Command;
 using Hamsa.Common;
 using Hamsa.Device;
 using Hamsa.REST;
@@ -15,6 +16,7 @@ namespace Hamsa.UI.Code
         public enum Status
         {
             Idle,
+            Executing,
             Waiting,
             WaitingArm,
             WaitingTouch,
@@ -89,11 +91,59 @@ namespace Hamsa.UI.Code
 
         public void ExecuteCommand()
         {
+            lock(SyncRoot)
+            {
+                CurrentCommand = CommandList.Dequeue();
+                CurrentStatus = Status.Executing;
+            }
+
+            switch (CurrentCommand.Type)
+            {
+                case CommandType.GCode:
+                    var command = CurrentCommand as GCommand;
+                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    // TODO: Move to Pose
+                    //Arm.MoveTo(armCoordinate);
+                    break;
+                case CommandType.Vision:
+                    // TODO: Start Camear, Query a frame, Corp, Send to Server
+                    break;
+                case CommandType.WaitingForVisionAnalyze:
+                    // TODO: Check Server Status;
+                    break;
+                case CommandType.Prob:
+                    //if (isTouchDetected)
+                    //{
+                    //    newCommandString = CommandExecutor.SharedInstance.brain.Arm.StartCalibrate(
+                    //        CommandExecutor.SharedInstance.RegisterId.Value);
+                    //}
+                    //else
+                    //{
+                    //    newCommandString = CommandExecutor.SharedInstance.brain.Arm.Prob(
+                    //        CommandExecutor.SharedInstance.RegisterId.Value,
+                    //        command.ProbRetry + 1);
+                    //}
+                    break;
+                case CommandType.WaitingForTouch:
+                    lock(SyncRoot)
+                    {
+                        CurrentStatus = Status.WaitingTouch;
+                    }
+                    break;
+                default:
+                    lock (SyncRoot)
+                    {
+                        CurrentCommand = null;
+                        CurrentStatus = Status.Idle;
+                    }
+                    break;
+            }
 
         }
 
         public void WaitingTouch()
         {
+            // TODO: check server side 
             if (CurrentCommand is ProbWaitingCommand)
             {
                 var command = CurrentCommand as ProbWaitingCommand;

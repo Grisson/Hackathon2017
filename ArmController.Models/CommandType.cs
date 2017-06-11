@@ -12,6 +12,7 @@ namespace ArmController.Models
         Pause,
         Resume,
         WaitingForTouch,
+        WaitingForVisionAnalyze,
         Vision,
         Done,
         Pose,
