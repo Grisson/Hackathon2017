@@ -38,33 +38,22 @@ namespace Hamsa.UI.Code
                 var x = firstFace.FaceRectangle.Left + firstFace.FaceRectangle.Width / 2;
                 var y = firstFace.FaceRectangle.Top + firstFace.FaceRectangle.Height / 2;
                 var coordinateX = 80;
-                var coordinateZ = 120 * (1 - (y * 1.0) / img.Height);
+                var coordinateZ = 60 + 120 * (1 - (y * 1.0) / img.Height);
                 var pose = Arm.ToPose(new Tuple<double, double, double>(coordinateX, 0, coordinateZ));
 
-                var rotate = 180 * (x * 1.0 / img.Width);
+                var rotate = 45 + 90 * (1 - x * 1.0 / img.Width);
                 var rotateStep = Arm.AngleToMM(rotate);
                 pose.MotorThreeSteps = rotateStep;
 
                 // Command ARM
-                Arm.GoTo(pose);
-                //Arm.GoTo(new PosePosition() { MotorOneSteps = 1000, MotorTwoSteps = 1000, MotorThreeSteps = 1000 });
-                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
-                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
-                //Arm.GoTo(new PosePosition() { MotorOneSteps = 1000, MotorTwoSteps = 1000, MotorThreeSteps = 1000 });
-                //Arm.GoTo(new PosePosition() { MotorOneSteps = 1000, MotorTwoSteps = 1000, MotorThreeSteps = 1000 });
-
-                //Arm.Device.WriteLine("G90 X1000 Y1000 Z1000");
-                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
-                //Arm.Device.WriteLine("G91 X500 Y500 Z500");
-                //Arm.Device.WriteLine("G90 X1000 Y1000 Z1000");
-                //Arm.Device.WriteLine("G90 X1000 Y1000 Z1000");
+                Arm.MoveTo(pose);
             }
             else
             {
                 Console.WriteLine("Face is not detected!");
             }
 
-            Thread.Sleep(1000);
+            //Thread.Sleep(10);
         }
 
         public override void Cleanup()

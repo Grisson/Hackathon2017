@@ -60,19 +60,24 @@ namespace Hamsa.Device
             }
         }
 
-        public bool GoTo(ThreeDimensionCoordinates point)
+        public bool MoveTo(ThreeDimensionCoordinates point)
         {
             // coordinate to pose
             var pose = ToPose(new Tuple<double, double, double>(point.X, point.Y, point.Z));
 
             // Go to pose
-            return GoTo(pose);
+            return MoveTo(pose);
         }
 
-        public bool GoTo(PosePosition pose)
+        public bool MoveTo(PosePosition pose)
         {
             var command = ToGCommand(pose);
             return ExecuteCommand(command);
+        }
+
+        public bool ResetPosePosition()
+        {
+            return ExecuteCommand("G90 X0 Y0 Z0");
         }
 
         public bool ExecuteCommand(string data)
@@ -194,6 +199,16 @@ namespace Hamsa.Device
         public PosePosition GetLatestData()
         {
             return CurrentPose.Clone();
+        }
+
+        public override void CleanUp()
+        {
+            if(Device != null && Device.IsOpen)
+            {
+                ResetPosePosition();
+            }
+
+            base.CleanUp();
         }
 
         //public double TriangleCorner(double radian)

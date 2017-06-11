@@ -26,7 +26,7 @@ namespace Hamsa.Device
             if(Device != null)
             {
                 var aFrame = Device.QueryFrame();
-                return aFrame.Bitmap;
+                return (Bitmap)aFrame.Bitmap.Clone();
             }
 
             return null;
