@@ -25,7 +25,7 @@ namespace ArmController.Executor
         public void Execute(PauseCommand command)
         {
             var now = DateTime.Now;
-            var endTime = now.AddSeconds(command.TimeOut);
+            var endTime = now.AddSeconds(command.TimeOutMilliseconds);
             var timeOutTimeSpan = endTime - now;
             LogHandler?.Invoke("Start to Execute Pause Command");
             try

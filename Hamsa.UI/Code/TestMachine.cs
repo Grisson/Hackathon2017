@@ -18,6 +18,7 @@ namespace Hamsa.UI.Code
         {
             Idle,
             Executing,
+            Pause,
             Waiting,
             WaitingTouch,
             WaitingProb,
@@ -61,20 +62,7 @@ namespace Hamsa.UI.Code
                     }
                     else
                     {
-                        // get new command
-                        if (!IsProbed)
-                        {
-                            // if need to prob
-                        }
-                        else if (!IsCalibrated)
-                        {
-                            // if need to calibrate
-                            var commands = Brain.Arm.StartCalibrate(ArmId);
-                        }
-                        else
-                        {
-                            // get new commands
-                        }
+                        GetNewCommands();
                     }
                     break;
                 case Status.WaitingTouch:
@@ -83,10 +71,47 @@ namespace Hamsa.UI.Code
                 case Status.WaitingProb:
                     WaitingProb();
                     break;
+                case Status.Pause:
+                    // handle PauseCommand
+                    Pausing();
+                    break;
                 case Status.Waiting:
                 default:
                     Thread.Yield();
                     break;
+            }
+        }
+
+        public void GetNewCommands()
+        {
+            var newCommandString = string.Empty;
+            // get new command
+            if (!IsProbed)
+            {
+                // if need to prob
+                newCommandString = Brain.Arm.Prob(ArmId, 0);
+            }
+            else if (!IsCalibrated)
+            {
+                // if need to calibrate
+                newCommandString = Brain.Arm.StartCalibrate(ArmId);
+            }
+            else
+            {
+                // get new commands
+            }
+
+            if (string.IsNullOrEmpty(newCommandString))
+            {
+                return;
+            }
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
+
+            foreach (var c in newCommands)
+            {
+                CommandList.Enqueue(c);
             }
         }
 
@@ -100,10 +125,21 @@ namespace Hamsa.UI.Code
 
             switch (CurrentCommand.Type)
             {
+                case CommandType.Pose:
+                    var command = CurrentCommand as PoseCommand;
+                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
+                    Arm.MoveTo(new PosePosition() { MotorOneSteps = command.NextPosePosition.X, MotorTwoSteps = command.NextPosePosition.Y, MotorThreeSteps = command.NextPosePosition.Z });
+                    break;
                 case CommandType.GCode:
-                    var command = CurrentCommand as GCommand;
-                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                    Arm.MoveTo(new PosePosition() { MotorOneSteps = command.XDelta, MotorTwoSteps = command.YDelta, MotorThreeSteps = command.ZDelta });
+                    var gcommand = CurrentCommand as GCommand;
+                    gcommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    var newPose = new PosePosition()
+                    {
+                        MotorOneSteps = Arm.CurrentPose.X + gcommand.XDelta,
+                        MotorTwoSteps = Arm.CurrentPose.Y + gcommand.YDelta,
+                        MotorThreeSteps = Arm.CurrentPose.Z + gcommand.ZDelta,
+                    };
+                    Arm.MoveTo(newPose);
                     break;
                 case CommandType.Vision:
                     // TODO: Start Camear, Query a frame, Corp, Send to Server
@@ -121,6 +157,12 @@ namespace Hamsa.UI.Code
                     lock (SyncRoot)
                     {
                         CurrentStatus = Status.WaitingTouch;
+                    }
+                    break;
+                case CommandType.Pause:
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.Pause;
                     }
                     break;
                 default:
@@ -183,6 +225,7 @@ namespace Hamsa.UI.Code
             if (CurrentCommand is ProbWaitingCommand)
             {
                 var command = CurrentCommand as ProbWaitingCommand;
+                // BUG: cause the infinite wait
                 var now = DateTime.Now;
                 var endTime = now.AddSeconds(command.TimeOutSeconds);
 
@@ -239,13 +282,35 @@ namespace Hamsa.UI.Code
             }
         }
 
+        public void Pausing()
+        {
+            if (CurrentStatus == Status.Pause)
+            {
+                var command = CurrentCommand as PauseCommand;
+                if(command.RefreshInterval <= 0)
+                {
+                    Thread.Sleep((int)command.TimeOutMilliseconds);
+                }
+            }
+        }
+
         public void HandleArmCallback(string data)
         {
-            if (CurrentCommand is GCommand)
+            if (CurrentStatus == Status.Executing)
             {
-                var command = CurrentCommand as GCommand;
+                var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if (CurrentCommand is GCommand)
+                {
+                    var gcommand = CurrentCommand as GCommand;
+                    timeStamp = gcommand.SendTimeStamp;
+                }
+                else if(CurrentCommand is PoseCommand)
+                {
+                    var gcommand = CurrentCommand as PoseCommand;
+                    timeStamp = gcommand.SendTimeStamp;
+                }
                 Brain.Arm.ReportPose(ArmId,
-                    command.SendTimeStamp.ToString(),
+                    timeStamp.ToString(),
                     Arm.CurrentPose.MotorOneSteps,
                     Arm.CurrentPose.MotorTwoSteps,
                     Arm.CurrentPose.MotorThreeSteps);
@@ -256,6 +321,15 @@ namespace Hamsa.UI.Code
                     CurrentStatus = Status.Idle;
                 }
             }
+        }
+
+        private void FakeTestSequence()
+        {
+            var pose1 = new PoseCommand(2230, 0, 11);
+            var touchDown = new GCommand(500, -500, 0);
+            var liftUp = new GCommand(-500, 500, 0);
+            var wait10s = new PauseCommand(100, 0);
+
         }
 
         public override void Cleanup()

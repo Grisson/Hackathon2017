@@ -1,4 +1,4 @@
-﻿using Hamsa.Common;
+﻿    using Hamsa.Common;
 using Hamsa.Common.Data;
 using System;
 using System.IO.Ports;
@@ -26,8 +26,6 @@ namespace Hamsa.Device
         public PosePosition CurrentPose { get; set; }
         public PosePosition TargetPose { get; set; }
 
-        public Action<string> completionHandler { get; set; }
-
         public ThreeDOFArm(string portName, int baudRate) : base(portName, baudRate)
         {
             CurrentPose = PosePosition.InitializePosition();
@@ -51,7 +49,7 @@ namespace Hamsa.Device
                         }
                     }
 
-                    completionHandler?.Invoke(d);
+                    DataReceivedHandler?.Invoke(d);
                 }
             }
             finally

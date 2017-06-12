@@ -12,7 +12,7 @@ namespace Hamsa.Common
         private int _baudRate;
         private string _portName;
 
-        private Action<string> DataReceivedHandler;
+        protected Action<string> DataReceivedHandler;
 
         public UsbDevice(string portName, int baudRate)
         {

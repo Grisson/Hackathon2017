@@ -2,7 +2,7 @@
 {
     public class PauseCommand : BaseCommand
     {
-        public long TimeOut { get; set; }
+        public long TimeOutMilliseconds { get; set; }
         public int RefreshInterval { get; set; }
         public int RegreshURL { get; set; }
 
@@ -11,9 +11,9 @@
             this.Type = CommandType.Pause;
         }
 
-        public PauseCommand(long timeout, int refresh) : this()
+        public PauseCommand(long timeoutMS, int refresh) : this()
         {
-            TimeOut = timeout;
+            TimeOutMilliseconds = timeoutMS;
             RefreshInterval = refresh;
         }
 
