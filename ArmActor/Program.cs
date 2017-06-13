@@ -24,6 +24,9 @@ namespace ArmActor
                 ActorRuntime.RegisterActorAsync<ArmActor>(
                    (context, actorType) => new ActorService(context, actorType)).GetAwaiter().GetResult();
 
+                ActorRuntime.RegisterActorAsync<VisionActor>(
+                   (context, actorType) => new ActorService(context, actorType)).GetAwaiter().GetResult();
+
                 Thread.Sleep(Timeout.Infinite);
             }
             catch (Exception e)

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using ArmController.Models.Data;
 using Microsoft.ServiceFabric.Actors;
-using ArmController.Models.Data;
-using ArmController.Models.Command;
+using System;
+using System.Threading.Tasks;
 
 namespace ArmActor.Interfaces
 {

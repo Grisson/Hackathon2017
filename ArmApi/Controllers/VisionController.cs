@@ -1,6 +1,6 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using ArmApi.logic;
+using Microsoft.ServiceFabric.Actors;
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -34,30 +34,13 @@ namespace ArmApi.Controllers
 
         [Route("analyze/{filename}/{command}")]
         [HttpPost]
-        public async Task<IHttpActionResult> Analyze(long id, string filename, string command)
+        public async Task<bool> Analyze(long id, string filename, string command)
         {
-            //if (!Request.Content.IsMimeMultipartContent())
-            //    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+            //var idd = ActorId.CreateRandom();
+            var actor = ActorFactory.GetVision(id);
+            var result = await actor.Anaylyze($"{Math.Abs(id)}-image", filename, command);
 
-            //var provider = new MultipartMemoryStreamProvider();
-            //await Request.Content.ReadAsMultipartAsync(provider);
-            //foreach (var file in provider.Contents)
-            //{
-            //    var filename = file.Headers.ContentDisposition.FileName.Trim('\"');
-            //    var buffer = await file.ReadAsByteArrayAsync();
-            //    //Do whatever you want with filename and its binaray data.
-            //}
-            var account = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=brainvision;AccountKey=13GuBE4FbGi/EBaXvTHrMFTStXnBS/VidHbVZqecGFbB5s55E+62RvndVmMd2VBF84pjIy7DR0FrrXYvSDrL9Q==;EndpointSuffix=core.windows.net");
-            var blobClient = account.CreateCloudBlobClient();
-            var container = blobClient.GetContainerReference($"{Math.Abs(id)}-image");
-            var blob = container.GetBlobReference(filename);
-            MemoryStream memStream = new MemoryStream();
-            blob.DownloadToStream(memStream);
-            //blob.DownloadToByteArray
-            blob.DownloadToFile("TestImage.jpg", FileMode.CreateNew);
-
-
-            return Ok();
+            return result;
         }
     }
 }

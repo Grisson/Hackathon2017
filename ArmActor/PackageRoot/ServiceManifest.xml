@@ -15,6 +15,20 @@
         </Extension>
       </Extensions>
     </StatefulServiceType>
+    <StatefulServiceType ServiceTypeName="VisionActorServiceType" HasPersistedState="true">
+      <Extensions>
+        <Extension Name="__GeneratedServiceType__" GeneratedId="9e58402a-b1c6-4f6f-b96d-19e9463aafde|Persisted">
+          <GeneratedNames xmlns="http://schemas.microsoft.com/2015/03/fabact-no-schema">
+            <DefaultService Name="VisionActorService" />
+            <ServiceEndpoint Name="VisionActorServiceEndpoint" />
+            <ReplicatorEndpoint Name="VisionActorServiceReplicatorEndpoint" />
+            <ReplicatorConfigSection Name="VisionActorServiceReplicatorConfig" />
+            <ReplicatorSecurityConfigSection Name="VisionActorServiceReplicatorSecurityConfig" />
+            <StoreConfigSection Name="VisionActorServiceLocalStoreConfig" />
+          </GeneratedNames>
+        </Extension>
+      </Extensions>
+    </StatefulServiceType>
   </ServiceTypes>
   <CodePackage Name="Code" Version="1.0.0">
     <EntryPoint>
@@ -28,6 +42,8 @@
     <Endpoints>
       <Endpoint Name="ArmActorServiceEndpoint" />
       <Endpoint Name="ArmActorServiceReplicatorEndpoint" />
+      <Endpoint Name="VisionActorServiceEndpoint" />
+      <Endpoint Name="VisionActorServiceReplicatorEndpoint" />
     </Endpoints>
   </Resources>
   <!-- The content will be generated during build -->

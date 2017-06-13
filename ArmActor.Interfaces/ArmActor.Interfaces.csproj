@@ -80,6 +80,7 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IVisionActor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IArmActor.cs" />
   </ItemGroup>

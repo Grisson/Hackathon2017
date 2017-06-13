@@ -3,5 +3,6 @@
   <Parameters>
     <Parameter Name="ArmApi_InstanceCount" Value="1" />
     <Parameter Name="ArmActorService_PartitionCount" Value="1" />
+    <Parameter Name="VisionActorService_PartitionCount" Value="1" />
   </Parameters>
 </Application>
