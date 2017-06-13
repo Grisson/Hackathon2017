@@ -46,5 +46,39 @@ namespace Hamsa.REST
                 }
             }
 
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='filename'>
+            /// </param>
+            /// <param name='command'>
+            /// </param>
+            public static object Analyze(this IVision operations, long id, string filename, string command)
+            {
+                return Task.Factory.StartNew(s => ((IVision)s).AnalyzeAsync(id, filename, command), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='filename'>
+            /// </param>
+            /// <param name='command'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<object> AnalyzeAsync(this IVision operations, long id, string filename, string command, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.AnalyzeWithHttpMessagesAsync(id, filename, command, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
     }
 }

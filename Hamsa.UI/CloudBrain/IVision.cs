@@ -27,5 +27,18 @@ namespace Hamsa.REST
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<object>> UploadWithHttpMessagesAsync(long id, string command, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <param name='id'>
+        /// </param>
+        /// <param name='filename'>
+        /// </param>
+        /// <param name='command'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<object>> AnalyzeWithHttpMessagesAsync(long id, string filename, string command, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

@@ -326,6 +326,8 @@ namespace Hamsa.UI.Code
                 var blockBlob = container.GetBlockBlobReference(fileName);
                 blockBlob.UploadFromByteArray(byteData, 0, byteData.Length);
 
+                Brain.Vision.Analyze(ArmId, fileName, "4396");
+
 
                 Eye.Stop();
             }
