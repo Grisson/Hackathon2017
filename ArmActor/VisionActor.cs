@@ -10,6 +10,8 @@ using Microsoft.ProjectOxford.Vision;
 using Microsoft.WindowsAzure.Storage.Blob;
 using ArmController.lib;
 using System.IO;
+using Microsoft.ProjectOxford.Vision.Contract;
+using Newtonsoft.Json;
 
 namespace ArmActor
 {
@@ -37,23 +39,19 @@ namespace ArmActor
             var blobClient = account.CreateCloudBlobClient();
             var container = blobClient.GetContainerReference(containerName);
             var blob = container.GetBlobReference(fileName);
-            //blob.FetchAttributes();
-            //var byteData = new byte[blob.Properties.Length];
-            blob.DownloadToFile(fileName, FileMode.CreateNew);
+            blob.FetchAttributes();
+            var byteData = new byte[blob.Properties.Length];
+            blob.DownloadToByteArray(byteData, 0);
 
             var client = new HttpClient();
-
-            // Request headers. Replace the example key with a valid subscription key.
             client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", key);
-
             // Request parameters and URI
             string requestParameters = "language=unk&detectOrientation =true";
-
             // NOTE: You must use the same location in your REST call as you used to obtain your subscription keys.
             //   For example, if you obtained your subscription keys from westus, replace "westcentralus" in the 
             //   URI below with "westus".
             string uri = "https://westus.api.cognitive.microsoft.com/vision/v1.0/ocr?" + requestParameters;
-            var byteData = GetImageAsByteArray(fileName);
+
             using (var content = new ByteArrayContent(byteData))
             {
                 // This example uses content type "application/octet-stream".
@@ -62,16 +60,12 @@ namespace ArmActor
                 var response = await client.PostAsync(uri, content);
                 var myobject = await response.Content.ReadAsStringAsync();
 
-                Console.WriteLine(myobject);
+                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                var recognizeResult = JsonConvert.DeserializeObject<OcrResults>(myobject, settings);
 
             }
 
-            if (File.Exists(fileName))
-            {
-                File.Delete(fileName);
-            }
-           
-            return false;
+            return true;
         }
 
 
