@@ -4,9 +4,13 @@ using Hamsa.Common;
 using Hamsa.Device;
 using Hamsa.REST;
 using Microsoft.Rest;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Threading;
 
 namespace Hamsa.UI.Code
@@ -33,8 +37,12 @@ namespace Hamsa.UI.Code
         public Queue<BaseCommand> CommandList;
         public BaseCommand CurrentCommand;
         public Status CurrentStatus;
-        public bool IsCalibrated = false;
-        public bool IsProbed = false;
+        public bool IsCalibrated = true; //false;
+        public bool IsProbed = true; //false;
+
+        private CloudStorageAccount storageAccount;
+        private CloudBlobClient blobClient;
+        private CloudBlobContainer container;
 
         public override void Setup()
         {
@@ -49,6 +57,13 @@ namespace Hamsa.UI.Code
             Arm = new ThreeDOFArm("COM4", 115200);
             Arm.Subscript("CallBack", HandleArmCallback);
             Arm.Connect();
+
+            storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=brainvision;AccountKey=13GuBE4FbGi/EBaXvTHrMFTStXnBS/VidHbVZqecGFbB5s55E+62RvndVmMd2VBF84pjIy7DR0FrrXYvSDrL9Q==;EndpointSuffix=core.windows.net");
+            blobClient = storageAccount.CreateCloudBlobClient();
+            container = blobClient.GetContainerReference($"{Math.Abs(ArmId)}-image");
+            container.CreateIfNotExists();
+
+            CommandList.Enqueue(new VisionCommand());
         }
 
         public override void Loop()
@@ -142,7 +157,8 @@ namespace Hamsa.UI.Code
                     Arm.MoveTo(newPose);
                     break;
                 case CommandType.Vision:
-                    // TODO: Start Camear, Query a frame, Corp, Send to Server
+                    var vcommand = CurrentCommand as VisionCommand;
+                    HandleVisionTask(vcommand);
                     break;
                 case CommandType.WaitingForVisionAnalyze:
                     // TODO: Check Server Status;
@@ -291,6 +307,32 @@ namespace Hamsa.UI.Code
                 {
                     Thread.Sleep((int)command.TimeOutMilliseconds);
                 }
+            }
+        }
+
+        public void HandleVisionTask(VisionCommand vcommand)
+        {
+
+            if(Eye != null)
+            {
+                // TODO: Start Camear, Query a frame, Corp, Send to Server
+                Eye.Start();
+                var img = Eye.GetLatestData();
+
+                var converter = new ImageConverter();
+                byte[] byteData = (byte[])converter.ConvertTo(img, typeof(byte[]));
+
+                var fileName = $"{Guid.NewGuid().ToString()}.jpg";
+                var blockBlob = container.GetBlockBlobReference(fileName);
+                blockBlob.UploadFromByteArray(byteData, 0, byteData.Length);
+
+
+                Eye.Stop();
+            }
+            lock (SyncRoot)
+            {
+                CurrentCommand = null;
+                CurrentStatus = Status.Idle;
             }
         }
 
