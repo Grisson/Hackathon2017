@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using Microsoft.WindowsAzure.Storage;
+using System;
+using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -44,6 +47,15 @@ namespace ArmApi.Controllers
             //    var buffer = await file.ReadAsByteArrayAsync();
             //    //Do whatever you want with filename and its binaray data.
             //}
+            var account = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=brainvision;AccountKey=13GuBE4FbGi/EBaXvTHrMFTStXnBS/VidHbVZqecGFbB5s55E+62RvndVmMd2VBF84pjIy7DR0FrrXYvSDrL9Q==;EndpointSuffix=core.windows.net");
+            var blobClient = account.CreateCloudBlobClient();
+            var container = blobClient.GetContainerReference($"{Math.Abs(id)}-image");
+            var blob = container.GetBlobReference(filename);
+            MemoryStream memStream = new MemoryStream();
+            blob.DownloadToStream(memStream);
+            //blob.DownloadToByteArray
+            blob.DownloadToFile("TestImage.jpg", FileMode.CreateNew);
+
 
             return Ok();
         }
