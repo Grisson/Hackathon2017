@@ -1,4 +1,5 @@
-﻿using ArmApi.logic;
+﻿using ArmActor;
+using ArmApi.logic;
 using Microsoft.ServiceFabric.Actors;
 using System;
 using System.Net;
@@ -34,7 +35,7 @@ namespace ArmApi.Controllers
 
         [Route("analyze/{filename}/{command}")]
         [HttpPost]
-        public async Task<bool> Analyze(long id, string filename, string command)
+        public async Task<VisionAssertionResult> Analyze(long id, string filename, string command)
         {
             //var idd = ActorId.CreateRandom();
             var actor = ActorFactory.GetVision(id);

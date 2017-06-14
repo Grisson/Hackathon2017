@@ -44,7 +44,7 @@ namespace ArmActor
             //{ ["test"] = new VisionAssertion { CropArea = new System.Drawing.Rectangle(100, 100, 200, 200), TargetText = "" } };
         }
 
-        public async Task<bool> Anaylyze(string containerName, string fileName, string command)
+        public async Task<VisionAssertionResult> Anaylyze(string containerName, string fileName, string command)
         {
             var imgData = DownloadImageToBytes(containerName, fileName);
 
@@ -72,7 +72,7 @@ namespace ArmActor
                 var ocrResult = await CallOcr(imgData);
             }
 
-            return true;
+            return new VisionAssertionResult() { IsPassed = true };
         }
 
         protected byte[] DownloadImageToBytes(string containerName, string fileName)

@@ -17,4 +17,11 @@ namespace ArmActor
 
 
     }
+
+    public class VisionAssertionResult
+    {
+        public bool IsPassed { get; set; }
+
+        public Rectangle[] Regions { get; set; }
+    }
 }

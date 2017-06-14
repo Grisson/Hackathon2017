@@ -9,6 +9,6 @@ namespace ArmActor.Interfaces
 {
     public interface IVisionActor : IActor
     {
-        Task<bool> Anaylyze(string containerName, string fileName, string command);
+        Task<VisionAssertionResult> Anaylyze(string containerName, string fileName, string command);
     }
 }

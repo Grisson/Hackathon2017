@@ -121,7 +121,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="ActorEventSource.cs" />
     <Compile Include="VisionActor.cs" />
-    <Compile Include="VisionAssertion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PackageRoot\ServiceManifest.xml" />
