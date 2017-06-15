@@ -23,7 +23,7 @@ namespace Hamsa.Device
         public int l = 120; // 120mm arm
 
 
-        public PosePosition CurrentPose { get; set; }
+        public PosePosition CurrentPose { get; protected set; }
         public PosePosition TargetPose { get; set; }
 
         public ThreeDOFArm(string portName, int baudRate) : base(portName, baudRate)
@@ -78,6 +78,7 @@ namespace Hamsa.Device
 
         public void ResetPosePosition()
         {
+            TargetPose = PosePosition.InitializePosition();
             Push("G90 X0 Y0 Z0");
         }
 

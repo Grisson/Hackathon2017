@@ -18,7 +18,7 @@ namespace Hamsa.UI.Code
             Eye = new Camera(0);
             Eye.Start();
 
-            Arm = new ThreeDOFArm("COM4", 115200);
+            Arm = new ThreeDOFArm("COM3", 115200);
             Arm.Connect();
 
             Brain = new Cognitive();
