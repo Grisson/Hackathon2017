@@ -1,17 +1,12 @@
-﻿using Emgu.CV;
-using Emgu.CV.CvEnum;
-using Hamsa.Common;
+﻿using Hamsa.Common;
 using Hamsa.Device;
 using Hamsa.UI.Code;
 using System;
 using System.Drawing;
 using System.IO.Ports;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace Hamsa.UI
 {

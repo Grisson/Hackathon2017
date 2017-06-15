@@ -103,9 +103,13 @@ namespace Hamsa.UI
 
         private void ControllerShowCurrentStatus(PosePosition pose)
         {
-            CurrentPoseLabel.Content = $"Current Pose X:{pose.X} Y:{pose.Y} z:{pose.Z}";
+            CurrentPoseXLabel.Content = $"X:{pose.X}";
+            CurrentPoseYLabel.Content = $"Y:{pose.Y}";
+            CurrentPoseZLabel.Content = $"z:{pose.Z}";
             var coor = controlArm.ConvertToCoordinate(pose);
-            CurrentCoordinateLabel.Content = $"Current Coordinate X:{coor.Item1} Y:{coor.Item2} Z:{coor.Item3}";
+            CurrentCoordinateXLabel.Content = $"X:{coor.Item1}";
+            CurrentCoordinateYLabel.Content = $"Y:{coor.Item2}";
+            CurrentCoordinateZLabel.Content = $"Z:{coor.Item3}";
         }
 
         private void PortComboBox_DropDownOpened(object sender, EventArgs e)

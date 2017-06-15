@@ -136,10 +136,30 @@
                         <TextBox Grid.Column="5" TextAlignment="Left" x:Name="CoordinateZTextBox"></TextBox>
                         <Button Grid.Column="6" x:Name="CoordinateGoBtn" Content="GO" HorizontalAlignment="Stretch" Click="CoordinateGoBtn_Click"/>
                     </Grid>
-                    <StackPanel  Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" x:Name="CurrentPoseLabel" HorizontalAlignment="Right" Content="Current Pose:"></Label>
+                        <Label Grid.Column="1" x:Name="CurrentPoseXLabel" HorizontalAlignment="Right" Content="X:"></Label>
+                        <Label Grid.Column="2" x:Name="CurrentPoseYLabel" HorizontalAlignment="Right" Content="Y:"></Label>
+                        <Label Grid.Column="3" x:Name="CurrentPoseZLabel" HorizontalAlignment="Right" Content="Z:"></Label>
+                    </Grid>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" x:Name="CurrentCoordinateLabel" HorizontalAlignment="Right" Content="Current Coordinate:"></Label>
-                    </StackPanel>
+                        <Label Grid.Column="1" x:Name="CurrentCoordinateXLabel" HorizontalAlignment="Right" Content="X:"></Label>
+                        <Label Grid.Column="2" x:Name="CurrentCoordinateYLabel" HorizontalAlignment="Right" Content="Y:"></Label>
+                        <Label Grid.Column="3" x:Name="CurrentCoordinateZLabel" HorizontalAlignment="Right" Content="Z:"></Label>
+                    </Grid>
                 </StackPanel>
             </TabItem>
         </TabControl>
