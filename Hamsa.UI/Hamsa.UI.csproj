@@ -145,6 +145,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BitmapSourceConvert.cs" />
     <Compile Include="CloudBrain\Arm.cs" />
     <Compile Include="CloudBrain\ArmExtensions.cs" />
     <Compile Include="CloudBrain\CloudBrain.cs" />
@@ -161,6 +162,8 @@
     <Compile Include="CloudBrain\VisionExtensions.cs" />
     <Compile Include="Code\TestMachine.cs" />
     <Compile Include="Code\TrackFaceSample.cs" />
+    <Compile Include="MainWindow.BlocksUI.cs" />
+    <Compile Include="MainWindow.ControllerUI.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
