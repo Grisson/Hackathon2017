@@ -53,7 +53,10 @@ namespace Hamsa.Common
                 //someone want the deterministic release of all resources
                 //Let us release all the managed resources
                 //ReleaseManagedResources();
-                instance.Dispose();
+                if(instance != null)
+                {
+                    instance.Dispose();
+                }
             }
             else
             {
