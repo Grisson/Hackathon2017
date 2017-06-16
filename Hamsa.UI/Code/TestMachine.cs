@@ -142,7 +142,7 @@ namespace Hamsa.UI.Code
             {
                 case CommandType.Pose:
                     var command = CurrentCommand as PoseCommand;
-                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
+                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                     Arm.MoveTo(new PosePosition() { MotorOneSteps = command.NextPosePosition.X, MotorTwoSteps = command.NextPosePosition.Y, MotorThreeSteps = command.NextPosePosition.Z });
                     break;
                 case CommandType.GCode:
@@ -243,7 +243,7 @@ namespace Hamsa.UI.Code
                 var command = CurrentCommand as ProbWaitingCommand;
                 // BUG: cause the infinite wait
 
-                if(!command.StartExecutionTime.HasValue)
+                if (!command.StartExecutionTime.HasValue)
                 {
                     command.StartExecutionTime = DateTime.Now;
                 }
@@ -277,12 +277,15 @@ namespace Hamsa.UI.Code
                         ArmId,
                         command.ProbRetry + 1);
 
-                    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-                    var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
-
-                    foreach (var c in newCommands)
+                    if(!string.IsNullOrEmpty(newCommandString))
                     {
-                        CommandList.Enqueue(c);
+                        JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                        var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
+
+                        foreach (var c in newCommands)
+                        {
+                            CommandList.Enqueue(c);
+                        }
                     }
 
                     lock (SyncRoot)
@@ -308,9 +311,13 @@ namespace Hamsa.UI.Code
             if (CurrentStatus == Status.Pause)
             {
                 var command = CurrentCommand as PauseCommand;
-                if(command.RefreshInterval <= 0)
+
+                Thread.Sleep((int)command.TimeOutMilliseconds);
+
+                lock (SyncRoot)
                 {
-                    Thread.Sleep((int)command.TimeOutMilliseconds);
+                    CurrentStatus = Status.Idle;
+                    CurrentCommand = null;
                 }
             }
         }
@@ -318,7 +325,7 @@ namespace Hamsa.UI.Code
         public void HandleVisionTask(VisionCommand vcommand)
         {
 
-            if(Eye != null)
+            if (Eye != null)
             {
                 // TODO: Start Camear, Query a frame, Corp, Send to Server
                 Eye.Start();
@@ -353,7 +360,7 @@ namespace Hamsa.UI.Code
                     var gcommand = CurrentCommand as GCommand;
                     timeStamp = gcommand.SendTimeStamp;
                 }
-                else if(CurrentCommand is PoseCommand)
+                else if (CurrentCommand is PoseCommand)
                 {
                     var gcommand = CurrentCommand as PoseCommand;
                     timeStamp = gcommand.SendTimeStamp;

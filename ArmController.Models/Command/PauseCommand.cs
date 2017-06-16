@@ -1,10 +1,16 @@
-﻿namespace ArmController.Models.Command
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace ArmController.Models.Command
 {
     public class PauseCommand : BaseCommand
     {
         public long TimeOutMilliseconds { get; set; }
         public int RefreshInterval { get; set; }
         public int RegreshURL { get; set; }
+
+        [IgnoreDataMember]
+        public DateTime? StartExecutionTime { get; set; }
 
         public PauseCommand()
         {
