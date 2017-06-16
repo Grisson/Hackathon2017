@@ -55,15 +55,6 @@ namespace ArmActor
                 var aoi = cropImage(image, vc.CropArea);
                 var byteData = ImageToByteArray(aoi);
 
-                //var account = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=brainvision;AccountKey=13GuBE4FbGi/EBaXvTHrMFTStXnBS/VidHbVZqecGFbB5s55E+62RvndVmMd2VBF84pjIy7DR0FrrXYvSDrL9Q==;EndpointSuffix=core.windows.net");
-                //var blobClient = account.CreateCloudBlobClient();
-                //var container = blobClient.GetContainerReference(containerName);
-                //var corpfileName = $"{command}-{fileName}";
-                //var blockBlob = container.GetBlockBlobReference(corpfileName);
-                //blockBlob.UploadFromByteArray(byteData, 0, byteData.Length);
-
-
-                //var img2 = DownloadImageToBytes(containerName, corpfileName);
                 var ocrResult = await CallOcr(byteData);
 
             }

@@ -1,10 +1,16 @@
-﻿namespace ArmController.Models.Command
+﻿using System;
+using System.Runtime.Serialization;
+
+namespace ArmController.Models.Command
 {
     public class ProbWaitingCommand : BaseCommand
     {
         public int ProbRetry = 0;
         public long TimeOutSeconds { get; set; }
         public int RefreshInterval { get; set; }
+
+        [IgnoreDataMember]
+        public DateTime? StartExecutionTime { get; set; }
 
         public ProbWaitingCommand() : base()
         {

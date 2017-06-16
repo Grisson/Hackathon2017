@@ -37,8 +37,8 @@ namespace Hamsa.UI.Code
         public Queue<BaseCommand> CommandList;
         public BaseCommand CurrentCommand;
         public Status CurrentStatus;
-        public bool IsCalibrated = true; //false;
-        public bool IsProbed = true; //false;
+        public bool IsCalibrated = false;
+        public bool IsProbed = false;
 
         private CloudStorageAccount storageAccount;
         private CloudBlobClient blobClient;
@@ -63,7 +63,7 @@ namespace Hamsa.UI.Code
             container = blobClient.GetContainerReference($"{Math.Abs(ArmId)}-image");
             container.CreateIfNotExists();
 
-            CommandList.Enqueue(new VisionCommand());
+            //CommandList.Enqueue(new VisionCommand());
         }
 
         public override void Loop()
@@ -242,8 +242,13 @@ namespace Hamsa.UI.Code
             {
                 var command = CurrentCommand as ProbWaitingCommand;
                 // BUG: cause the infinite wait
-                var now = DateTime.Now;
-                var endTime = now.AddSeconds(command.TimeOutSeconds);
+
+                if(!command.StartExecutionTime.HasValue)
+                {
+                    command.StartExecutionTime = DateTime.Now;
+                }
+                var startTime = command.StartExecutionTime.Value;
+                var endTime = startTime.AddSeconds(command.TimeOutSeconds);
 
                 if (DateTime.Now < endTime)
                 {
