@@ -23,6 +23,7 @@ namespace Hamsa.UI.Code
             Idle,
             Executing,
             Pause,
+            TaskDone,
             Waiting,
             WaitingTouch,
             WaitingProb,
@@ -89,6 +90,8 @@ namespace Hamsa.UI.Code
                 case Status.Pause:
                     // handle PauseCommand
                     Pausing();
+                    break;
+                case Status.TaskDone:
                     break;
                 case Status.Waiting:
                 default:
@@ -181,6 +184,12 @@ namespace Hamsa.UI.Code
                         CurrentStatus = Status.Pause;
                     }
                     break;
+                case CommandType.Done:
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.TaskDone;
+                    }
+                    break;
                 default:
                     lock (SyncRoot)
                     {
@@ -204,10 +213,14 @@ namespace Hamsa.UI.Code
                 if (DateTime.Now < endTime)
                 {
                     // TODO: rename this to WaitTouch
-                    //var isTouchDetected = Brain.Arm.touc.WaitProb(ArmId) ?? false;
-                    var isTouchDetected = true;
+                    var isTouchDetected = Brain.Arm.CanResume(ArmId);
 
-                    if (isTouchDetected)
+                    if (string.IsNullOrEmpty(isTouchDetected))
+                    {
+                        Thread.Sleep(command.RefreshInterval);
+                        Thread.Yield();
+                    }
+                    else
                     {
                         lock (SyncRoot)
                         {
@@ -215,15 +228,15 @@ namespace Hamsa.UI.Code
                             CurrentCommand = null;
                         }
                     }
-                    else
-                    {
-                        Thread.Sleep(command.RefreshInterval);
-                        Thread.Yield();
-                    }
                 }
                 else
                 {
                     // TimeOut
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.Idle;
+                        CurrentCommand = null;
+                    }
                 }
             }
             else
