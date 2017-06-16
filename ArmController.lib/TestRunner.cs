@@ -10,7 +10,7 @@ namespace ArmController.lib
 {
     public class TestRunner
     {
-        public PosePosition initialProbPose = new PosePosition(2265,3303, 0);//(2800, 2800, 0);
+        public PosePosition initialProbPose = new PosePosition(2100, 3000, 0);//(2800, 2800, 0);
         public int ProbInterval = 7;
         public bool isProbing = false;
 

@@ -23,6 +23,7 @@ namespace Hamsa.UI.Code
             Idle,
             Executing,
             Pause,
+            TaskDone,
             Waiting,
             WaitingTouch,
             WaitingProb,
@@ -37,8 +38,8 @@ namespace Hamsa.UI.Code
         public Queue<BaseCommand> CommandList;
         public BaseCommand CurrentCommand;
         public Status CurrentStatus;
-        public bool IsCalibrated = true; //false;
-        public bool IsProbed = true; //false;
+        public bool IsCalibrated = false;
+        public bool IsProbed = false;
 
         private CloudStorageAccount storageAccount;
         private CloudBlobClient blobClient;
@@ -63,7 +64,7 @@ namespace Hamsa.UI.Code
             container = blobClient.GetContainerReference($"{Math.Abs(ArmId)}-image");
             container.CreateIfNotExists();
 
-            CommandList.Enqueue(new VisionCommand());
+            //CommandList.Enqueue(new VisionCommand());
         }
 
         public override void Loop()
@@ -89,6 +90,8 @@ namespace Hamsa.UI.Code
                 case Status.Pause:
                     // handle PauseCommand
                     Pausing();
+                    break;
+                case Status.TaskDone:
                     break;
                 case Status.Waiting:
                 default:
@@ -142,7 +145,7 @@ namespace Hamsa.UI.Code
             {
                 case CommandType.Pose:
                     var command = CurrentCommand as PoseCommand;
-                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); 
+                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                     Arm.MoveTo(new PosePosition() { MotorOneSteps = command.NextPosePosition.X, MotorTwoSteps = command.NextPosePosition.Y, MotorThreeSteps = command.NextPosePosition.Z });
                     break;
                 case CommandType.GCode:
@@ -181,6 +184,12 @@ namespace Hamsa.UI.Code
                         CurrentStatus = Status.Pause;
                     }
                     break;
+                case CommandType.Done:
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.TaskDone;
+                    }
+                    break;
                 default:
                     lock (SyncRoot)
                     {
@@ -204,10 +213,14 @@ namespace Hamsa.UI.Code
                 if (DateTime.Now < endTime)
                 {
                     // TODO: rename this to WaitTouch
-                    //var isTouchDetected = Brain.Arm.touc.WaitProb(ArmId) ?? false;
-                    var isTouchDetected = true;
+                    var isTouchDetected = Brain.Arm.CanResume(ArmId);
 
-                    if (isTouchDetected)
+                    if (string.IsNullOrEmpty(isTouchDetected))
+                    {
+                        Thread.Sleep(command.RefreshInterval);
+                        Thread.Yield();
+                    }
+                    else
                     {
                         lock (SyncRoot)
                         {
@@ -215,15 +228,15 @@ namespace Hamsa.UI.Code
                             CurrentCommand = null;
                         }
                     }
-                    else
-                    {
-                        Thread.Sleep(command.RefreshInterval);
-                        Thread.Yield();
-                    }
                 }
                 else
                 {
                     // TimeOut
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.Idle;
+                        CurrentCommand = null;
+                    }
                 }
             }
             else
@@ -242,8 +255,13 @@ namespace Hamsa.UI.Code
             {
                 var command = CurrentCommand as ProbWaitingCommand;
                 // BUG: cause the infinite wait
-                var now = DateTime.Now;
-                var endTime = now.AddSeconds(command.TimeOutSeconds);
+
+                if (!command.StartExecutionTime.HasValue)
+                {
+                    command.StartExecutionTime = DateTime.Now;
+                }
+                var startTime = command.StartExecutionTime.Value;
+                var endTime = startTime.AddSeconds(command.TimeOutSeconds);
 
                 if (DateTime.Now < endTime)
                 {
@@ -272,12 +290,15 @@ namespace Hamsa.UI.Code
                         ArmId,
                         command.ProbRetry + 1);
 
-                    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-                    var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
-
-                    foreach (var c in newCommands)
+                    if(!string.IsNullOrEmpty(newCommandString))
                     {
-                        CommandList.Enqueue(c);
+                        JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                        var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
+
+                        foreach (var c in newCommands)
+                        {
+                            CommandList.Enqueue(c);
+                        }
                     }
 
                     lock (SyncRoot)
@@ -303,9 +324,13 @@ namespace Hamsa.UI.Code
             if (CurrentStatus == Status.Pause)
             {
                 var command = CurrentCommand as PauseCommand;
-                if(command.RefreshInterval <= 0)
+
+                Thread.Sleep((int)command.TimeOutMilliseconds);
+
+                lock (SyncRoot)
                 {
-                    Thread.Sleep((int)command.TimeOutMilliseconds);
+                    CurrentStatus = Status.Idle;
+                    CurrentCommand = null;
                 }
             }
         }
@@ -313,7 +338,7 @@ namespace Hamsa.UI.Code
         public void HandleVisionTask(VisionCommand vcommand)
         {
 
-            if(Eye != null)
+            if (Eye != null)
             {
                 // TODO: Start Camear, Query a frame, Corp, Send to Server
                 Eye.Start();
@@ -348,7 +373,7 @@ namespace Hamsa.UI.Code
                     var gcommand = CurrentCommand as GCommand;
                     timeStamp = gcommand.SendTimeStamp;
                 }
-                else if(CurrentCommand is PoseCommand)
+                else if (CurrentCommand is PoseCommand)
                 {
                     var gcommand = CurrentCommand as PoseCommand;
                     timeStamp = gcommand.SendTimeStamp;
@@ -378,6 +403,7 @@ namespace Hamsa.UI.Code
 
         public override void Cleanup()
         {
+            Arm.ResetPosePosition();
             Brain.Dispose();
             Eye.Dispose();
             Arm.Dispose();
