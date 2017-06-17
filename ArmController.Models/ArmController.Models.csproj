@@ -69,6 +69,7 @@
     <Compile Include="Command\ProbPauseCommand.cs" />
     <Compile Include="Command\ResumeCommand.cs" />
     <Compile Include="Command\VisionCommand.cs" />
+    <Compile Include="Command\WaitTouchCommand.cs" />
     <Compile Include="Data\PosePosition.cs" />
     <Compile Include="Data\TouchPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

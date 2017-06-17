@@ -23,10 +23,10 @@ namespace Hamsa.UI.Code
             Idle,
             Executing,
             Pause,
-            TaskDone,
             Waiting,
             WaitingTouch,
             WaitingProb,
+            TaskDone,
         }
 
         public Camera Eye;
@@ -92,6 +92,8 @@ namespace Hamsa.UI.Code
                     Pausing();
                     break;
                 case Status.TaskDone:
+                    // handle DoneCommand
+                    CompleteTask();
                     break;
                 case Status.Waiting:
                 default:
@@ -198,7 +200,6 @@ namespace Hamsa.UI.Code
                     }
                     break;
             }
-
         }
 
         public void WaitingTouch()
@@ -213,14 +214,10 @@ namespace Hamsa.UI.Code
                 if (DateTime.Now < endTime)
                 {
                     // TODO: rename this to WaitTouch
-                    var isTouchDetected = Brain.Arm.CanResume(ArmId);
+                    //var isTouchDetected = Brain.Arm.touc.WaitProb(ArmId) ?? false;
+                    var isTouchDetected = true;
 
-                    if (string.IsNullOrEmpty(isTouchDetected))
-                    {
-                        Thread.Sleep(command.RefreshInterval);
-                        Thread.Yield();
-                    }
-                    else
+                    if (isTouchDetected)
                     {
                         lock (SyncRoot)
                         {
@@ -327,6 +324,25 @@ namespace Hamsa.UI.Code
 
                 Thread.Sleep((int)command.TimeOutMilliseconds);
 
+                lock (SyncRoot)
+                {
+                    CurrentStatus = Status.Idle;
+                    CurrentCommand = null;
+                }
+            }
+        }
+
+        public void CompleteTask()
+        {
+            if (CurrentCommand is DoneCommand)
+            {
+                var command = CurrentCommand as DoneCommand;
+
+                Brain.Arm.Done(ArmId, command.RetrunData);
+            }
+            else
+            {
+                // current command is wrong, reset
                 lock (SyncRoot)
                 {
                     CurrentStatus = Status.Idle;

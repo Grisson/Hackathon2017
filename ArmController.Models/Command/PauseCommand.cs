@@ -12,7 +12,7 @@ namespace ArmController.Models.Command
         [IgnoreDataMember]
         public DateTime? StartExecutionTime { get; set; }
 
-        public PauseCommand()
+        public PauseCommand() : base()
         {
             this.Type = CommandType.Pause;
         }

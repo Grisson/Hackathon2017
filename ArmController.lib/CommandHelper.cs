@@ -82,9 +82,9 @@ namespace ArmController.lib
             return new GCommand(0, 0, steps);
         }
 
-        public static PauseCommand WaitForTouch()
+        public static WaitTouchCommand WaitForTouch()
         {
-            return new PauseCommand(WaitingTimeOutSeconds, RefreshIntervalMillSeconds);
+            return new WaitTouchCommand((long)WaitingTimeOutSeconds*1000, RefreshIntervalMillSeconds);
         }
 
         public static GCommand LiftUp()
