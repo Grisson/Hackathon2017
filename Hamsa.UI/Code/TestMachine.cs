@@ -419,6 +419,7 @@ namespace Hamsa.UI.Code
 
         public override void Cleanup()
         {
+            Arm.ResetPosePosition();
             Brain.Dispose();
             Eye.Dispose();
             Arm.Dispose();
