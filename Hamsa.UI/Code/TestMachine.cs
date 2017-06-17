@@ -26,6 +26,7 @@ namespace Hamsa.UI.Code
             Waiting,
             WaitingTouch,
             WaitingProb,
+            TaskDone,
         }
 
         public Camera Eye;
@@ -89,6 +90,10 @@ namespace Hamsa.UI.Code
                 case Status.Pause:
                     // handle PauseCommand
                     Pausing();
+                    break;
+                case Status.TaskDone:
+                    // handle DoneCommand
+                    CompleteTask();
                     break;
                 case Status.Waiting:
                 default:
@@ -181,6 +186,12 @@ namespace Hamsa.UI.Code
                         CurrentStatus = Status.Pause;
                     }
                     break;
+                case CommandType.Done:
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.TaskDone;
+                    }
+                    break;
                 default:
                     lock (SyncRoot)
                     {
@@ -189,7 +200,6 @@ namespace Hamsa.UI.Code
                     }
                     break;
             }
-
         }
 
         public void WaitingTouch()
@@ -204,10 +214,10 @@ namespace Hamsa.UI.Code
                 if (DateTime.Now < endTime)
                 {
                     // TODO: rename this to WaitTouch
+                    var isTouchDetected = Brain.Arm.CanResume(ArmId);
                     //var isTouchDetected = Brain.Arm.touc.WaitProb(ArmId) ?? false;
-                    var isTouchDetected = true;
 
-                    if (isTouchDetected)
+                    if (!String.IsNullOrEmpty(isTouchDetected))
                     {
                         lock (SyncRoot)
                         {
@@ -224,6 +234,11 @@ namespace Hamsa.UI.Code
                 else
                 {
                     // TimeOut
+                    lock (SyncRoot)
+                    {
+                        CurrentStatus = Status.Idle;
+                        CurrentCommand = null;
+                    }
                 }
             }
             else
@@ -306,6 +321,25 @@ namespace Hamsa.UI.Code
                 if(command.RefreshInterval <= 0)
                 {
                     Thread.Sleep((int)command.TimeOutMilliseconds);
+                }
+            }
+        }
+
+        public void CompleteTask()
+        {
+            if (CurrentCommand is DoneCommand)
+            {
+                var command = CurrentCommand as DoneCommand;
+
+                Brain.Arm.Done(ArmId, command.RetrunData);
+            }
+            else
+            {
+                // current command is wrong, reset
+                lock (SyncRoot)
+                {
+                    CurrentStatus = Status.Idle;
+                    CurrentCommand = null;
                 }
             }
         }

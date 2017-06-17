@@ -6,7 +6,7 @@
         public int RefreshInterval { get; set; }
         public int RegreshURL { get; set; }
 
-        public PauseCommand()
+        public PauseCommand() : base()
         {
             this.Type = CommandType.Pause;
         }
