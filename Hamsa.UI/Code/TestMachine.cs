@@ -205,25 +205,33 @@ namespace Hamsa.UI.Code
         public void WaitingTouch()
         {
             // TODO: check server side 
-            if (CurrentCommand is ProbWaitingCommand)
+            if (CurrentCommand is WaitTouchCommand)
             {
-                var command = CurrentCommand as ProbWaitingCommand;
-                var now = DateTime.Now;
-                var endTime = now.AddSeconds(command.TimeOutSeconds);
+                var command = CurrentCommand as WaitTouchCommand;
+
+                if (!command.StartExecutionTime.HasValue)
+                {
+                    command.StartExecutionTime = DateTime.Now;
+                }
+                var startTime = command.StartExecutionTime.Value;
+                var endTime = startTime.AddSeconds(command.TimeOutSeconds);
 
                 if (DateTime.Now < endTime)
                 {
-                    // TODO: rename this to WaitTouch
-                    //var isTouchDetected = Brain.Arm.touc.WaitProb(ArmId) ?? false;
-                    var isTouchDetected = true;
+                    var isTouchDetected = Brain.Arm.CanResume(ArmId);
 
-                    if (isTouchDetected)
+                    if (!string.IsNullOrEmpty(isTouchDetected))
                     {
                         lock (SyncRoot)
                         {
                             CurrentStatus = Status.Idle;
                             CurrentCommand = null;
                         }
+                    }
+                    else
+                    {
+                        Thread.Sleep(command.RefreshIntervalMilliseconds);
+                        Thread.Yield();
                     }
                 }
                 else
@@ -248,10 +256,9 @@ namespace Hamsa.UI.Code
 
         public void WaitingProb()
         {
-            if (CurrentCommand is ProbWaitingCommand)
+            if (CurrentCommand is WaitProbCommand)
             {
-                var command = CurrentCommand as ProbWaitingCommand;
-                // BUG: cause the infinite wait
+                var command = CurrentCommand as WaitProbCommand;
 
                 if (!command.StartExecutionTime.HasValue)
                 {
@@ -276,7 +283,7 @@ namespace Hamsa.UI.Code
                     }
                     else
                     {
-                        Thread.Sleep(command.RefreshInterval);
+                        Thread.Sleep(command.RefreshIntervalMilliseconds);
                         Thread.Yield();
                     }
                 }

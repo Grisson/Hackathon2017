@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace ArmController.Models.Command
 {
     public class WaitTouchCommand : BaseCommand
     {
-        public long TimeOutMilliseconds { get; set; }
-        public int RefreshInterval { get; set; }
+        public long TimeOutSeconds { get; set; }
+        public int RefreshIntervalMilliseconds { get; set; }
+
+        [IgnoreDataMember]
+        public DateTime? StartExecutionTime { get; set; }
 
         public WaitTouchCommand() : base()
         {
@@ -17,10 +17,10 @@ namespace ArmController.Models.Command
 
         }
 
-        public WaitTouchCommand(long timeoutMS, int refreshMilliseconds) : this()
+        public WaitTouchCommand(int timeoutSeconds, int refreshMilliseconds) : this()
         {
-            TimeOutMilliseconds = timeoutMS;
-            RefreshInterval = refreshMilliseconds;
+            TimeOutSeconds = timeoutSeconds;
+            RefreshIntervalMilliseconds = refreshMilliseconds;
         }
     }
 }

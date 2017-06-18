@@ -3,24 +3,24 @@ using System.Runtime.Serialization;
 
 namespace ArmController.Models.Command
 {
-    public class ProbWaitingCommand : BaseCommand
+    public class WaitProbCommand : BaseCommand
     {
         public int ProbRetry = 0;
         public long TimeOutSeconds { get; set; }
-        public int RefreshInterval { get; set; }
+        public int RefreshIntervalMilliseconds { get; set; }
 
         [IgnoreDataMember]
         public DateTime? StartExecutionTime { get; set; }
 
-        public ProbWaitingCommand() : base()
+        public WaitProbCommand() : base()
         {
             this.Type = CommandType.WaitingProb;
         }
 
-        public ProbWaitingCommand(long timeout, int refresh, int retry) : this()
+        public WaitProbCommand(long timeoutSeconds, int refreshMilliseconds, int retry) : this()
         {
-            TimeOutSeconds = timeout;
-            RefreshInterval = refresh;
+            TimeOutSeconds = timeoutSeconds;
+            RefreshIntervalMilliseconds = refreshMilliseconds;
             ProbRetry = retry;
         }
 

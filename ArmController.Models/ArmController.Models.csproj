@@ -66,7 +66,7 @@
     <Compile Include="Command\GCommand.cs" />
     <Compile Include="Command\PauseCommand.cs" />
     <Compile Include="Command\PoseCommand.cs" />
-    <Compile Include="Command\ProbPauseCommand.cs" />
+    <Compile Include="Command\WaitProbCommand.cs" />
     <Compile Include="Command\ResumeCommand.cs" />
     <Compile Include="Command\VisionCommand.cs" />
     <Compile Include="Command\WaitTouchCommand.cs" />

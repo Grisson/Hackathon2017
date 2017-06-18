@@ -23,10 +23,10 @@ namespace ArmController.Executor
 
         public void Execute(BaseCommand command)
         {
-            this.Execute(command as ProbWaitingCommand);
+            this.Execute(command as WaitProbCommand);
         }
 
-        public void Execute(ProbWaitingCommand command)
+        public void Execute(WaitProbCommand command)
         {
             var now = DateTime.Now;
             var endTime = now.AddSeconds(command.TimeOutSeconds);
@@ -37,7 +37,7 @@ namespace ArmController.Executor
             {
                 while (DateTime.Now < endTime)
                 {
-                    if (command.RefreshInterval > 0)
+                    if (command.RefreshIntervalMilliseconds > 0)
                     {
                         // do something
                         isTouchDetected = CommandExecutor.SharedInstance.brain.Arm.WaitProb(
@@ -51,8 +51,8 @@ namespace ArmController.Executor
                         else
                         {
                             LogHandler?.Invoke($"no touch detected!");
-                            LogHandler?.Invoke($"Will sleep {command.RefreshInterval}ms");
-                            Thread.Sleep(command.RefreshInterval);
+                            LogHandler?.Invoke($"Will sleep {command.RefreshIntervalMilliseconds}ms");
+                            Thread.Sleep(command.RefreshIntervalMilliseconds);
                         }
                     }
                     else

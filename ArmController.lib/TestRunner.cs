@@ -218,7 +218,7 @@ namespace ArmController.lib
             var y = initialProbPose.Y + retry * ProbInterval;
             commonds.Add(new PoseCommand(x, y, 0));
             commonds.Tap();
-            commonds.Add(new ProbWaitingCommand(10, 500, retry));
+            commonds.Add(new WaitProbCommand(30, 500, retry));
 
             if (commonds.Count <= 0)
             {

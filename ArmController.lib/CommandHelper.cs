@@ -84,7 +84,7 @@ namespace ArmController.lib
 
         public static WaitTouchCommand WaitForTouch()
         {
-            return new WaitTouchCommand((long)WaitingTimeOutSeconds*1000, RefreshIntervalMillSeconds);
+            return new WaitTouchCommand(WaitingTimeOutSeconds, RefreshIntervalMillSeconds);
         }
 
         public static GCommand LiftUp()
