@@ -86,6 +86,14 @@ namespace ArmApi.Controllers
             //return "Calibrate commands";
         }
 
+        [Route("arm/{id:long}/getnexttask")]
+        [HttpGet]
+        public async Task<string> GetNextTeask(long id, int retry = 0)
+        {
+            var armActor = ActorFactory.GetArm(id);
+            return await armActor.GetNextTaskAsync();
+        }
+
         [Route("arm/{id:long}/coordinate/{x:double}/{y:double}/{z:double}")]
         [HttpGet]
         public async Task<IHttpActionResult> ConvertCoordinateToPose(long id, double x, double y, double z)

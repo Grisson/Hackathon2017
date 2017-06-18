@@ -91,6 +91,14 @@ namespace ArmActor
             await SaveDataAsync(tr);
             return result;
         }
+        
+        public async Task<string> GetNextTaskAsync()
+        {
+            var tr = await ReadDataAsync();
+            var result = tr.GetNextTask();
+            await SaveDataAsync(tr);
+            return result;
+        }
 
         public async Task<PosePosition> ConvertCoordinatToPositionAsync(double x, double y, double z)
         {
