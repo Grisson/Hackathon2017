@@ -17,6 +17,7 @@ namespace Hamsa.REST
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
+    using Models;
 
     /// <summary>
     /// Vision operations.
@@ -180,7 +181,7 @@ namespace Hamsa.REST
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<object>> AnalyzeWithHttpMessagesAsync(long id, string filename, string command, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<VisionAssertionResult>> AnalyzeWithHttpMessagesAsync(long id, string filename, string command, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (filename == null)
             {
@@ -267,7 +268,7 @@ namespace Hamsa.REST
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<object>();
+            var _result = new HttpOperationResponse<VisionAssertionResult>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
@@ -276,7 +277,7 @@ namespace Hamsa.REST
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = SafeJsonConvert.DeserializeObject<object>(_responseContent, this.Client.DeserializationSettings);
+                    _result.Body = SafeJsonConvert.DeserializeObject<VisionAssertionResult>(_responseContent, this.Client.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {

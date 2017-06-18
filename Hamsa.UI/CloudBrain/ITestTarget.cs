@@ -10,6 +10,7 @@ namespace Hamsa.REST
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Rest;
+    using Models;
 
     /// <summary>
     /// TestTarget operations.

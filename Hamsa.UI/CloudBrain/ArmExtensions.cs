@@ -10,6 +10,7 @@ namespace Hamsa.REST
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Rest;
+    using Models;
 
     /// <summary>
     /// Extension methods for Arm.
@@ -248,6 +249,36 @@ namespace Hamsa.REST
             public static async Task<string> ProbAsync(this IArm operations, long id, int retry, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ProbWithHttpMessagesAsync(id, retry, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='retry'>
+            /// </param>
+            public static string GetNextTeask(this IArm operations, long id, int? retry = default(int?))
+            {
+                return Task.Factory.StartNew(s => ((IArm)s).GetNextTeaskAsync(id, retry), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='retry'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<string> GetNextTeaskAsync(this IArm operations, long id, int? retry = default(int?), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetNextTeaskWithHttpMessagesAsync(id, retry, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

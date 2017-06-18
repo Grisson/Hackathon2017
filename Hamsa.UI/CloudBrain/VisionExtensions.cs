@@ -10,6 +10,7 @@ namespace Hamsa.REST
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Rest;
+    using Models;
 
     /// <summary>
     /// Extension methods for Vision.
@@ -55,7 +56,7 @@ namespace Hamsa.REST
             /// </param>
             /// <param name='command'>
             /// </param>
-            public static object Analyze(this IVision operations, long id, string filename, string command)
+            public static VisionAssertionResult Analyze(this IVision operations, long id, string filename, string command)
             {
                 return Task.Factory.StartNew(s => ((IVision)s).AnalyzeAsync(id, filename, command), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
@@ -72,7 +73,7 @@ namespace Hamsa.REST
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<object> AnalyzeAsync(this IVision operations, long id, string filename, string command, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<VisionAssertionResult> AnalyzeAsync(this IVision operations, long id, string filename, string command, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.AnalyzeWithHttpMessagesAsync(id, filename, command, null, cancellationToken).ConfigureAwait(false))
                 {

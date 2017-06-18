@@ -18,6 +18,7 @@ namespace Hamsa.REST
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
+    using Models;
 
     public partial class CloudBrain : ServiceClient<CloudBrain>, ICloudBrain
     {

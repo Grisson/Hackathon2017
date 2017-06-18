@@ -17,6 +17,7 @@ namespace Hamsa.REST
     using Microsoft.Rest;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
+    using Models;
 
     /// <summary>
     /// Values operations.

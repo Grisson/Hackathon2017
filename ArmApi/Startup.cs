@@ -21,7 +21,7 @@ namespace ArmApi
             //    defaults: new { id = RouteParameter.Optional }
             //);
 
-            //config.EnableSwagger(c => c.SingleApiVersion("v1", "A title for your API")).EnableSwaggerUi();
+            config.EnableSwagger(c => c.SingleApiVersion("v1", "A title for your API")).EnableSwaggerUi();
 
             appBuilder.UseWebApi(config);
         }

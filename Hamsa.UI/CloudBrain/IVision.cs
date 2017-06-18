@@ -10,6 +10,7 @@ namespace Hamsa.REST
     using System.Threading;
     using System.Threading.Tasks;
     using Microsoft.Rest;
+    using Models;
 
     /// <summary>
     /// Vision operations.
@@ -39,6 +40,6 @@ namespace Hamsa.REST
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<object>> AnalyzeWithHttpMessagesAsync(long id, string filename, string command, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<VisionAssertionResult>> AnalyzeWithHttpMessagesAsync(long id, string filename, string command, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

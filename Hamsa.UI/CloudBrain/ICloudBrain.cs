@@ -11,6 +11,7 @@ namespace Hamsa.REST
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Microsoft.Rest;
+    using Models;
 
     /// <summary>
     /// </summary>

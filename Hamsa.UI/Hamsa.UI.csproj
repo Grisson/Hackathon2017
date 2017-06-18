@@ -154,6 +154,7 @@
     <Compile Include="CloudBrain\ITestTarget.cs" />
     <Compile Include="CloudBrain\IValues.cs" />
     <Compile Include="CloudBrain\IVision.cs" />
+    <Compile Include="CloudBrain\Models\VisionAssertionResult.cs" />
     <Compile Include="CloudBrain\TestTarget.cs" />
     <Compile Include="CloudBrain\TestTargetExtensions.cs" />
     <Compile Include="CloudBrain\Values.cs" />
