@@ -121,13 +121,13 @@ namespace ArmController.lib
             {
                 result.Add(new GCommand(0, 0, z));
 
-                result.AddRange(Tap());
-                result.Add(new PauseCommand(WaitingTimeOutSeconds, RefreshIntervalMillSeconds));
+                result.Tap();
+                result.WaitForTouch();
 
                 for (var i = 1; i <= repeatTimes; i++)
                 {
-                    result.AddRange(Tap());
-                    result.Add(new PauseCommand(WaitingTimeOutSeconds, RefreshIntervalMillSeconds));
+                    result.Tap();
+                    result.WaitForTouch();
                 }
             }
 
