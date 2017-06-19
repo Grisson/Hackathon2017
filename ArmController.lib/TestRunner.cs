@@ -10,8 +10,8 @@ namespace ArmController.lib
 {
     public class TestRunner
     {
-        public PosePosition initialProbPose = new PosePosition(2100, 3000, 0);//(2800, 2800, 0);
-        public int ProbInterval = 7;
+        public PosePosition initialProbPose = new PosePosition(2320, 3220, 0);//(2800, 2800, 0);
+        public int ProbInterval = 5;
         public bool isProbing = false;
 
         public const string TaskNameCalibration = "Calib";
@@ -65,7 +65,7 @@ namespace ArmController.lib
         {
             if (Agent == null)
             {
-                return false;
+                Agent = new TestAgent();
             }
 
             Agent.CurrentPosition = new PosePosition(timeStamp, x, y, z);
@@ -210,6 +210,7 @@ namespace ArmController.lib
 
             if(retry > 10)
             {
+                isProbing = false;
                 return string.Empty;
             }
 

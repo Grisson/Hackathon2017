@@ -50,8 +50,8 @@ namespace Hamsa.UI.Code
             CommandList = new Queue<BaseCommand>();
             CurrentStatus = Status.Idle;
 
-            Brain = new CloudBrain(new Uri("http://localhost:8182"), new BasicAuthenticationCredentials());
-            ArmId = Brain.Arm.Register().Value;
+            Brain = new CloudBrain(new Uri("http://10.125.169.141:8182"), new BasicAuthenticationCredentials());
+            ArmId = 4396;// Brain.Arm.Register().Value;
 
             Eye = new Camera(0);
 
@@ -346,6 +346,12 @@ namespace Hamsa.UI.Code
                 var command = CurrentCommand as DoneCommand;
 
                 Brain.Arm.Done(ArmId, command.RetrunData);
+
+                lock (SyncRoot)
+                {
+                    CurrentStatus = Status.Idle;
+                    CurrentCommand = null;
+                }
             }
             else
             {
