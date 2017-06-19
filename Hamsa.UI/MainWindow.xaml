@@ -11,8 +11,16 @@
     <Grid>
         <TabControl>
             <TabItem Header="Code" >
-                <StackPanel Orientation="Horizontal">
-                    <Button x:Name="PlayCodeBtn" Click="PlayCodeBtn_Click">Play</Button>
+                <StackPanel Orientation="Vertical">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" x:Name="PlayCodeBtn" Click="PlayCodeBtn_Click">Play</Button>
+                        <Button Grid.Column="1" x:Name="TestCodeBtn" Click="TestCodeBtn_Click">Test</Button>
+                    </Grid>
+                    
                 </StackPanel>
             </TabItem>
 

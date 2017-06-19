@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Threading;
 
 namespace Hamsa.UI.Code
@@ -296,7 +295,7 @@ namespace Hamsa.UI.Code
                         ArmId,
                         command.ProbRetry + 1);
 
-                    if(!string.IsNullOrEmpty(newCommandString))
+                    if (!string.IsNullOrEmpty(newCommandString))
                     {
                         JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
                         var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
@@ -332,12 +331,12 @@ namespace Hamsa.UI.Code
                 var command = CurrentCommand as PauseCommand;
 
                 Thread.Sleep((int)command.TimeOutMilliseconds);
+            }
 
-                lock (SyncRoot)
-                {
-                    CurrentStatus = Status.Idle;
-                    CurrentCommand = null;
-                }
+            lock (SyncRoot)
+            {
+                CurrentStatus = Status.Idle;
+                CurrentCommand = null;
             }
         }
 
@@ -348,21 +347,13 @@ namespace Hamsa.UI.Code
                 var command = CurrentCommand as DoneCommand;
 
                 Brain.Arm.Done(ArmId, command.RetrunData);
-
-                lock (SyncRoot)
-                {
-                    CurrentStatus = Status.Idle;
-                    CurrentCommand = null;
-                }
             }
-            else
+
+            // current command is wrong, reset
+            lock (SyncRoot)
             {
-                // current command is wrong, reset
-                lock (SyncRoot)
-                {
-                    CurrentStatus = Status.Idle;
-                    CurrentCommand = null;
-                }
+                CurrentStatus = Status.Idle;
+                CurrentCommand = null;
             }
         }
 
@@ -421,15 +412,6 @@ namespace Hamsa.UI.Code
                     CurrentStatus = Status.Idle;
                 }
             }
-        }
-
-        private void FakeTestSequence()
-        {
-            var pose1 = new PoseCommand(2230, 0, 11);
-            var touchDown = new GCommand(500, -500, 0);
-            var liftUp = new GCommand(-500, 500, 0);
-            var wait10s = new PauseCommand(100, 0);
-
         }
 
         public override void Cleanup()

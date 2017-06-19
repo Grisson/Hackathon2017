@@ -145,6 +145,11 @@ namespace Hamsa.UI
                 PlayCodeBtn.Content = "Play";
             }
         }
+
+        private void TestCodeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }
 /*

@@ -270,6 +270,7 @@ namespace ArmController.lib
             commonds.Tap();
 
             // 3. Pose to take picture
+            // TODO
             var cameraPose = ConvertCoordinatToPosition(new Tuple<double, double, double>(60, 0, 130));
             commonds.Add(new PoseCommand(cameraPose.X, cameraPose.Y, cameraPose.Z));
 
@@ -290,6 +291,7 @@ namespace ArmController.lib
 
             // Reset Arm Position
             commonds.Reset();
+            commonds.Add(new PauseCommand(180000, -1));
 
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             string serialized = JsonConvert.SerializeObject(commonds, settings);
