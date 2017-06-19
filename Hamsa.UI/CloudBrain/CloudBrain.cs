@@ -249,7 +249,7 @@ namespace Hamsa.REST
             this.TestTarget = new TestTarget(this);
             this.Values = new Values(this);
             this.Vision = new Vision(this);
-            this.BaseUri = new Uri("http://127.0.0.1:8182");
+            this.BaseUri = new Uri("http://10.125.169.141:8182");
             SerializationSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented,

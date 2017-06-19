@@ -261,9 +261,9 @@ namespace Hamsa.REST
             /// </param>
             /// <param name='retry'>
             /// </param>
-            public static string GetNextTeask(this IArm operations, long id, int? retry = default(int?))
+            public static string GetNextTask(this IArm operations, long id, int? retry = default(int?))
             {
-                return Task.Factory.StartNew(s => ((IArm)s).GetNextTeaskAsync(id, retry), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+                return Task.Factory.StartNew(s => ((IArm)s).GetNextTaskAsync(id, retry), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
             }
 
             /// <param name='operations'>
@@ -276,9 +276,9 @@ namespace Hamsa.REST
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<string> GetNextTeaskAsync(this IArm operations, long id, int? retry = default(int?), CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<string> GetNextTaskAsync(this IArm operations, long id, int? retry = default(int?), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetNextTeaskWithHttpMessagesAsync(id, retry, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetNextTaskWithHttpMessagesAsync(id, retry, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

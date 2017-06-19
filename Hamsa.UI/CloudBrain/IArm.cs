@@ -115,7 +115,7 @@ namespace Hamsa.REST
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        Task<HttpOperationResponse<string>> GetNextTeaskWithHttpMessagesAsync(long id, int? retry = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<HttpOperationResponse<string>> GetNextTaskWithHttpMessagesAsync(long id, int? retry = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
         /// <param name='id'>
         /// </param>
         /// <param name='x'>

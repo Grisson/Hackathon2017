@@ -115,10 +115,12 @@ namespace Hamsa.UI.Code
             {
                 // if need to calibrate
                 newCommandString = Brain.Arm.StartCalibrate(ArmId);
+                IsCalibrated = true;
             }
             else
             {
                 // get new commands
+                newCommandString = Brain.Arm.GetNextTask(ArmId);
             }
 
             if (string.IsNullOrEmpty(newCommandString))

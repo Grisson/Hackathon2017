@@ -995,7 +995,7 @@ namespace Hamsa.REST
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<string>> GetNextTeaskWithHttpMessagesAsync(long id, int? retry = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<string>> GetNextTaskWithHttpMessagesAsync(long id, int? retry = default(int?), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1007,7 +1007,7 @@ namespace Hamsa.REST
                 tracingParameters.Add("id", id);
                 tracingParameters.Add("retry", retry);
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetNextTeask", tracingParameters);
+                ServiceClientTracing.Enter(_invocationId, this, "GetNextTask", tracingParameters);
             }
             // Construct URL
             var _baseUrl = this.Client.BaseUri.AbsoluteUri;

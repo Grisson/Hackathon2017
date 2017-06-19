@@ -84,7 +84,7 @@ namespace ArmApi.Controllers
 
         [Route("arm/{id:long}/getnexttask")]
         [HttpGet]
-        public async Task<string> GetNextTeask(long id, int retry = 0)
+        public async Task<string> GetNextTask(long id, int retry = 0)
         {
             var armActor = ActorFactory.GetArm(id);
             return await armActor.GetNextTaskAsync();

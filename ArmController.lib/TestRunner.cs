@@ -256,20 +256,27 @@ namespace ArmController.lib
         {
             var commonds = new List<BaseCommand>();
 
-            var touchPoint1 = new TouchPoint(200, 200);
-            var touchPoint2 = new TouchPoint(100, 100);
+            var touchPoint1 = new TouchPoint(200, -200);
+            var touchPoint2 = new TouchPoint(100, -100);
             // 1. convert touch point
-            //var pose1 = ConvertTouchPointToPosition(touchPoint1);
-            //var tapDist = CommandHelper.LiftUpDistance * CommandHelper.MMToSteps;
-            //pose1.X -= tapDist;
-            //pose1.Y -= tapDist;
-            //commonds.Add(new PoseCommand(pose1.X, pose1.Y, pose1.Z));
-            commonds.Add(new PoseCommand(120, 0, 60));
+            var pose1 = ConvertTouchPointToPosition(touchPoint1);
+            var tapDist = CommandHelper.LiftUpDistance * CommandHelper.MMToSteps;
+            pose1.X -= tapDist;
+            pose1.Y -= tapDist;
+            commonds.Add(new PoseCommand(pose1.X, pose1.Y, pose1.Z));
+            //commonds.Add(new PoseCommand(120, 0, 60));
 
             // 2. Tap
             commonds.Tap();
 
-            // 3. vision confirmation
+            // 3. Pose to take picture
+            var cameraPose = ConvertCoordinatToPosition(new Tuple<double, double, double>(60, 0, 130));
+            commonds.Add(new PoseCommand(cameraPose.X, cameraPose.Y, cameraPose.Z));
+
+            // 4. wait for re-focus
+            commonds.Add(new PauseCommand(1000, -1));
+
+            // 5. vision confirmation
             commonds.Add(new VisionCommand()
             {
                 X = 0,
