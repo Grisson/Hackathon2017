@@ -30,9 +30,8 @@ namespace ArmController.lib
         internal List<Tuple<PosePosition, TouchPoint>> PoseTouchMapping { get; set; }
         internal TouchPoint AgentLocation { get; set; }
 
-        public Queue<string> NextTaskNames { get; set; }
 
-        public Dictionary<string, List<BaseCommand>> Tasks { get; set; }
+        public Queue<List<BaseCommand>> TaskQueue { get; set; }
 
         // Length = F(distance)
         // length = a + b * distance
@@ -46,11 +45,7 @@ namespace ArmController.lib
             PosePositions = new SortedList<long, PosePosition>();
             TouchPoints = new SortedList<long, TouchPoint>();
 
-            Tasks = new Dictionary<string, List<BaseCommand>>();
-            Tasks["TestTouch"] = TestTouchTask();
-            Tasks["SampleTest"] = SampleTestTask();
-
-            NextTaskNames = new Queue<string>();
+            TaskQueue = new Queue<List<BaseCommand>>();
         }
 
         public void RegisterTestAgent(string agentId)
@@ -244,32 +239,29 @@ namespace ArmController.lib
 
         public void AddNextTask(string taskName)
         {
-            if(!string.IsNullOrEmpty(taskName))
+            if(!string.IsNullOrEmpty(taskName) && (F_x != null) && (F_Dist_Length != null))
             {
-                NextTaskNames.Enqueue(taskName);
+                if (taskName.Equals("TestTouch", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    TaskQueue.Enqueue(TestTouchTask());
+                }
+                else if (taskName.Equals("SampleTest", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    TaskQueue.Enqueue(SampleTestTask());
+                }
             }
         }
 
         public string GetNextTask()
         {
-            if ((F_x != null) && (F_Dist_Length != null) && NextTaskNames.Any())
+            if (TaskQueue.Any())
             {
-                var taskName = NextTaskNames.Dequeue();
-                
-                if(Tasks.ContainsKey(taskName))
-                {
-                    var commonds = Tasks[taskName];
+                var commonds = TaskQueue.Dequeue();
 
-                    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-                    string serialized = JsonConvert.SerializeObject(commonds, settings);
+                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                string serialized = JsonConvert.SerializeObject(commonds, settings);
 
-                    return serialized;
-                }
-                else
-                {
-                    return string.Empty;
-                }
-               
+                return serialized;
             }
             else
             {
