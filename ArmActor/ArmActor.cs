@@ -116,12 +116,18 @@ namespace ArmActor
             return result;
         }
 
-
         public async Task<PosePosition> ConvertTouchPointToPoseAsync(double x, double y)
         {
             var tr = await ReadDataAsync();
             var result = tr.ConvertTouchPointToPosition(new TouchPoint(x, y));
             return result;
+        }
+
+        public async Task AddNextTaskAsync(string taskName)
+        {
+            var tr = await ReadDataAsync();
+            tr.AddNextTask(taskName);
+            await SaveDataAsync(tr);
         }
 
         protected async Task<TestRunner> ReadDataAsync()
@@ -159,5 +165,7 @@ namespace ArmActor
 
             return this.StateManager.TryAddStateAsync("count", 0);
         }
+
+        
     }
 }

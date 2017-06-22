@@ -1,6 +1,8 @@
 ﻿using Hamsa.Common;
 using Hamsa.Device;
+using Hamsa.REST;
 using Hamsa.UI.Code;
+using Microsoft.Rest;
 using System;
 using System.Drawing;
 using System.IO.Ports;
@@ -148,7 +150,8 @@ namespace Hamsa.UI
 
         private void TestCodeBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+            var Brain = new CloudBrain(new Uri("http://10.125.169.141:8182"), new BasicAuthenticationCredentials());
+
         }
     }
 }

@@ -30,6 +30,10 @@ namespace ArmController.lib
         internal List<Tuple<PosePosition, TouchPoint>> PoseTouchMapping { get; set; }
         internal TouchPoint AgentLocation { get; set; }
 
+        public Queue<string> NextTaskNames { get; set; }
+
+        public Dictionary<string, List<BaseCommand>> Tasks { get; set; }
+
         // Length = F(distance)
         // length = a + b * distance
         internal Tuple<double, double> F_Dist_Length { get; set; }
@@ -41,6 +45,12 @@ namespace ArmController.lib
         {
             PosePositions = new SortedList<long, PosePosition>();
             TouchPoints = new SortedList<long, TouchPoint>();
+
+            Tasks = new Dictionary<string, List<BaseCommand>>();
+            Tasks["TestTouch"] = TestTouchTask();
+            Tasks["SampleTest"] = SampleTestTask();
+
+            NextTaskNames = new Queue<string>();
         }
 
         public void RegisterTestAgent(string agentId)
@@ -232,71 +242,39 @@ namespace ArmController.lib
             return serialized;
         }
 
-        public string GetTestTouchCommand()
+        public void AddNextTask(string taskName)
         {
-            var commonds = new List<BaseCommand>();
-
-            var tapDistance = CommandHelper.GetTapDistance();
-            var posePosition = ConvertTouchPointToPosition(new TouchPoint(100, -100));
-            posePosition.X -= tapDistance;
-            posePosition.Y -= tapDistance;
-
-            commonds.Add(new PoseCommand(posePosition.X, posePosition.Y, posePosition.Z));
-            commonds.Tap();
-            commonds.Reset();
-
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            string serialized = JsonConvert.SerializeObject(commonds, settings);
-
-            return serialized;
-
+            if(!string.IsNullOrEmpty(taskName))
+            {
+                NextTaskNames.Enqueue(taskName);
+            }
         }
 
         public string GetNextTask()
         {
-            var commonds = new List<BaseCommand>();
-
-            var touchPoint1 = new TouchPoint(200, -200);
-            var touchPoint2 = new TouchPoint(100, -100);
-            // 1. convert touch point
-            var pose1 = ConvertTouchPointToPosition(touchPoint1);
-            var tapDist = CommandHelper.LiftUpDistance * CommandHelper.MMToSteps;
-            pose1.X -= tapDist;
-            pose1.Y -= tapDist;
-            commonds.Add(new PoseCommand(pose1.X, pose1.Y, pose1.Z));
-            //commonds.Add(new PoseCommand(120, 0, 60));
-
-            // 2. Tap
-            commonds.Tap();
-
-            // 3. Pose to take picture
-            // TODO
-            var cameraPose = ConvertCoordinatToPosition(new Tuple<double, double, double>(60, 0, 130));
-            commonds.Add(new PoseCommand(cameraPose.X, cameraPose.Y, cameraPose.Z));
-
-            // 4. wait for re-focus
-            commonds.Add(new PauseCommand(1000, -1));
-
-            // 5. vision confirmation
-            commonds.Add(new VisionCommand()
+            if ((F_x != null) && (F_Dist_Length != null) && NextTaskNames.Any())
             {
-                X = 0,
-                Y = 0,
-                Width = 200,
-                Height = 200,
-                Data = "Test Data"
-            });
+                var taskName = NextTaskNames.Dequeue();
+                
+                if(Tasks.ContainsKey(taskName))
+                {
+                    var commonds = Tasks[taskName];
 
-            // other steps
+                    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                    string serialized = JsonConvert.SerializeObject(commonds, settings);
 
-            // Reset Arm Position
-            commonds.Reset();
-            commonds.Add(new PauseCommand(180000, -1));
-
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            string serialized = JsonConvert.SerializeObject(commonds, settings);
-
-            return serialized;
+                    return serialized;
+                }
+                else
+                {
+                    return string.Empty;
+                }
+               
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public PosePosition ConvertCoordinatToPosition(Tuple<double, double, double> coordinate)
@@ -338,20 +316,70 @@ namespace ArmController.lib
             return pose;
         }
 
-        public void StartTest()
+        private List<BaseCommand> TestTouchTask()
         {
-            TestCases = new List<TestCase>();
-            CurrentTestCaseIndex = 0;
+            var commonds = new List<BaseCommand>();
+
+            var tapDistance = CommandHelper.GetTapDistance();
+            var posePosition = ConvertTouchPointToPosition(new TouchPoint(100, -100));
+            posePosition.X -= tapDistance;
+            posePosition.Y -= tapDistance;
+
+            commonds.Add(new PoseCommand(posePosition.X, posePosition.Y, posePosition.Z));
+            commonds.Tap();
+            commonds.Reset();
+
+            //JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            //string serialized = JsonConvert.SerializeObject(commonds, settings);
+
+            return commonds;
         }
 
-        public string[] GetNextTestCase()
+        private List<BaseCommand> SampleTestTask()
         {
-            //if (CurrentTestCaseIndex <= TestCases.Count)
-            //{
-            //    CurrenTestCase = TestCases[CurrentTestCaseIndex++];
-            //    return Agent.ToCommond(CurrenTestCase.Steps);
-            //}
-            return new string[] { };
+            var commonds = new List<BaseCommand>();
+
+            var touchPoint1 = new TouchPoint(200, -200);
+            var touchPoint2 = new TouchPoint(100, -100);
+            // 1. convert touch point
+            var pose1 = ConvertTouchPointToPosition(touchPoint1);
+            var tapDist = CommandHelper.LiftUpDistance * CommandHelper.MMToSteps;
+            pose1.X -= tapDist;
+            pose1.Y -= tapDist;
+            commonds.Add(new PoseCommand(pose1.X, pose1.Y, pose1.Z));
+            //commonds.Add(new PoseCommand(120, 0, 60));
+
+            // 2. Tap
+            commonds.Tap();
+
+            // 3. Pose to take picture
+            // TODO
+            var cameraPose = ConvertCoordinatToPosition(new Tuple<double, double, double>(60, 0, 130));
+            commonds.Add(new PoseCommand(cameraPose.X, cameraPose.Y, cameraPose.Z));
+
+            // 4. wait for re-focus
+            commonds.Add(new PauseCommand(1000, -1));
+
+            // 5. vision confirmation
+            commonds.Add(new VisionCommand()
+            {
+                X = 0,
+                Y = 0,
+                Width = 200,
+                Height = 200,
+                Data = "Test Data"
+            });
+
+            // other steps
+
+            // Reset Arm Position
+            commonds.Reset();
+            commonds.Add(new PauseCommand(180000, -1));
+
+            //JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            //string serialized = JsonConvert.SerializeObject(commonds, settings);
+
+            return commonds;
         }
     }
 }

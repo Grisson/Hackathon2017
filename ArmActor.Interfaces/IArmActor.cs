@@ -35,5 +35,6 @@ namespace ArmActor.Interfaces
 
         Task<PosePosition> ConvertTouchPointToPoseAsync(double x, double y);
 
+        Task AddNextTaskAsync(string taskName);
     }
 }
