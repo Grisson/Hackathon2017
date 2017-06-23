@@ -30,7 +30,7 @@ namespace Hamsa.UI
         {
             InitializeComponent();
 
-            GenerateBlocks();
+            //GenerateBlocks();
         }
 
         private void CameraShowBtn_Click(object sender, RoutedEventArgs e)
