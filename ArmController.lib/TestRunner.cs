@@ -366,7 +366,7 @@ namespace ArmController.lib
 
             // Reset Arm Position
             commonds.Reset();
-            commonds.Add(new PauseCommand(180000, -1));
+            //commonds.Add(new PauseCommand(180000, -1));
 
             //JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
             //string serialized = JsonConvert.SerializeObject(commonds, settings);
