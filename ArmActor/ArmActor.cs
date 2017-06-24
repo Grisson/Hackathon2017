@@ -67,6 +67,7 @@ namespace ArmActor
         {
             var tr = await ReadDataAsync();
             tr.Done(data);
+            await SaveDataAsync(tr);
         }
 
         public async Task<bool> WaitingProbResultAsync()
