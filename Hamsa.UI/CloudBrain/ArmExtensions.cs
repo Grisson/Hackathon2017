@@ -394,5 +394,35 @@ namespace Hamsa.REST
                 }
             }
 
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='taskName'>
+            /// </param>
+            public static object NewTask(this IArm operations, long id, string taskName)
+            {
+                return Task.Factory.StartNew(s => ((IArm)s).NewTaskAsync(id, taskName), operations, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).Unwrap().GetAwaiter().GetResult();
+            }
+
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='id'>
+            /// </param>
+            /// <param name='taskName'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<object> NewTaskAsync(this IArm operations, long id, string taskName, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.NewTaskWithHttpMessagesAsync(id, taskName, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
     }
 }

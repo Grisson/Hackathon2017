@@ -159,5 +159,16 @@ namespace Hamsa.REST
         /// The cancellation token.
         /// </param>
         Task<HttpOperationResponse<object>> ConvertTouchPointToPoseWithHttpMessagesAsync(long id, double x, double y, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        /// <param name='id'>
+        /// </param>
+        /// <param name='taskName'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<object>> NewTaskWithHttpMessagesAsync(long id, string taskName, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
