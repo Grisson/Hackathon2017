@@ -17,8 +17,9 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" x:Name="PlayCodeBtn" Click="PlayCodeBtn_Click">Play</Button>
-                        <Button Grid.Column="1" x:Name="TestCodeBtn" Click="TestCodeBtn_Click">Test</Button>
+                        <Button Grid.Column="0" x:Name="PlayCodeBtn" Click="PlayCodeBtn_Click">Calibrate</Button>
+                        <Button Grid.Column="1" x:Name="TestCodeBtn" Click="TestCodeBtn_Click">Do a Test</Button>
+                        <Button Grid.Column="1" x:Name="StopCodeBtn" Click="StopCodeBtn_Click">Stop</Button>
                     </Grid>
                     <Image HorizontalAlignment="left" Margin="10, 0, 0, 0" VerticalAlignment="Top"  Source="Asset\code.png" Width="638" Height="782" />
                     <Image HorizontalAlignment="left" Margin="10, 0, 0, 0" VerticalAlignment="Top"  Source="Asset\code2.png" Width="668" Height="747" />
@@ -46,7 +47,7 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Column="0" x:Name="CameraName">Camera</Label>
-                            <TextBlock Grid.Column="1" Width="20" x:Name="CameraId">0</TextBlock>
+                            <TextBlock Grid.Column="1" Width="20" x:Name="CameraId">1</TextBlock>
                             <Button Grid.Column="2" x:Name="CameraShowBtn" Click="CameraShowBtn_Click">Show</Button>
                         </Grid>
                         <Image Name="LiveVideoBox" HorizontalAlignment="Left" ></Image>

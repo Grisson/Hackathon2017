@@ -131,27 +131,46 @@ namespace Hamsa.UI
 
         private void PlayCodeBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (string.Equals(PlayCodeBtn.Content.ToString(), "Play", StringComparison.CurrentCultureIgnoreCase))
+
+            if (engine == null)
             {
                 engine = new CodeEngine<TestMachine>();
-                engine.Run();
-                PlayCodeBtn.Content = "Stop";
             }
-            else
-            {
-                if (engine != null)
-                {
-                    engine.Stop();
-                    engine.Dispose();
-                }
-                PlayCodeBtn.Content = "Play";
-            }
+
+            engine.Run();
+
+            //if (string.Equals(PlayCodeBtn.Content.ToString(), "Play", StringComparison.CurrentCultureIgnoreCase))
+            //{
+            //    engine = new CodeEngine<TestMachine>();
+            //    engine.Run();
+            //    PlayCodeBtn.Content = "Stop";
+            //}
+            //else
+            //{
+            //    if (engine != null)
+            //    {
+            //        engine.Stop();
+            //        engine.Dispose();
+            //    }
+            //    PlayCodeBtn.Content = "Play";
+            //}
         }
 
         private void TestCodeBtn_Click(object sender, RoutedEventArgs e)
         {
             var Brain = new CloudBrain(new Uri("http://10.125.169.141:8182"), new BasicAuthenticationCredentials());
 
+            
+
+        }
+
+        private void StopCodeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (engine != null)
+            {
+                engine.Stop();
+                engine.Dispose();
+            }
         }
     }
 }
