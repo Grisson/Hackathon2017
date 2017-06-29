@@ -8,7 +8,7 @@ namespace MessageReceiverConsole
 {
     class Program
     {
-        private static readonly string key = "cd079d2a5dca4e0d9d7224f2871e6e14";
+        private static readonly string key = "OOOOOOOOOOOOOOOOOOOOOOOOOO";
         static void Main(string[] args)
         {
             Console.Write("Enter image file path: ");

@@ -58,7 +58,7 @@ namespace Hamsa.UI.Code
             Arm.Subscript("CallBack", HandleArmCallback);
             Arm.Connect();
 
-            storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=brainvision;AccountKey=13GuBE4FbGi/EBaXvTHrMFTStXnBS/VidHbVZqecGFbB5s55E+62RvndVmMd2VBF84pjIy7DR0FrrXYvSDrL9Q==;EndpointSuffix=core.windows.net");
+            storageAccount = CloudStorageAccount.Parse("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
             blobClient = storageAccount.CreateCloudBlobClient();
             container = blobClient.GetContainerReference($"{Math.Abs(ArmId)}-image");
             container.CreateIfNotExists();
