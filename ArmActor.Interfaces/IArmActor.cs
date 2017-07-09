@@ -27,8 +27,6 @@ namespace ArmActor.Interfaces
 
         Task<string> ProbAsync(int retry);
 
-        Task<string> GetNextTaskAsync();
-
         Task<PosePosition> ConvertCoordinatToPositionAsync(double x, double y, double z);
 
         Task<Tuple<double, double, double>> ConvertPositionToCoordinatAsync(int x, int y, int z);
@@ -36,5 +34,11 @@ namespace ArmActor.Interfaces
         Task<PosePosition> ConvertTouchPointToPoseAsync(double x, double y);
 
         Task AddNextTaskAsync(string taskName);
+
+        Task AddDeltaPoseTaskAsync(int x, int y, int z);
+
+        Task AddPoseTaskAsync(int x, int y, int z);
+
+        Task<string> GetNextTaskAsync();
     }
 }

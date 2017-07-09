@@ -31,7 +31,7 @@ namespace ArmController.lib
         internal TouchPoint AgentLocation { get; set; }
 
 
-        public Queue<List<BaseCommand>> TaskQueue { get; set; }
+        public Queue<List<BaseCommand>> TaskQueue { get; set; } = new Queue<List<BaseCommand>>();
 
         // Length = F(distance)
         // length = a + b * distance
@@ -45,7 +45,7 @@ namespace ArmController.lib
             PosePositions = new SortedList<long, PosePosition>();
             TouchPoints = new SortedList<long, TouchPoint>();
 
-            TaskQueue = new Queue<List<BaseCommand>>();
+            //TaskQueue = new Queue<List<BaseCommand>>();
         }
 
         public void RegisterTestAgent(string agentId)
@@ -82,7 +82,7 @@ namespace ArmController.lib
         public bool ReportTouchBegin(long timeStamp, double x, double y)
         {
 
-            if(isProbing)
+            if (isProbing)
             {
                 ArmPositionCalculator.SharedInstance.ProbbedPose = PosePositions.Last().Value;
                 ArmPositionCalculator.SharedInstance.ProbbedPose.X += CommandHelper.GetTapDistance();
@@ -213,7 +213,7 @@ namespace ArmController.lib
                 ArmPositionCalculator.SharedInstance.ProbbedPose = null;
             }
 
-            if(retry > 10)
+            if (retry > 10)
             {
                 isProbing = false;
                 return string.Empty;
@@ -241,14 +241,14 @@ namespace ArmController.lib
         {
             //if(!string.IsNullOrEmpty(taskName) && (F_x != null) && (F_Dist_Length != null))
             //{
-                //if (taskName.Equals("TestTouch", StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    TaskQueue.Enqueue(TestTouchTask());
-                //}
-                //else if (taskName.Equals("SampleTest", StringComparison.InvariantCultureIgnoreCase))
-                //{
-                //    TaskQueue.Enqueue(SampleTestTask());
-                //}
+            //if (taskName.Equals("TestTouch", StringComparison.InvariantCultureIgnoreCase))
+            //{
+            //    TaskQueue.Enqueue(TestTouchTask());
+            //}
+            //else if (taskName.Equals("SampleTest", StringComparison.InvariantCultureIgnoreCase))
+            //{
+            //    TaskQueue.Enqueue(SampleTestTask());
+            //}
             //}
         }
 
@@ -396,6 +396,20 @@ namespace ArmController.lib
             //string serialized = JsonConvert.SerializeObject(commonds, settings);
 
             return commonds;
+        }
+
+        public void AddGCommand(int x, int y, int z)
+        {
+            var commonds = new List<BaseCommand>();
+            commonds.Add(new GCommand(x, y, z));
+            TaskQueue.Enqueue(commonds);
+        }
+
+        public void AddPoseCommand(int x, int y, int z)
+        {
+            var commonds = new List<BaseCommand>();
+            commonds.Add(new PoseCommand(x, y, z));
+            TaskQueue.Enqueue(commonds);
         }
     }
 }
