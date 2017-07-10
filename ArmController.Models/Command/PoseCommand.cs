@@ -1,18 +1,25 @@
 ﻿using ArmController.Models.Data;
 using System;
+using System.Runtime.Serialization;
 
 namespace ArmController.Models.Command
 {
+    [DataContract]
     public class PoseCommand : BaseCommand
     {
+        [DataMember]
         public PosePosition TargetPose { get; set; }
 
+        [IgnoreDataMember]
         public PosePosition NextPosePosition => TargetPose;
 
+        [IgnoreDataMember]
         public long SendTimeStamp { get; set; }
 
+        [IgnoreDataMember]
         public long ReceiveTimeStamp { get; set; }
 
+        [IgnoreDataMember]
         public string Response { get; set; }
 
         public PoseCommand() : base()

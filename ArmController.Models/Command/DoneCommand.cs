@@ -1,9 +1,14 @@
-﻿namespace ArmController.Models.Command
+﻿using System.Runtime.Serialization;
+
+namespace ArmController.Models.Command
 {
+    [DataContract]
     public class DoneCommand : BaseCommand
     {
+        [DataMember]
         public string URL { get; set; }
 
+        [DataMember]
         public string RetrunData { get; set; }
 
         public DoneCommand(string data)

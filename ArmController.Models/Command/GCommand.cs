@@ -1,20 +1,30 @@
 ﻿using ArmController.Models.Data;
 using System;
+using System.Runtime.Serialization;
 
 namespace ArmController.Models.Command
 {
+    [DataContract]
     public class GCommand : BaseCommand
     {
+        [DataMember]
         public int XDelta { get; set; }
+        [DataMember]
         public int YDelta { get; set; }
+        [DataMember]
         public int ZDelta { get; set; }
+        [DataMember]
         public PosePosition CurrentPosePosition { get; set; }
 
+        [IgnoreDataMember]
         public long SendTimeStamp { get; set; }
 
+        [IgnoreDataMember]
         public long ReceiveTimeStamp { get; set; }
+        [IgnoreDataMember]
         public string Response { get; set; }
 
+        [DataMember]
         public string CommandText { get; set; }
 
         public PosePosition NextPosePosition

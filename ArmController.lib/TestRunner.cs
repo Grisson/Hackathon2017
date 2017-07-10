@@ -5,9 +5,18 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace ArmController.lib
 {
+    [KnownType(typeof(GCommand))]
+    [KnownType(typeof(PoseCommand))]
+    [KnownType(typeof(DoneCommand))]
+    [KnownType(typeof(PauseCommand))]
+    [KnownType(typeof(ResumeCommand))]
+    [KnownType(typeof(VisionCommand))]
+    [KnownType(typeof(WaitProbCommand))]
+    [KnownType(typeof(WaitTouchCommand))]
     public class TestRunner
     {
         public PosePosition initialProbPose = new PosePosition(2320, 3220, 0);//(2800, 2800, 0);
@@ -254,25 +263,25 @@ namespace ArmController.lib
 
         public string GetNextTask()
         {
-            var commonds = SampleTestTask();
-            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            string serialized = JsonConvert.SerializeObject(commonds, settings);
+            //var commonds = SampleTestTask();
+            //JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            //string serialized = JsonConvert.SerializeObject(commonds, settings);
 
-            return serialized;
+            //return serialized;
 
-            //if (TaskQueue.Any())
-            //{
-            //    var commonds = TaskQueue.Dequeue();
+            if (TaskQueue.Any())
+            {
+                var commonds = TaskQueue.Dequeue();
 
-            //    JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
-            //    string serialized = JsonConvert.SerializeObject(commonds, settings);
+                JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                string serialized = JsonConvert.SerializeObject(commonds, settings);
 
-            //    return serialized;
-            //}
-            //else
-            //{
-            //    return string.Empty;
-            //}
+                return serialized;
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         public PosePosition ConvertCoordinatToPosition(Tuple<double, double, double> coordinate)

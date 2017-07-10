@@ -3,9 +3,12 @@ using System.Runtime.Serialization;
 
 namespace ArmController.Models.Command
 {
+    [DataContract]
     public class WaitTouchCommand : BaseCommand
     {
+        [DataMember]
         public long TimeOutSeconds { get; set; }
+        [DataMember]
         public int RefreshIntervalMilliseconds { get; set; }
 
         [IgnoreDataMember]

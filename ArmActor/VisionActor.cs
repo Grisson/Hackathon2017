@@ -17,7 +17,7 @@ namespace ArmActor
     internal class VisionActor : Actor, IVisionActor
     {
         protected static readonly string Key = "running_status";
-        private static readonly string key = "OOOOOOOOOOOOOOOOOOOOOOOOOO";
+        private static readonly string key = "0788d4c40df04f87beda92a72bb6614a";
         private static readonly string apiRoot = "https://westus.api.cognitive.microsoft.com/vision/v1.0/ocr";
 
 
@@ -68,7 +68,7 @@ namespace ArmActor
 
         protected byte[] DownloadImageToBytes(string containerName, string fileName)
         {
-            var account = CloudStorageAccount.Parse("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+            var account = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=brainvision;AccountKey=Ry5u04XWJP/PtLuC/EiS3bKfK/8WgCIFBVY2+t5tgZeZ89IGDvC/Dt2ji4OTsdhQFcIYfr58vPTn4aCMf/b/cQ==;EndpointSuffix=core.windows.net");
             var blobClient = account.CreateCloudBlobClient();
             var container = blobClient.GetContainerReference(containerName);
             var blob = container.GetBlobReference(fileName);

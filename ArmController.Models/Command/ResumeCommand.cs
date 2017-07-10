@@ -1,5 +1,8 @@
-﻿namespace ArmController.Models.Command
+﻿using System.Runtime.Serialization;
+
+namespace ArmController.Models.Command
 {
+    [DataContract]
     public class ResumeCommand : BaseCommand
     {
         public ResumeCommand()
