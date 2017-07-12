@@ -39,6 +39,7 @@ namespace ArmController.lib
         internal List<Tuple<PosePosition, TouchPoint>> PoseTouchMapping { get; set; }
         internal TouchPoint AgentLocation { get; set; }
 
+        internal long? AddNewTaskTimeStamp { get; set; }
 
         public Queue<List<BaseCommand>> TaskQueue { get; set; } = new Queue<List<BaseCommand>>();
 
@@ -407,18 +408,34 @@ namespace ArmController.lib
             return commonds;
         }
 
-        public void AddGCommand(int x, int y, int z)
+        public void AddGCommand(int x, int y, int z, long t)
         {
-            var commonds = new List<BaseCommand>();
-            commonds.Add(new GCommand(x, y, z));
-            TaskQueue.Enqueue(commonds);
+            if (!AddNewTaskTimeStamp.HasValue)
+            {
+                AddNewTaskTimeStamp = t;
+            }
+
+            if(AddNewTaskTimeStamp <= t)
+            {
+                var commonds = new List<BaseCommand>();
+                commonds.Add(new GCommand(x, y, z));
+                TaskQueue.Enqueue(commonds);
+            }
         }
 
-        public void AddPoseCommand(int x, int y, int z)
+        public void AddPoseCommand(int x, int y, int z, long t)
         {
-            var commonds = new List<BaseCommand>();
-            commonds.Add(new PoseCommand(x, y, z));
-            TaskQueue.Enqueue(commonds);
+            if(!AddNewTaskTimeStamp.HasValue)
+            {
+                AddNewTaskTimeStamp = t;
+            }
+
+            if (AddNewTaskTimeStamp <= t)
+            {
+                var commonds = new List<BaseCommand>();
+                commonds.Add(new PoseCommand(x, y, z));
+                TaskQueue.Enqueue(commonds);
+            }
         }
     }
 }

@@ -35,9 +35,9 @@ namespace ArmActor.Interfaces
 
         Task AddNextTaskAsync(string taskName);
 
-        Task AddDeltaPoseTaskAsync(int x, int y, int z);
+        Task AddDeltaPoseTaskAsync(int x, int y, int z, long t);
 
-        Task AddPoseTaskAsync(int x, int y, int z);
+        Task AddPoseTaskAsync(int x, int y, int z, long t);
 
         Task<string> GetNextTaskAsync();
     }

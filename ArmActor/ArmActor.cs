@@ -166,17 +166,17 @@ namespace ArmActor
             return this.StateManager.TryAddStateAsync("count", 0);
         }
 
-        public async Task AddDeltaPoseTaskAsync(int x, int y, int z)
+        public async Task AddDeltaPoseTaskAsync(int x, int y, int z, long t)
         {
             var tr = await ReadDataAsync();
-            tr.AddGCommand(x, y, z);
+            tr.AddGCommand(x, y, z, t);
             await SaveDataAsync(tr);
         }
 
-        public async Task AddPoseTaskAsync(int x, int y, int z)
+        public async Task AddPoseTaskAsync(int x, int y, int z, long t)
         {
             var tr = await ReadDataAsync();
-            tr.AddPoseCommand(x, y, z);
+            tr.AddPoseCommand(x, y, z, t);
             await SaveDataAsync(tr);
         }
 

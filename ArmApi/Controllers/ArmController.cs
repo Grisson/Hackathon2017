@@ -127,21 +127,21 @@ namespace ArmApi.Controllers
             return Ok();
         }
 
-        [Route("arm/{id:long}/delta/{x:int}/{y:int}/{z:int}")]
+        [Route("arm/{id:long}/delta/{x:int}/{y:int}/{z:int}/{t:long}")]
         [HttpPut]
-        public async Task<IHttpActionResult> AddGCommand(long id, int x, int y, int z)
+        public async Task<IHttpActionResult> AddGCommand(long id, int x, int y, int z, long t)
         {
             var armActor = ActorFactory.GetArm(id);
-            await armActor.AddDeltaPoseTaskAsync(x, y, z);
+            await armActor.AddDeltaPoseTaskAsync(x, y, z, t);
             return Ok();
         }
 
-        [Route("arm/{id:long}/go/{x:int}/{y:int}/{z:int}")]
+        [Route("arm/{id:long}/go/{x:int}/{y:int}/{z:int}/{t:long}")]
         [HttpPut]
-        public async Task<IHttpActionResult> AddPoseCommand(long id, int x, int y, int z)
+        public async Task<IHttpActionResult> AddPoseCommand(long id, int x, int y, int z, long t)
         {
             var armActor = ActorFactory.GetArm(id);
-            await armActor.AddPoseTaskAsync(x, y, z);
+            await armActor.AddPoseTaskAsync(x, y, z, t);
             return Ok();
         }
     }
