@@ -144,5 +144,15 @@ namespace ArmApi.Controllers
             await armActor.AddPoseTaskAsync(x, y, z, t);
             return Ok();
         }
+
+        [Route("arm/{id:long}/goco/{x:double}/{y:double}/{z:double}/{t:long}")]
+        [HttpPut]
+        public async Task<IHttpActionResult> AddPoseCommand(long id, double x, double y, double z, long t)
+        {
+            var armActor = ActorFactory.GetArm(id);
+            var pose = await armActor.ConvertCoordinatToPositionAsync(x, y, z);
+            await armActor.AddPoseTaskAsync(pose.x, pose.y, pose.z, t);
+            return Ok();
+        }
     }
 }
