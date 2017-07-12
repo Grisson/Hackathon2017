@@ -172,6 +172,25 @@ namespace Hamsa.UI
                 engine.Dispose();
             }
         }
+
+        private void HoloArmStartBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (engine == null)
+            {
+                engine = new CodeEngine<HoloArm>();
+            }
+
+            engine.Run();
+        }
+
+        private void HoloArmStopBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (engine != null)
+            {
+                engine.Stop();
+                engine.Dispose();
+            }
+        }
     }
 }
 /*

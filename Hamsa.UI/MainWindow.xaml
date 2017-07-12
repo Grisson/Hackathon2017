@@ -66,11 +66,18 @@
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Vertical">
                         <Button x:Name="PlayBtn" Click="PlayBtn_Click">Play</Button>
                         <Path x:Name="CodeBlocks" Stroke="Black" StrokeThickness="1" >
-                            
+
                         </Path>
                         <Image Source="Asset\block.png" Width="644" Height="476" />
                     </StackPanel>
                 </Grid>
+            </TabItem>
+
+            <TabItem Header="HoloArm">
+                <StackPanel Orientation="Vertical">
+                    <Button Grid.Column="0" x:Name="HoloArmStartBtn" Click="HoloArmStartBtn_Click">Start</Button>
+                    <Button Grid.Column="1" x:Name="HoloArmStopBtn" Click="HoloArmStopBtn_Click">Stop</Button>
+                </StackPanel>
             </TabItem>
 
             <TabItem Header="Arm Controller" >

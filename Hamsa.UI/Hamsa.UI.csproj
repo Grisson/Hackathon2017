@@ -161,6 +161,7 @@
     <Compile Include="CloudBrain\ValuesExtensions.cs" />
     <Compile Include="CloudBrain\Vision.cs" />
     <Compile Include="CloudBrain\VisionExtensions.cs" />
+    <Compile Include="Code\HoloArm.cs" />
     <Compile Include="Code\TestMachine.cs" />
     <Compile Include="Code\TrackFaceSample.cs" />
     <Compile Include="MainWindow.BlocksUI.cs" />
