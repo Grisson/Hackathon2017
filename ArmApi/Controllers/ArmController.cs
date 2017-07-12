@@ -151,7 +151,7 @@ namespace ArmApi.Controllers
         {
             var armActor = ActorFactory.GetArm(id);
             var pose = await armActor.ConvertCoordinatToPositionAsync(x, y, z);
-            await armActor.AddPoseTaskAsync(pose.x, pose.y, pose.z, t);
+            await armActor.AddPoseTaskAsync(pose.X, pose.Y, pose.Z, t);
             return Ok();
         }
     }
