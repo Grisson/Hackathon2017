@@ -21,41 +21,75 @@ namespace Hamsa.UI.Code
         }
 
         //public Camera Eye;
-        public ThreeDOFArm Arm;
+        public ThreeDOFArm LeftArm;
+        public ThreeDOFArm RightArm;
 
-        public long ArmId;
+        public long LeftArmId;
+        public long RightArmId;
+
         public CloudBrain Brain;
 
-        public Queue<BaseCommand> CommandList;
-        public BaseCommand CurrentCommand;
-        public Status CurrentStatus;
+        public Queue<BaseCommand> LeftArmCommandList;
+        public BaseCommand LeftArmCurrentCommand;
+        public Status LeftArmCurrentStatus;
+
+        public Queue<BaseCommand> RightArmCommandList;
+        public BaseCommand RightArmCurrentCommand;
+        public Status RightArmCurrentStatus;
 
         public override void Setup()
         {
-            CommandList = new Queue<BaseCommand>();
-            CurrentStatus = Status.Idle;
+            LeftArmCommandList = new Queue<BaseCommand>();
+            LeftArmCurrentStatus = Status.Idle;
+
+            RightArmCommandList = new Queue<BaseCommand>();
+            RightArmCurrentStatus = Status.Idle;
 
             Brain = new CloudBrain(new Uri("http://10.125.169.141:8182"), new BasicAuthenticationCredentials());
-            ArmId = 4396;// Brain.Arm.Register().Value;
 
+            RightArmId = 4396;
+            LeftArmId = 43967;// Brain.Arm.Register().Value;
 
-            Arm = new ThreeDOFArm("COM4", 115200);
-            Arm.Subscript("CallBack", HandleArmCallback);
-            Arm.Connect();
+            LeftArm = new ThreeDOFArm("COM4", 115200);
+            LeftArm.Subscript("CallBack", HandleLeftArmCallback);
+            LeftArm.Connect();
+
+            RightArm = new ThreeDOFArm("COM4", 115200);
+            RightArm.Subscript("CallBack", HandleRightArmCallback);
+            RightArm.Connect();
         }
 
         public override void Loop()
         {
-            switch (CurrentStatus)
+            switch (LeftArmCurrentStatus)
             {
                 case Status.Idle:
-                    if (CommandList.Count > 0)
+                    if (LeftArmCommandList.Count > 0)
                     {
-                        ExecuteNextCommand();
+                        ExecuteNextLeftArmCommand();
                     }
                     else
                     {
-                        GetNewCommands();
+                        GetLeftArmNewCommands();
+                    }
+                    break;
+                case Status.Executing:
+                    break;
+                default:
+                    Thread.Yield();
+                    break;
+            }
+
+            switch (RightArmCurrentStatus)
+            {
+                case Status.Idle:
+                    if (RightArmCommandList.Count > 0)
+                    {
+                        ExecuteNextRightArmCommand();
+                    }
+                    else
+                    {
+                        GetRightArmNewCommands();
                     }
                     break;
                 case Status.Executing:
@@ -66,10 +100,10 @@ namespace Hamsa.UI.Code
             }
         }
 
-        public void GetNewCommands()
+        public void GetLeftArmNewCommands()
         {
             // get new command
-            var newCommandString = Brain.Arm.GetNextTask(ArmId);
+            var newCommandString = Brain.Arm.GetNextTask(LeftArmId);
 
             if (string.IsNullOrEmpty(newCommandString))
             {
@@ -81,80 +115,165 @@ namespace Hamsa.UI.Code
 
             foreach (var c in newCommands)
             {
-                CommandList.Enqueue(c);
+                LeftArmCommandList.Enqueue(c);
             }
         }
 
-        public void ExecuteNextCommand()
+        public void GetRightArmNewCommands()
+        {
+            // get new command
+            var newCommandString = Brain.Arm.GetNextTask(RightArmId);
+
+            if (string.IsNullOrEmpty(newCommandString))
+            {
+                return;
+            }
+
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+            var newCommands = JsonConvert.DeserializeObject<List<BaseCommand>>(newCommandString, settings);
+
+            foreach (var c in newCommands)
+            {
+                RightArmCommandList.Enqueue(c);
+            }
+        }
+
+        public void ExecuteNextRightArmCommand()
         {
             lock (SyncRoot)
             {
-                CurrentCommand = CommandList.Dequeue();
-                CurrentStatus = Status.Executing;
+                RightArmCurrentCommand = RightArmCommandList.Dequeue();
+                RightArmCurrentStatus = Status.Executing;
             }
 
-            switch (CurrentCommand.Type)
+            switch (RightArmCurrentCommand.Type)
             {
                 case CommandType.Pose:
-                    var command = CurrentCommand as PoseCommand;
+                    var command = RightArmCurrentCommand as PoseCommand;
                     command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                    Arm.MoveTo(new PosePosition() { MotorOneSteps = command.NextPosePosition.X, MotorTwoSteps = command.NextPosePosition.Y, MotorThreeSteps = command.NextPosePosition.Z });
+                    RightArm.MoveTo(new PosePosition() { MotorOneSteps = command.NextPosePosition.X, MotorTwoSteps = command.NextPosePosition.Y, MotorThreeSteps = command.NextPosePosition.Z });
                     break;
                 case CommandType.GCode:
-                    var gcommand = CurrentCommand as GCommand;
+                    var gcommand = RightArmCurrentCommand as GCommand;
                     gcommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                     var newPose = new PosePosition()
                     {
-                        MotorOneSteps = Arm.CurrentPose.X + gcommand.XDelta,
-                        MotorTwoSteps = Arm.CurrentPose.Y + gcommand.YDelta,
-                        MotorThreeSteps = Arm.CurrentPose.Z + gcommand.ZDelta,
+                        MotorOneSteps = RightArm.CurrentPose.X + gcommand.XDelta,
+                        MotorTwoSteps = RightArm.CurrentPose.Y + gcommand.YDelta,
+                        MotorThreeSteps = RightArm.CurrentPose.Z + gcommand.ZDelta,
                     };
-                    Arm.MoveTo(newPose);
+                    RightArm.MoveTo(newPose);
                     break;
-                
+
                 default:
                     lock (SyncRoot)
                     {
-                        CurrentCommand = null;
-                        CurrentStatus = Status.Idle;
+                        RightArmCurrentCommand = null;
+                        RightArmCurrentStatus = Status.Idle;
                     }
                     break;
             }
         }
 
-        public void HandleArmCallback(string data)
+        public void ExecuteNextLeftArmCommand()
         {
-            if (CurrentStatus == Status.Executing)
+            lock (SyncRoot)
+            {
+                LeftArmCurrentCommand = LeftArmCommandList.Dequeue();
+                LeftArmCurrentStatus = Status.Executing;
+            }
+
+            switch (LeftArmCurrentCommand.Type)
+            {
+                case CommandType.Pose:
+                    var command = LeftArmCurrentCommand as PoseCommand;
+                    command.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    LeftArm.MoveTo(new PosePosition() { MotorOneSteps = command.NextPosePosition.X, MotorTwoSteps = command.NextPosePosition.Y, MotorThreeSteps = command.NextPosePosition.Z });
+                    break;
+                case CommandType.GCode:
+                    var gcommand = LeftArmCurrentCommand as GCommand;
+                    gcommand.SendTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                    var newPose = new PosePosition()
+                    {
+                        MotorOneSteps = LeftArm.CurrentPose.X + gcommand.XDelta,
+                        MotorTwoSteps = LeftArm.CurrentPose.Y + gcommand.YDelta,
+                        MotorThreeSteps = LeftArm.CurrentPose.Z + gcommand.ZDelta,
+                    };
+                    LeftArm.MoveTo(newPose);
+                    break;
+                
+                default:
+                    lock (SyncRoot)
+                    {
+                        LeftArmCurrentCommand = null;
+                        LeftArmCurrentStatus = Status.Idle;
+                    }
+                    break;
+            }
+        }
+
+        private void HandleRightArmCallback(string obj)
+        {
+            if (RightArmCurrentStatus == Status.Executing)
             {
                 var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                if (CurrentCommand is GCommand)
+                if (RightArmCurrentCommand is GCommand)
                 {
-                    var gcommand = CurrentCommand as GCommand;
+                    var gcommand = RightArmCurrentCommand as GCommand;
                     timeStamp = gcommand.SendTimeStamp;
                 }
-                else if (CurrentCommand is PoseCommand)
+                else if (RightArmCurrentCommand is PoseCommand)
                 {
-                    var gcommand = CurrentCommand as PoseCommand;
+                    var gcommand = RightArmCurrentCommand as PoseCommand;
                     timeStamp = gcommand.SendTimeStamp;
                 }
-                Brain.Arm.ReportPose(ArmId,
+                Brain.Arm.ReportPose(RightArmId,
                     timeStamp.ToString(),
-                    Arm.CurrentPose.MotorOneSteps,
-                    Arm.CurrentPose.MotorTwoSteps,
-                    Arm.CurrentPose.MotorThreeSteps);
+                    RightArm.CurrentPose.MotorOneSteps,
+                    RightArm.CurrentPose.MotorTwoSteps,
+                    RightArm.CurrentPose.MotorThreeSteps);
 
                 lock (SyncRoot)
                 {
-                    CurrentCommand = null;
-                    CurrentStatus = Status.Idle;
+                    RightArmCurrentCommand = null;
+                    RightArmCurrentStatus = Status.Idle;
+                }
+            }
+        }
+
+        private void HandleLeftArmCallback(string obj)
+        {
+            if (LeftArmCurrentStatus == Status.Executing)
+            {
+                var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                if (LeftArmCurrentCommand is GCommand)
+                {
+                    var gcommand = LeftArmCurrentCommand as GCommand;
+                    timeStamp = gcommand.SendTimeStamp;
+                }
+                else if (LeftArmCurrentCommand is PoseCommand)
+                {
+                    var gcommand = LeftArmCurrentCommand as PoseCommand;
+                    timeStamp = gcommand.SendTimeStamp;
+                }
+                Brain.Arm.ReportPose(LeftArmId,
+                    timeStamp.ToString(),
+                    LeftArm.CurrentPose.MotorOneSteps,
+                    LeftArm.CurrentPose.MotorTwoSteps,
+                    LeftArm.CurrentPose.MotorThreeSteps);
+
+                lock (SyncRoot)
+                {
+                    LeftArmCurrentCommand = null;
+                    LeftArmCurrentStatus = Status.Idle;
                 }
             }
         }
 
         public override void Cleanup()
         {
-            Arm.ResetPosePosition();
-            Arm.Dispose();
+            LeftArm.ResetPosePosition();
+            LeftArm.Dispose();
             Brain.Dispose();
         }
     }
